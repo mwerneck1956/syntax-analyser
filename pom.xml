@@ -17,7 +17,7 @@
     <dependency>
       <groupId>org.antlr</groupId>
       <artifactId>antlr4-runtime</artifactId>
-      <version>4.9.3</version>
+      <version>4.8-1</version>
     </dependency>
   </dependencies>
   <build>
@@ -25,9 +25,10 @@
       <plugin>
         <groupId>org.antlr</groupId>
         <artifactId>antlr4-maven-plugin</artifactId>
-        <version>4.9.3</version>
+        <version>4.8-1</version>
         <executions>
           <execution>
+            <id>antlr</id>
             <goals>
               <goal>antlr4</goal>
             </goals>
@@ -38,8 +39,24 @@
             <argument>-visitor</argument>
             <argument>-no-listener</argument>
           </arguments>
+          <outputDirectory>${project.basedir}/src/main/java/com/compiler/grammar</outputDirectory>
+          <grammarPackage>com.compiler.grammar</grammarPackage>
+          <includes>
+            <include>**/*.g4</include>
+          </includes>
         </configuration>
-      </plugin>
+    </plugin>
+    <plugin>
+      <groupId>org.codehaus.mojo</groupId>
+      <artifactId>exec-maven-plugin</artifactId>
+      <version>3.0.0</version>
+      <configuration>
+          <mainClass>com.compiler.App</mainClass>
+          <arguments>
+              <argument>${myParameter}</argument>
+          </arguments>
+      </configuration>
+    </plugin>
     </plugins>
   </build>
   

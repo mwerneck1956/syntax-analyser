@@ -1,1 +1,5 @@
-C:\Users\Cliente\Desktop\UFJF\Compiladores\my-antlr-project\src\main\java\com\example\App.java
+C:\Users\Cliente\Desktop\UFJF\Compiladores\syntax-analyser\src\main\java\com\compiler\App.java
+C:\Users\Cliente\Desktop\UFJF\Compiladores\syntax-analyser\src\main\java\com\compiler\grammar\langVisitor.java
+C:\Users\Cliente\Desktop\UFJF\Compiladores\syntax-analyser\src\main\java\com\compiler\grammar\langParser.java
+C:\Users\Cliente\Desktop\UFJF\Compiladores\syntax-analyser\src\main\java\com\compiler\grammar\langBaseVisitor.java
+C:\Users\Cliente\Desktop\UFJF\Compiladores\syntax-analyser\src\main\java\com\compiler\grammar\langLexer.java

@@ -1,1 +1,1 @@
-mvn exec:java -Dexec.mainClass=com.compiler.App
+mvn exec:java -Dexec.mainClass=com.compiler.App -Dexec.args="sample.txt"
