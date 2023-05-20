@@ -10,7 +10,7 @@ buildNumber.properties
 # https://github.com/takari/maven-wrapper#usage-without-binary-jar
 .mvn/wrapper/maven-wrapper.jar
 
-src/main/antlr4/.antlr
+src/main/antlr4/.antlr/
 
 # Eclipse m2e generated files
 # Eclipse Core
