@@ -4,8 +4,7 @@ import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.*;
 
 import com.compiler.grammar.*;
-
-import org.antlr.v4.*;
+import com.compiler.ast.*;
 
 public class App {
 
@@ -17,6 +16,12 @@ public class App {
         CommonTokenStream tokens = new CommonTokenStream(lex);
         // create a parser that feeds off the tokens buffer
         langParser parser = new langParser(tokens);
+
+        // parser.setBuildParseTree(false);
+
+        // Node ast = parser.prog().ast;
+
+        // System.out.println(ast.toString());
 
         ParseTree tree = parser.prog();
         System.out.println(tree.toStringTree(parser));

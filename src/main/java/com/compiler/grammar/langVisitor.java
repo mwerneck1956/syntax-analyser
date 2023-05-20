@@ -1,5 +1,9 @@
 // Generated from lang.g4 by ANTLR 4.8
- package com.compiler.grammar; 
+ 
+	package com.compiler.grammar;
+	import com.compiler.ast.*;
+
+ 
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 
 /**
@@ -16,6 +20,18 @@ public interface langVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitProg(langParser.ProgContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link langParser#data}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitData(langParser.DataContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link langParser#typeDeclaration}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitTypeDeclaration(langParser.TypeDeclarationContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link langParser#stmt}.
 	 * @param ctx the parse tree
