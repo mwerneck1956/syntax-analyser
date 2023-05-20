@@ -18,7 +18,9 @@ public class langParser extends Parser {
 		new PredictionContextCache();
 	public static final int
 		T__0=1, T__1=2, T__2=3, T__3=4, T__4=5, T__5=6, T__6=7, T__7=8, ID=9, 
-		NEWLINE=10, WS=11, LINE_COMMENT=12, COMMENT=13, INTEGER=14, FLOAT=15;
+		INTEGER=10, FLOAT=11, BOOL=12, TYPENAME=13, IF=14, THEN=15, ELSE=16, ITERATE=17, 
+		READ=18, PRINT=19, RETURN=20, CHAR=21, NEWLINE=22, WS=23, LINE_COMMENT=24, 
+		COMMENT=25;
 	public static final int
 		RULE_prog = 0, RULE_stmt = 1, RULE_expr = 2, RULE_term = 3, RULE_factor = 4;
 	private static String[] makeRuleNames() {
@@ -30,14 +32,17 @@ public class langParser extends Parser {
 
 	private static String[] makeLiteralNames() {
 		return new String[] {
-			null, "';'", "'='", "'?'", "'['", "']'", "':'", "'+'", "'*'"
+			null, "';'", "'='", "'?'", "'['", "']'", "':'", "'+'", "'*'", null, null, 
+			null, null, null, "'if'", "'then'", "'else'", "'iterate'", "'read'", 
+			"'print'", "'return'"
 		};
 	}
 	private static final String[] _LITERAL_NAMES = makeLiteralNames();
 	private static String[] makeSymbolicNames() {
 		return new String[] {
-			null, null, null, null, null, null, null, null, null, "ID", "NEWLINE", 
-			"WS", "LINE_COMMENT", "COMMENT", "INTEGER", "FLOAT"
+			null, null, null, null, null, null, null, null, null, "ID", "INTEGER", 
+			"FLOAT", "BOOL", "TYPENAME", "IF", "THEN", "ELSE", "ITERATE", "READ", 
+			"PRINT", "RETURN", "CHAR", "NEWLINE", "WS", "LINE_COMMENT", "COMMENT"
 		};
 	}
 	private static final String[] _SYMBOLIC_NAMES = makeSymbolicNames();
@@ -401,21 +406,21 @@ public class langParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\21:\4\2\t\2\4\3\t"+
+		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\33:\4\2\t\2\4\3\t"+
 		"\3\4\4\t\4\4\5\t\5\4\6\t\6\3\2\3\2\3\2\6\2\20\n\2\r\2\16\2\21\3\3\3\3"+
 		"\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3"+
 		"\3\5\3(\n\3\3\4\3\4\3\4\3\4\3\4\5\4/\n\4\3\5\3\5\3\5\3\5\3\5\5\5\66\n"+
-		"\5\3\6\3\6\3\6\2\2\7\2\4\6\b\n\2\3\4\2\13\13\20\21\2:\2\17\3\2\2\2\4\'"+
-		"\3\2\2\2\6.\3\2\2\2\b\65\3\2\2\2\n\67\3\2\2\2\f\r\5\4\3\2\r\16\7\3\2\2"+
-		"\16\20\3\2\2\2\17\f\3\2\2\2\20\21\3\2\2\2\21\17\3\2\2\2\21\22\3\2\2\2"+
-		"\22\3\3\2\2\2\23\24\7\13\2\2\24\25\7\4\2\2\25(\5\6\4\2\26\27\5\6\4\2\27"+
-		"\30\7\5\2\2\30\31\7\6\2\2\31\32\5\4\3\2\32\33\7\7\2\2\33\34\7\b\2\2\34"+
-		"\35\7\6\2\2\35\36\5\4\3\2\36\37\7\7\2\2\37(\3\2\2\2 !\5\6\4\2!\"\7\5\2"+
-		"\2\"#\7\6\2\2#$\5\4\3\2$%\7\7\2\2%(\3\2\2\2&(\5\6\4\2\'\23\3\2\2\2\'\26"+
-		"\3\2\2\2\' \3\2\2\2\'&\3\2\2\2(\5\3\2\2\2)*\5\b\5\2*+\7\t\2\2+,\5\6\4"+
-		"\2,/\3\2\2\2-/\5\b\5\2.)\3\2\2\2.-\3\2\2\2/\7\3\2\2\2\60\61\5\n\6\2\61"+
-		"\62\7\n\2\2\62\63\5\b\5\2\63\66\3\2\2\2\64\66\5\n\6\2\65\60\3\2\2\2\65"+
-		"\64\3\2\2\2\66\t\3\2\2\2\678\t\2\2\28\13\3\2\2\2\6\21\'.\65";
+		"\5\3\6\3\6\3\6\2\2\7\2\4\6\b\n\2\3\3\2\13\r\2:\2\17\3\2\2\2\4\'\3\2\2"+
+		"\2\6.\3\2\2\2\b\65\3\2\2\2\n\67\3\2\2\2\f\r\5\4\3\2\r\16\7\3\2\2\16\20"+
+		"\3\2\2\2\17\f\3\2\2\2\20\21\3\2\2\2\21\17\3\2\2\2\21\22\3\2\2\2\22\3\3"+
+		"\2\2\2\23\24\7\13\2\2\24\25\7\4\2\2\25(\5\6\4\2\26\27\5\6\4\2\27\30\7"+
+		"\5\2\2\30\31\7\6\2\2\31\32\5\4\3\2\32\33\7\7\2\2\33\34\7\b\2\2\34\35\7"+
+		"\6\2\2\35\36\5\4\3\2\36\37\7\7\2\2\37(\3\2\2\2 !\5\6\4\2!\"\7\5\2\2\""+
+		"#\7\6\2\2#$\5\4\3\2$%\7\7\2\2%(\3\2\2\2&(\5\6\4\2\'\23\3\2\2\2\'\26\3"+
+		"\2\2\2\' \3\2\2\2\'&\3\2\2\2(\5\3\2\2\2)*\5\b\5\2*+\7\t\2\2+,\5\6\4\2"+
+		",/\3\2\2\2-/\5\b\5\2.)\3\2\2\2.-\3\2\2\2/\7\3\2\2\2\60\61\5\n\6\2\61\62"+
+		"\7\n\2\2\62\63\5\b\5\2\63\66\3\2\2\2\64\66\5\n\6\2\65\60\3\2\2\2\65\64"+
+		"\3\2\2\2\66\t\3\2\2\2\678\t\2\2\28\13\3\2\2\2\6\21\'.\65";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {
