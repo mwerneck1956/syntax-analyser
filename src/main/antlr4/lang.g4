@@ -18,15 +18,15 @@ expr: term '+' expr | term;
 
 term: factor '*' term | factor;
 
-factor: ID | INT;
+factor: ID | INTEGER | FLOAT;
 
 /* Regras léxicas */
 
-ID: [a-z]+;
-INT: [0-9]+;
+ID: [a-z]+ [a-zA-z_]*;
 
 NEWLINE: '\r'? '\n' -> skip;
 WS: [ \t]+ -> skip;
 LINE_COMMENT: '//' ~('\r' | '\n')* NEWLINE -> skip;
 COMMENT: '/*' .*? '*/' -> skip;
-
+INTEGER: [0-9]+;
+FLOAT: [0-9]* '.' [0-9]+;

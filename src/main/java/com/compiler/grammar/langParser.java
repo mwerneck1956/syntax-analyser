@@ -18,7 +18,7 @@ public class langParser extends Parser {
 		new PredictionContextCache();
 	public static final int
 		T__0=1, T__1=2, T__2=3, T__3=4, T__4=5, T__5=6, T__6=7, T__7=8, ID=9, 
-		INT=10, NEWLINE=11, WS=12, LINE_COMMENT=13, COMMENT=14;
+		NEWLINE=10, WS=11, LINE_COMMENT=12, COMMENT=13, INTEGER=14, FLOAT=15;
 	public static final int
 		RULE_prog = 0, RULE_stmt = 1, RULE_expr = 2, RULE_term = 3, RULE_factor = 4;
 	private static String[] makeRuleNames() {
@@ -36,8 +36,8 @@ public class langParser extends Parser {
 	private static final String[] _LITERAL_NAMES = makeLiteralNames();
 	private static String[] makeSymbolicNames() {
 		return new String[] {
-			null, null, null, null, null, null, null, null, null, "ID", "INT", "NEWLINE", 
-			"WS", "LINE_COMMENT", "COMMENT"
+			null, null, null, null, null, null, null, null, null, "ID", "NEWLINE", 
+			"WS", "LINE_COMMENT", "COMMENT", "INTEGER", "FLOAT"
 		};
 	}
 	private static final String[] _SYMBOLIC_NAMES = makeSymbolicNames();
@@ -131,7 +131,7 @@ public class langParser extends Parser {
 				setState(15); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
-			} while ( _la==ID || _la==INT );
+			} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << ID) | (1L << INTEGER) | (1L << FLOAT))) != 0) );
 			}
 		}
 		catch (RecognitionException re) {
@@ -357,7 +357,8 @@ public class langParser extends Parser {
 
 	public static class FactorContext extends ParserRuleContext {
 		public TerminalNode ID() { return getToken(langParser.ID, 0); }
-		public TerminalNode INT() { return getToken(langParser.INT, 0); }
+		public TerminalNode INTEGER() { return getToken(langParser.INTEGER, 0); }
+		public TerminalNode FLOAT() { return getToken(langParser.FLOAT, 0); }
 		public FactorContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -378,7 +379,7 @@ public class langParser extends Parser {
 			{
 			setState(53);
 			_la = _input.LA(1);
-			if ( !(_la==ID || _la==INT) ) {
+			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << ID) | (1L << INTEGER) | (1L << FLOAT))) != 0)) ) {
 			_errHandler.recoverInline(this);
 			}
 			else {
@@ -400,21 +401,21 @@ public class langParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\20:\4\2\t\2\4\3\t"+
+		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\21:\4\2\t\2\4\3\t"+
 		"\3\4\4\t\4\4\5\t\5\4\6\t\6\3\2\3\2\3\2\6\2\20\n\2\r\2\16\2\21\3\3\3\3"+
 		"\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3"+
 		"\3\5\3(\n\3\3\4\3\4\3\4\3\4\3\4\5\4/\n\4\3\5\3\5\3\5\3\5\3\5\5\5\66\n"+
-		"\5\3\6\3\6\3\6\2\2\7\2\4\6\b\n\2\3\3\2\13\f\2:\2\17\3\2\2\2\4\'\3\2\2"+
-		"\2\6.\3\2\2\2\b\65\3\2\2\2\n\67\3\2\2\2\f\r\5\4\3\2\r\16\7\3\2\2\16\20"+
-		"\3\2\2\2\17\f\3\2\2\2\20\21\3\2\2\2\21\17\3\2\2\2\21\22\3\2\2\2\22\3\3"+
-		"\2\2\2\23\24\7\13\2\2\24\25\7\4\2\2\25(\5\6\4\2\26\27\5\6\4\2\27\30\7"+
-		"\5\2\2\30\31\7\6\2\2\31\32\5\4\3\2\32\33\7\7\2\2\33\34\7\b\2\2\34\35\7"+
-		"\6\2\2\35\36\5\4\3\2\36\37\7\7\2\2\37(\3\2\2\2 !\5\6\4\2!\"\7\5\2\2\""+
-		"#\7\6\2\2#$\5\4\3\2$%\7\7\2\2%(\3\2\2\2&(\5\6\4\2\'\23\3\2\2\2\'\26\3"+
-		"\2\2\2\' \3\2\2\2\'&\3\2\2\2(\5\3\2\2\2)*\5\b\5\2*+\7\t\2\2+,\5\6\4\2"+
-		",/\3\2\2\2-/\5\b\5\2.)\3\2\2\2.-\3\2\2\2/\7\3\2\2\2\60\61\5\n\6\2\61\62"+
-		"\7\n\2\2\62\63\5\b\5\2\63\66\3\2\2\2\64\66\5\n\6\2\65\60\3\2\2\2\65\64"+
-		"\3\2\2\2\66\t\3\2\2\2\678\t\2\2\28\13\3\2\2\2\6\21\'.\65";
+		"\5\3\6\3\6\3\6\2\2\7\2\4\6\b\n\2\3\4\2\13\13\20\21\2:\2\17\3\2\2\2\4\'"+
+		"\3\2\2\2\6.\3\2\2\2\b\65\3\2\2\2\n\67\3\2\2\2\f\r\5\4\3\2\r\16\7\3\2\2"+
+		"\16\20\3\2\2\2\17\f\3\2\2\2\20\21\3\2\2\2\21\17\3\2\2\2\21\22\3\2\2\2"+
+		"\22\3\3\2\2\2\23\24\7\13\2\2\24\25\7\4\2\2\25(\5\6\4\2\26\27\5\6\4\2\27"+
+		"\30\7\5\2\2\30\31\7\6\2\2\31\32\5\4\3\2\32\33\7\7\2\2\33\34\7\b\2\2\34"+
+		"\35\7\6\2\2\35\36\5\4\3\2\36\37\7\7\2\2\37(\3\2\2\2 !\5\6\4\2!\"\7\5\2"+
+		"\2\"#\7\6\2\2#$\5\4\3\2$%\7\7\2\2%(\3\2\2\2&(\5\6\4\2\'\23\3\2\2\2\'\26"+
+		"\3\2\2\2\' \3\2\2\2\'&\3\2\2\2(\5\3\2\2\2)*\5\b\5\2*+\7\t\2\2+,\5\6\4"+
+		"\2,/\3\2\2\2-/\5\b\5\2.)\3\2\2\2.-\3\2\2\2/\7\3\2\2\2\60\61\5\n\6\2\61"+
+		"\62\7\n\2\2\62\63\5\b\5\2\63\66\3\2\2\2\64\66\5\n\6\2\65\60\3\2\2\2\65"+
+		"\64\3\2\2\2\66\t\3\2\2\2\678\t\2\2\28\13\3\2\2\2\6\21\'.\65";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {
