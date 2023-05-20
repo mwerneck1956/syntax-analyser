@@ -32,7 +32,7 @@ fragment Uppercase: [A-Z];
 fragment Lowercase: [a-z];
 
 ID: [a-z]+ [a-zA-z_]*;
-TYPE: [Uppercase] [Lowercase Uppercase]*;
+TYPE: [Uppercase][LowercaseUppercase]*;
 
 INTEGER: [0-9]+;
 FLOAT: [0-9]* '.' [0-9]+;
@@ -51,7 +51,7 @@ RETURN: 'return';
  */
 CHAR: [\u0000-\u007F];
 
-NEWLINE: [\r | \n | \r\n] -> skip;
+NEWLINE: '\r'? '\n' -> skip;
 /* No nosso jflex estava como endOfLine */
 WS: [ \t | \b | \n | \r]+ -> skip;
 LINE_COMMENT: '--' ~('\r' | '\n')* NEWLINE -> skip;
