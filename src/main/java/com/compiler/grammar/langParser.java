@@ -24,8 +24,8 @@ public class langParser extends Parser {
 		DATA=1, NEW=2, INT=3, FLOAT=4, BOOL=5, CHAR=6, PRINT=7, RETURN=8, READ=9, 
 		ITERATE=10, IF=11, ELSE=12, ID=13, TYPE=14, LITERAL_INT=15, LITERAL_FLOAT=16, 
 		LITERAL_CHAR=17, LITERAL_TRUE=18, LITERAL_FALSE=19, LITERAL_NULL=20, NEWLINE=21, 
-		WHITESPACE=22, LINE_COMMENT=23, COMMENT=24, OP_BRACKET=25, CL_BRACKET=26, 
-		OP_PARENTHESIS=27, CL_PARENTHESIS=28, OP_SQBRACKET=29, CL_SQBRACKET=30, 
+		WHITESPACE=22, LINE_COMMENT=23, COMMENT=24, OPEN_BRACKET=25, CLOSE_BRACKET=26, 
+		OPEN_PARENTHESIS=27, CLOSE_PARENTHESIS=28, OPEN_SQUAREBRACKET=29, CLOSE_SQUAREBRACKET=30, 
 		SEMI=31, DOT=32, COMMA=33, EQ=34, RELACIONAL=35, GREATER_THAN=36, EQEQ=37, 
 		DIFF=38, PLUS=39, MINUS=40, TIMES=41, DIV=42, MOD=43, DENY=44, AND=45, 
 		COLON=46, DOUBLECOLON=47;
@@ -58,10 +58,10 @@ public class langParser extends Parser {
 			null, "DATA", "NEW", "INT", "FLOAT", "BOOL", "CHAR", "PRINT", "RETURN", 
 			"READ", "ITERATE", "IF", "ELSE", "ID", "TYPE", "LITERAL_INT", "LITERAL_FLOAT", 
 			"LITERAL_CHAR", "LITERAL_TRUE", "LITERAL_FALSE", "LITERAL_NULL", "NEWLINE", 
-			"WHITESPACE", "LINE_COMMENT", "COMMENT", "OP_BRACKET", "CL_BRACKET", 
-			"OP_PARENTHESIS", "CL_PARENTHESIS", "OP_SQBRACKET", "CL_SQBRACKET", "SEMI", 
-			"DOT", "COMMA", "EQ", "RELACIONAL", "GREATER_THAN", "EQEQ", "DIFF", "PLUS", 
-			"MINUS", "TIMES", "DIV", "MOD", "DENY", "AND", "COLON", "DOUBLECOLON"
+			"WHITESPACE", "LINE_COMMENT", "COMMENT", "OPEN_BRACKET", "CLOSE_BRACKET", 
+			"OPEN_PARENTHESIS", "CLOSE_PARENTHESIS", "OPEN_SQUAREBRACKET", "CLOSE_SQUAREBRACKET", 
+			"SEMI", "DOT", "COMMA", "EQ", "RELACIONAL", "GREATER_THAN", "EQEQ", "DIFF", 
+			"PLUS", "MINUS", "TIMES", "DIV", "MOD", "DENY", "AND", "COLON", "DOUBLECOLON"
 		};
 	}
 	private static final String[] _SYMBOLIC_NAMES = makeSymbolicNames();
@@ -190,8 +190,8 @@ public class langParser extends Parser {
 	public static class DataContext extends ParserRuleContext {
 		public TerminalNode DATA() { return getToken(langParser.DATA, 0); }
 		public TerminalNode ID() { return getToken(langParser.ID, 0); }
-		public TerminalNode OP_BRACKET() { return getToken(langParser.OP_BRACKET, 0); }
-		public TerminalNode CL_BRACKET() { return getToken(langParser.CL_BRACKET, 0); }
+		public TerminalNode OPEN_BRACKET() { return getToken(langParser.OPEN_BRACKET, 0); }
+		public TerminalNode CLOSE_BRACKET() { return getToken(langParser.CLOSE_BRACKET, 0); }
 		public List<DeclContext> decl() {
 			return getRuleContexts(DeclContext.class);
 		}
@@ -221,7 +221,7 @@ public class langParser extends Parser {
 			setState(45);
 			match(ID);
 			setState(46);
-			match(OP_BRACKET);
+			match(OPEN_BRACKET);
 			setState(50);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
@@ -237,7 +237,7 @@ public class langParser extends Parser {
 				_la = _input.LA(1);
 			}
 			setState(53);
-			match(CL_BRACKET);
+			match(CLOSE_BRACKET);
 			}
 		}
 		catch (RecognitionException re) {
@@ -298,10 +298,10 @@ public class langParser extends Parser {
 
 	public static class FuncContext extends ParserRuleContext {
 		public TerminalNode ID() { return getToken(langParser.ID, 0); }
-		public TerminalNode OP_PARENTHESIS() { return getToken(langParser.OP_PARENTHESIS, 0); }
-		public TerminalNode CL_PARENTHESIS() { return getToken(langParser.CL_PARENTHESIS, 0); }
-		public TerminalNode OP_BRACKET() { return getToken(langParser.OP_BRACKET, 0); }
-		public TerminalNode CL_BRACKET() { return getToken(langParser.CL_BRACKET, 0); }
+		public TerminalNode OPEN_PARENTHESIS() { return getToken(langParser.OPEN_PARENTHESIS, 0); }
+		public TerminalNode CLOSE_PARENTHESIS() { return getToken(langParser.CLOSE_PARENTHESIS, 0); }
+		public TerminalNode OPEN_BRACKET() { return getToken(langParser.OPEN_BRACKET, 0); }
+		public TerminalNode CLOSE_BRACKET() { return getToken(langParser.CLOSE_BRACKET, 0); }
 		public ParamsContext params() {
 			return getRuleContext(ParamsContext.class,0);
 		}
@@ -343,7 +343,7 @@ public class langParser extends Parser {
 			setState(60);
 			match(ID);
 			setState(61);
-			match(OP_PARENTHESIS);
+			match(OPEN_PARENTHESIS);
 			setState(63);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
@@ -355,7 +355,7 @@ public class langParser extends Parser {
 			}
 
 			setState(65);
-			match(CL_PARENTHESIS);
+			match(CLOSE_PARENTHESIS);
 			setState(75);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
@@ -385,11 +385,11 @@ public class langParser extends Parser {
 			}
 
 			setState(77);
-			match(OP_BRACKET);
+			match(OPEN_BRACKET);
 			setState(81);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << PRINT) | (1L << RETURN) | (1L << READ) | (1L << ITERATE) | (1L << IF) | (1L << ID) | (1L << OP_BRACKET))) != 0)) {
+			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << PRINT) | (1L << RETURN) | (1L << READ) | (1L << ITERATE) | (1L << IF) | (1L << ID) | (1L << OPEN_BRACKET))) != 0)) {
 				{
 				{
 				setState(78);
@@ -401,7 +401,7 @@ public class langParser extends Parser {
 				_la = _input.LA(1);
 			}
 			setState(84);
-			match(CL_BRACKET);
+			match(CLOSE_BRACKET);
 			}
 		}
 		catch (RecognitionException re) {
@@ -498,8 +498,8 @@ public class langParser extends Parser {
 		public TypeContext type() {
 			return getRuleContext(TypeContext.class,0);
 		}
-		public TerminalNode OP_SQBRACKET() { return getToken(langParser.OP_SQBRACKET, 0); }
-		public TerminalNode CL_SQBRACKET() { return getToken(langParser.CL_SQBRACKET, 0); }
+		public TerminalNode OPEN_SQUAREBRACKET() { return getToken(langParser.OPEN_SQUAREBRACKET, 0); }
+		public TerminalNode CLOSE_SQUAREBRACKET() { return getToken(langParser.CLOSE_SQUAREBRACKET, 0); }
 		public TypeContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -545,9 +545,9 @@ public class langParser extends Parser {
 					setState(101);
 					if (!(precpred(_ctx, 2))) throw new FailedPredicateException(this, "precpred(_ctx, 2)");
 					setState(102);
-					match(OP_SQBRACKET);
+					match(OPEN_SQUAREBRACKET);
 					setState(103);
-					match(CL_SQBRACKET);
+					match(CLOSE_SQUAREBRACKET);
 					}
 					} 
 				}
@@ -616,8 +616,8 @@ public class langParser extends Parser {
 	}
 
 	public static class CmdContext extends ParserRuleContext {
-		public TerminalNode OP_BRACKET() { return getToken(langParser.OP_BRACKET, 0); }
-		public TerminalNode CL_BRACKET() { return getToken(langParser.CL_BRACKET, 0); }
+		public TerminalNode OPEN_BRACKET() { return getToken(langParser.OPEN_BRACKET, 0); }
+		public TerminalNode CLOSE_BRACKET() { return getToken(langParser.CLOSE_BRACKET, 0); }
 		public List<CmdContext> cmd() {
 			return getRuleContexts(CmdContext.class);
 		}
@@ -625,14 +625,14 @@ public class langParser extends Parser {
 			return getRuleContext(CmdContext.class,i);
 		}
 		public TerminalNode IF() { return getToken(langParser.IF, 0); }
-		public TerminalNode OP_PARENTHESIS() { return getToken(langParser.OP_PARENTHESIS, 0); }
+		public TerminalNode OPEN_PARENTHESIS() { return getToken(langParser.OPEN_PARENTHESIS, 0); }
 		public List<ExpContext> exp() {
 			return getRuleContexts(ExpContext.class);
 		}
 		public ExpContext exp(int i) {
 			return getRuleContext(ExpContext.class,i);
 		}
-		public TerminalNode CL_PARENTHESIS() { return getToken(langParser.CL_PARENTHESIS, 0); }
+		public TerminalNode CLOSE_PARENTHESIS() { return getToken(langParser.CLOSE_PARENTHESIS, 0); }
 		public TerminalNode ELSE() { return getToken(langParser.ELSE, 0); }
 		public TerminalNode ITERATE() { return getToken(langParser.ITERATE, 0); }
 		public TerminalNode READ() { return getToken(langParser.READ, 0); }
@@ -679,11 +679,11 @@ public class langParser extends Parser {
 				enterOuterAlt(_localctx, 1);
 				{
 				setState(111);
-				match(OP_BRACKET);
+				match(OPEN_BRACKET);
 				setState(115);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
-				while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << PRINT) | (1L << RETURN) | (1L << READ) | (1L << ITERATE) | (1L << IF) | (1L << ID) | (1L << OP_BRACKET))) != 0)) {
+				while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << PRINT) | (1L << RETURN) | (1L << READ) | (1L << ITERATE) | (1L << IF) | (1L << ID) | (1L << OPEN_BRACKET))) != 0)) {
 					{
 					{
 					setState(112);
@@ -695,7 +695,7 @@ public class langParser extends Parser {
 					_la = _input.LA(1);
 				}
 				setState(118);
-				match(CL_BRACKET);
+				match(CLOSE_BRACKET);
 				}
 				break;
 			case 2:
@@ -704,11 +704,11 @@ public class langParser extends Parser {
 				setState(119);
 				match(IF);
 				setState(120);
-				match(OP_PARENTHESIS);
+				match(OPEN_PARENTHESIS);
 				setState(121);
 				exp(0);
 				setState(122);
-				match(CL_PARENTHESIS);
+				match(CLOSE_PARENTHESIS);
 				setState(123);
 				cmd();
 				}
@@ -719,11 +719,11 @@ public class langParser extends Parser {
 				setState(125);
 				match(IF);
 				setState(126);
-				match(OP_PARENTHESIS);
+				match(OPEN_PARENTHESIS);
 				setState(127);
 				exp(0);
 				setState(128);
-				match(CL_PARENTHESIS);
+				match(CLOSE_PARENTHESIS);
 				setState(129);
 				cmd();
 				setState(130);
@@ -738,11 +738,11 @@ public class langParser extends Parser {
 				setState(133);
 				match(ITERATE);
 				setState(134);
-				match(OP_PARENTHESIS);
+				match(OPEN_PARENTHESIS);
 				setState(135);
 				exp(0);
 				setState(136);
-				match(CL_PARENTHESIS);
+				match(CLOSE_PARENTHESIS);
 				setState(137);
 				cmd();
 				}
@@ -815,11 +815,11 @@ public class langParser extends Parser {
 				setState(163);
 				match(ID);
 				setState(164);
-				match(OP_PARENTHESIS);
+				match(OPEN_PARENTHESIS);
 				setState(166);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
-				if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << NEW) | (1L << ID) | (1L << LITERAL_INT) | (1L << LITERAL_FLOAT) | (1L << LITERAL_CHAR) | (1L << LITERAL_TRUE) | (1L << LITERAL_FALSE) | (1L << LITERAL_NULL) | (1L << OP_PARENTHESIS) | (1L << MINUS) | (1L << DENY))) != 0)) {
+				if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << NEW) | (1L << ID) | (1L << LITERAL_INT) | (1L << LITERAL_FLOAT) | (1L << LITERAL_CHAR) | (1L << LITERAL_TRUE) | (1L << LITERAL_FALSE) | (1L << LITERAL_NULL) | (1L << OPEN_PARENTHESIS) | (1L << MINUS) | (1L << DENY))) != 0)) {
 					{
 					setState(165);
 					exps();
@@ -827,7 +827,7 @@ public class langParser extends Parser {
 				}
 
 				setState(168);
-				match(CL_PARENTHESIS);
+				match(CLOSE_PARENTHESIS);
 				setState(180);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
@@ -1367,7 +1367,7 @@ public class langParser extends Parser {
 				break;
 			case NEW:
 			case ID:
-			case OP_PARENTHESIS:
+			case OPEN_PARENTHESIS:
 				enterOuterAlt(_localctx, 9);
 				{
 				setState(256);
@@ -1393,17 +1393,17 @@ public class langParser extends Parser {
 		public LvalueContext lvalue() {
 			return getRuleContext(LvalueContext.class,0);
 		}
-		public TerminalNode OP_PARENTHESIS() { return getToken(langParser.OP_PARENTHESIS, 0); }
+		public TerminalNode OPEN_PARENTHESIS() { return getToken(langParser.OPEN_PARENTHESIS, 0); }
 		public ExpContext exp() {
 			return getRuleContext(ExpContext.class,0);
 		}
-		public TerminalNode CL_PARENTHESIS() { return getToken(langParser.CL_PARENTHESIS, 0); }
+		public TerminalNode CLOSE_PARENTHESIS() { return getToken(langParser.CLOSE_PARENTHESIS, 0); }
 		public TerminalNode NEW() { return getToken(langParser.NEW, 0); }
 		public TypeContext type() {
 			return getRuleContext(TypeContext.class,0);
 		}
-		public TerminalNode OP_SQBRACKET() { return getToken(langParser.OP_SQBRACKET, 0); }
-		public TerminalNode CL_SQBRACKET() { return getToken(langParser.CL_SQBRACKET, 0); }
+		public TerminalNode OPEN_SQUAREBRACKET() { return getToken(langParser.OPEN_SQUAREBRACKET, 0); }
+		public TerminalNode CLOSE_SQUAREBRACKET() { return getToken(langParser.CLOSE_SQUAREBRACKET, 0); }
 		public TerminalNode ID() { return getToken(langParser.ID, 0); }
 		public ExpsContext exps() {
 			return getRuleContext(ExpsContext.class,0);
@@ -1438,11 +1438,11 @@ public class langParser extends Parser {
 				enterOuterAlt(_localctx, 2);
 				{
 				setState(260);
-				match(OP_PARENTHESIS);
+				match(OPEN_PARENTHESIS);
 				setState(261);
 				exp(0);
 				setState(262);
-				match(CL_PARENTHESIS);
+				match(CLOSE_PARENTHESIS);
 				}
 				break;
 			case 3:
@@ -1458,11 +1458,11 @@ public class langParser extends Parser {
 				case 1:
 					{
 					setState(266);
-					match(OP_SQBRACKET);
+					match(OPEN_SQUAREBRACKET);
 					setState(267);
 					exp(0);
 					setState(268);
-					match(CL_SQBRACKET);
+					match(CLOSE_SQUAREBRACKET);
 					}
 					break;
 				}
@@ -1474,11 +1474,11 @@ public class langParser extends Parser {
 				setState(272);
 				match(ID);
 				setState(273);
-				match(OP_PARENTHESIS);
+				match(OPEN_PARENTHESIS);
 				setState(275);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
-				if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << NEW) | (1L << ID) | (1L << LITERAL_INT) | (1L << LITERAL_FLOAT) | (1L << LITERAL_CHAR) | (1L << LITERAL_TRUE) | (1L << LITERAL_FALSE) | (1L << LITERAL_NULL) | (1L << OP_PARENTHESIS) | (1L << MINUS) | (1L << DENY))) != 0)) {
+				if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << NEW) | (1L << ID) | (1L << LITERAL_INT) | (1L << LITERAL_FLOAT) | (1L << LITERAL_CHAR) | (1L << LITERAL_TRUE) | (1L << LITERAL_FALSE) | (1L << LITERAL_NULL) | (1L << OPEN_PARENTHESIS) | (1L << MINUS) | (1L << DENY))) != 0)) {
 					{
 					setState(274);
 					exps();
@@ -1486,13 +1486,13 @@ public class langParser extends Parser {
 				}
 
 				setState(277);
-				match(CL_PARENTHESIS);
+				match(CLOSE_PARENTHESIS);
 				setState(278);
-				match(OP_SQBRACKET);
+				match(OPEN_SQUAREBRACKET);
 				setState(279);
 				exp(0);
 				setState(280);
-				match(CL_SQBRACKET);
+				match(CLOSE_SQUAREBRACKET);
 				}
 				break;
 			}
@@ -1513,11 +1513,11 @@ public class langParser extends Parser {
 		public LvalueContext lvalue() {
 			return getRuleContext(LvalueContext.class,0);
 		}
-		public TerminalNode OP_SQBRACKET() { return getToken(langParser.OP_SQBRACKET, 0); }
+		public TerminalNode OPEN_SQUAREBRACKET() { return getToken(langParser.OPEN_SQUAREBRACKET, 0); }
 		public ExpContext exp() {
 			return getRuleContext(ExpContext.class,0);
 		}
-		public TerminalNode CL_SQBRACKET() { return getToken(langParser.CL_SQBRACKET, 0); }
+		public TerminalNode CLOSE_SQUAREBRACKET() { return getToken(langParser.CLOSE_SQUAREBRACKET, 0); }
 		public TerminalNode DOT() { return getToken(langParser.DOT, 0); }
 		public LvalueContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -1568,11 +1568,11 @@ public class langParser extends Parser {
 						setState(287);
 						if (!(precpred(_ctx, 2))) throw new FailedPredicateException(this, "precpred(_ctx, 2)");
 						setState(288);
-						match(OP_SQBRACKET);
+						match(OPEN_SQUAREBRACKET);
 						setState(289);
 						exp(0);
 						setState(290);
-						match(CL_SQBRACKET);
+						match(CLOSE_SQUAREBRACKET);
 						}
 						break;
 					case 2:
