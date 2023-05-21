@@ -33,27 +33,15 @@ public interface langVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitTypeDeclaration(langParser.TypeDeclarationContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link langParser#stmt}.
+	 * Visit a parse tree produced by {@link langParser#function}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitStmt(langParser.StmtContext ctx);
+	T visitFunction(langParser.FunctionContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link langParser#expr}.
+	 * Visit a parse tree produced by {@link langParser#params}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitExpr(langParser.ExprContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link langParser#term}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitTerm(langParser.TermContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link langParser#factor}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitFactor(langParser.FactorContext ctx);
+	T visitParams(langParser.ParamsContext ctx);
 }

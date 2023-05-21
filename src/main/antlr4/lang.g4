@@ -10,29 +10,25 @@ grammar lang;
 
 /* Regras da gramática */
 
-prog: (stmt ';')+;
-data: ID ('{' typeDeclaration '}' | data);
+prog: data+;
+data: 'data' ID '{' (typeDeclaration)+ '}';
 typeDeclaration: ID '::' TYPE ';';
+function: ID '(' params* ')';
+params: ID '::' TYPE (',' ID '::' TYPE)*;
 
-stmt:
-	ID '=' expr
-	| expr '?' '[' stmt ']' ':' '[' stmt ']'
-	| expr '?' '[' stmt ']'
-	| expr;
-
-expr: term '+' expr | term;
-
-term: factor '*' term | factor;
-
-factor: ID | INTEGER | FLOAT;
+// prog: (stmt ';')+; data: ID ('{' typeDeclaration '}' | data); typeDeclaration: ID '::' TYPE ';';
+// stmt: ID '=' expr; expr: term '+' expr | term; term: factor '*' term | factor; factor: ID |
+// INTEGER | FLOAT;
 
 /* Regras léxicas */
+
+WS: [ \t\r\n]+ -> skip;
 
 fragment Uppercase: [A-Z];
 fragment Lowercase: [a-z];
 
-ID: [a-z]+ [a-zA-z_]*;
-TYPE: [Uppercase][LowercaseUppercase]*;
+ID: [a-z]+;
+TYPE: [A-Z][A-Za-z]*;
 
 INTEGER: [0-9]+;
 FLOAT: [0-9]* '.' [0-9]+;
@@ -45,14 +41,12 @@ ITERATE: 'iterate';
 READ: 'read';
 PRINT: 'print';
 RETURN: 'return';
+
 /* inclui todos caracteres da tabela ASCII.
  desde o caractere nulo (NULL) representado por \u0000 
  até o caractere DEL (Delete) representado por \u007F.
  */
 CHAR: [\u0000-\u007F];
-
 NEWLINE: '\r'? '\n' -> skip;
-/* No nosso jflex estava como endOfLine */
-WS: [ \t | \b | \n | \r]+ -> skip;
 LINE_COMMENT: '--' ~('\r' | '\n')* NEWLINE -> skip;
 COMMENT: '{*' .*? '*}' -> skip;

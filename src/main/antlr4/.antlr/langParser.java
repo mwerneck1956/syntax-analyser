@@ -21,33 +21,33 @@ public class langParser extends Parser {
 	protected static final PredictionContextCache _sharedContextCache =
 		new PredictionContextCache();
 	public static final int
-		T__0=1, T__1=2, T__2=3, T__3=4, T__4=5, T__5=6, T__6=7, T__7=8, T__8=9, 
-		T__9=10, T__10=11, ID=12, TYPE=13, INTEGER=14, FLOAT=15, BOOL=16, IF=17, 
-		THEN=18, ELSE=19, ITERATE=20, READ=21, PRINT=22, RETURN=23, CHAR=24, NEWLINE=25, 
-		WS=26, LINE_COMMENT=27, COMMENT=28;
+		T__0=1, T__1=2, T__2=3, T__3=4, T__4=5, T__5=6, T__6=7, T__7=8, WS=9, 
+		ID=10, TYPE=11, INTEGER=12, FLOAT=13, BOOL=14, IF=15, THEN=16, ELSE=17, 
+		ITERATE=18, READ=19, PRINT=20, RETURN=21, CHAR=22, NEWLINE=23, LINE_COMMENT=24, 
+		COMMENT=25;
 	public static final int
-		RULE_prog = 0, RULE_data = 1, RULE_typeDeclaration = 2, RULE_stmt = 3, 
-		RULE_expr = 4, RULE_term = 5, RULE_factor = 6;
+		RULE_prog = 0, RULE_data = 1, RULE_typeDeclaration = 2, RULE_function = 3, 
+		RULE_params = 4;
 	private static String[] makeRuleNames() {
 		return new String[] {
-			"prog", "data", "typeDeclaration", "stmt", "expr", "term", "factor"
+			"prog", "data", "typeDeclaration", "function", "params"
 		};
 	}
 	public static final String[] ruleNames = makeRuleNames();
 
 	private static String[] makeLiteralNames() {
 		return new String[] {
-			null, "';'", "'{'", "'}'", "'::'", "'='", "'?'", "'['", "']'", "':'", 
-			"'+'", "'*'", null, null, null, null, null, "'if'", "'then'", "'else'", 
-			"'iterate'", "'read'", "'print'", "'return'"
+			null, "'data'", "'{'", "'}'", "'::'", "';'", "'('", "')'", "','", null, 
+			null, null, null, null, null, "'if'", "'then'", "'else'", "'iterate'", 
+			"'read'", "'print'", "'return'"
 		};
 	}
 	private static final String[] _LITERAL_NAMES = makeLiteralNames();
 	private static String[] makeSymbolicNames() {
 		return new String[] {
-			null, null, null, null, null, null, null, null, null, null, null, null, 
-			"ID", "TYPE", "INTEGER", "FLOAT", "BOOL", "IF", "THEN", "ELSE", "ITERATE", 
-			"READ", "PRINT", "RETURN", "CHAR", "NEWLINE", "WS", "LINE_COMMENT", "COMMENT"
+			null, null, null, null, null, null, null, null, null, "WS", "ID", "TYPE", 
+			"INTEGER", "FLOAT", "BOOL", "IF", "THEN", "ELSE", "ITERATE", "READ", 
+			"PRINT", "RETURN", "CHAR", "NEWLINE", "LINE_COMMENT", "COMMENT"
 		};
 	}
 	private static final String[] _SYMBOLIC_NAMES = makeSymbolicNames();
@@ -102,11 +102,11 @@ public class langParser extends Parser {
 	}
 
 	public static class ProgContext extends ParserRuleContext {
-		public List<StmtContext> stmt() {
-			return getRuleContexts(StmtContext.class);
+		public List<DataContext> data() {
+			return getRuleContexts(DataContext.class);
 		}
-		public StmtContext stmt(int i) {
-			return getRuleContext(StmtContext.class,i);
+		public DataContext data(int i) {
+			return getRuleContext(DataContext.class,i);
 		}
 		public ProgContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -121,22 +121,20 @@ public class langParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(17); 
+			setState(11); 
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			do {
 				{
 				{
-				setState(14);
-				stmt();
-				setState(15);
-				match(T__0);
+				setState(10);
+				data();
 				}
 				}
-				setState(19); 
+				setState(13); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
-			} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << ID) | (1L << INTEGER) | (1L << FLOAT))) != 0) );
+			} while ( _la==T__0 );
 			}
 		}
 		catch (RecognitionException re) {
@@ -152,11 +150,11 @@ public class langParser extends Parser {
 
 	public static class DataContext extends ParserRuleContext {
 		public TerminalNode ID() { return getToken(langParser.ID, 0); }
-		public TypeDeclarationContext typeDeclaration() {
-			return getRuleContext(TypeDeclarationContext.class,0);
+		public List<TypeDeclarationContext> typeDeclaration() {
+			return getRuleContexts(TypeDeclarationContext.class);
 		}
-		public DataContext data() {
-			return getRuleContext(DataContext.class,0);
+		public TypeDeclarationContext typeDeclaration(int i) {
+			return getRuleContext(TypeDeclarationContext.class,i);
 		}
 		public DataContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -167,33 +165,32 @@ public class langParser extends Parser {
 	public final DataContext data() throws RecognitionException {
 		DataContext _localctx = new DataContext(_ctx, getState());
 		enterRule(_localctx, 2, RULE_data);
+		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(21);
+			setState(15);
+			match(T__0);
+			setState(16);
 			match(ID);
-			setState(27);
+			setState(17);
+			match(T__1);
+			setState(19); 
 			_errHandler.sync(this);
-			switch (_input.LA(1)) {
-			case T__1:
+			_la = _input.LA(1);
+			do {
 				{
-				setState(22);
-				match(T__1);
-				setState(23);
+				{
+				setState(18);
 				typeDeclaration();
-				setState(24);
-				match(T__2);
 				}
-				break;
-			case ID:
-				{
-				setState(26);
-				data();
 				}
-				break;
-			default:
-				throw new NoViableAltException(this);
-			}
+				setState(21); 
+				_errHandler.sync(this);
+				_la = _input.LA(1);
+			} while ( _la==ID );
+			setState(23);
+			match(T__2);
 			}
 		}
 		catch (RecognitionException re) {
@@ -222,14 +219,14 @@ public class langParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(29);
+			setState(25);
 			match(ID);
-			setState(30);
+			setState(26);
 			match(T__3);
-			setState(31);
+			setState(27);
 			match(TYPE);
-			setState(32);
-			match(T__0);
+			setState(28);
+			match(T__4);
 			}
 		}
 		catch (RecognitionException re) {
@@ -243,227 +240,107 @@ public class langParser extends Parser {
 		return _localctx;
 	}
 
-	public static class StmtContext extends ParserRuleContext {
+	public static class FunctionContext extends ParserRuleContext {
 		public TerminalNode ID() { return getToken(langParser.ID, 0); }
-		public ExprContext expr() {
-			return getRuleContext(ExprContext.class,0);
+		public List<ParamsContext> params() {
+			return getRuleContexts(ParamsContext.class);
 		}
-		public List<StmtContext> stmt() {
-			return getRuleContexts(StmtContext.class);
+		public ParamsContext params(int i) {
+			return getRuleContext(ParamsContext.class,i);
 		}
-		public StmtContext stmt(int i) {
-			return getRuleContext(StmtContext.class,i);
-		}
-		public StmtContext(ParserRuleContext parent, int invokingState) {
+		public FunctionContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_stmt; }
+		@Override public int getRuleIndex() { return RULE_function; }
 	}
 
-	public final StmtContext stmt() throws RecognitionException {
-		StmtContext _localctx = new StmtContext(_ctx, getState());
-		enterRule(_localctx, 6, RULE_stmt);
-		try {
-			setState(54);
-			_errHandler.sync(this);
-			switch ( getInterpreter().adaptivePredict(_input,2,_ctx) ) {
-			case 1:
-				enterOuterAlt(_localctx, 1);
-				{
-				setState(34);
-				match(ID);
-				setState(35);
-				match(T__4);
-				setState(36);
-				expr();
-				}
-				break;
-			case 2:
-				enterOuterAlt(_localctx, 2);
-				{
-				setState(37);
-				expr();
-				setState(38);
-				match(T__5);
-				setState(39);
-				match(T__6);
-				setState(40);
-				stmt();
-				setState(41);
-				match(T__7);
-				setState(42);
-				match(T__8);
-				setState(43);
-				match(T__6);
-				setState(44);
-				stmt();
-				setState(45);
-				match(T__7);
-				}
-				break;
-			case 3:
-				enterOuterAlt(_localctx, 3);
-				{
-				setState(47);
-				expr();
-				setState(48);
-				match(T__5);
-				setState(49);
-				match(T__6);
-				setState(50);
-				stmt();
-				setState(51);
-				match(T__7);
-				}
-				break;
-			case 4:
-				enterOuterAlt(_localctx, 4);
-				{
-				setState(53);
-				expr();
-				}
-				break;
-			}
-		}
-		catch (RecognitionException re) {
-			_localctx.exception = re;
-			_errHandler.reportError(this, re);
-			_errHandler.recover(this, re);
-		}
-		finally {
-			exitRule();
-		}
-		return _localctx;
-	}
-
-	public static class ExprContext extends ParserRuleContext {
-		public TermContext term() {
-			return getRuleContext(TermContext.class,0);
-		}
-		public ExprContext expr() {
-			return getRuleContext(ExprContext.class,0);
-		}
-		public ExprContext(ParserRuleContext parent, int invokingState) {
-			super(parent, invokingState);
-		}
-		@Override public int getRuleIndex() { return RULE_expr; }
-	}
-
-	public final ExprContext expr() throws RecognitionException {
-		ExprContext _localctx = new ExprContext(_ctx, getState());
-		enterRule(_localctx, 8, RULE_expr);
-		try {
-			setState(61);
-			_errHandler.sync(this);
-			switch ( getInterpreter().adaptivePredict(_input,3,_ctx) ) {
-			case 1:
-				enterOuterAlt(_localctx, 1);
-				{
-				setState(56);
-				term();
-				setState(57);
-				match(T__9);
-				setState(58);
-				expr();
-				}
-				break;
-			case 2:
-				enterOuterAlt(_localctx, 2);
-				{
-				setState(60);
-				term();
-				}
-				break;
-			}
-		}
-		catch (RecognitionException re) {
-			_localctx.exception = re;
-			_errHandler.reportError(this, re);
-			_errHandler.recover(this, re);
-		}
-		finally {
-			exitRule();
-		}
-		return _localctx;
-	}
-
-	public static class TermContext extends ParserRuleContext {
-		public FactorContext factor() {
-			return getRuleContext(FactorContext.class,0);
-		}
-		public TermContext term() {
-			return getRuleContext(TermContext.class,0);
-		}
-		public TermContext(ParserRuleContext parent, int invokingState) {
-			super(parent, invokingState);
-		}
-		@Override public int getRuleIndex() { return RULE_term; }
-	}
-
-	public final TermContext term() throws RecognitionException {
-		TermContext _localctx = new TermContext(_ctx, getState());
-		enterRule(_localctx, 10, RULE_term);
-		try {
-			setState(68);
-			_errHandler.sync(this);
-			switch ( getInterpreter().adaptivePredict(_input,4,_ctx) ) {
-			case 1:
-				enterOuterAlt(_localctx, 1);
-				{
-				setState(63);
-				factor();
-				setState(64);
-				match(T__10);
-				setState(65);
-				term();
-				}
-				break;
-			case 2:
-				enterOuterAlt(_localctx, 2);
-				{
-				setState(67);
-				factor();
-				}
-				break;
-			}
-		}
-		catch (RecognitionException re) {
-			_localctx.exception = re;
-			_errHandler.reportError(this, re);
-			_errHandler.recover(this, re);
-		}
-		finally {
-			exitRule();
-		}
-		return _localctx;
-	}
-
-	public static class FactorContext extends ParserRuleContext {
-		public TerminalNode ID() { return getToken(langParser.ID, 0); }
-		public TerminalNode INTEGER() { return getToken(langParser.INTEGER, 0); }
-		public TerminalNode FLOAT() { return getToken(langParser.FLOAT, 0); }
-		public FactorContext(ParserRuleContext parent, int invokingState) {
-			super(parent, invokingState);
-		}
-		@Override public int getRuleIndex() { return RULE_factor; }
-	}
-
-	public final FactorContext factor() throws RecognitionException {
-		FactorContext _localctx = new FactorContext(_ctx, getState());
-		enterRule(_localctx, 12, RULE_factor);
+	public final FunctionContext function() throws RecognitionException {
+		FunctionContext _localctx = new FunctionContext(_ctx, getState());
+		enterRule(_localctx, 6, RULE_function);
 		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(70);
+			setState(30);
+			match(ID);
+			setState(31);
+			match(T__5);
+			setState(35);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
-			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << ID) | (1L << INTEGER) | (1L << FLOAT))) != 0)) ) {
-			_errHandler.recoverInline(this);
+			while (_la==ID) {
+				{
+				{
+				setState(32);
+				params();
+				}
+				}
+				setState(37);
+				_errHandler.sync(this);
+				_la = _input.LA(1);
 			}
-			else {
-				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
-				_errHandler.reportMatch(this);
-				consume();
+			setState(38);
+			match(T__6);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class ParamsContext extends ParserRuleContext {
+		public List<TerminalNode> ID() { return getTokens(langParser.ID); }
+		public TerminalNode ID(int i) {
+			return getToken(langParser.ID, i);
+		}
+		public List<TerminalNode> TYPE() { return getTokens(langParser.TYPE); }
+		public TerminalNode TYPE(int i) {
+			return getToken(langParser.TYPE, i);
+		}
+		public ParamsContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_params; }
+	}
+
+	public final ParamsContext params() throws RecognitionException {
+		ParamsContext _localctx = new ParamsContext(_ctx, getState());
+		enterRule(_localctx, 8, RULE_params);
+		int _la;
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(40);
+			match(ID);
+			setState(41);
+			match(T__3);
+			setState(42);
+			match(TYPE);
+			setState(49);
+			_errHandler.sync(this);
+			_la = _input.LA(1);
+			while (_la==T__7) {
+				{
+				{
+				setState(43);
+				match(T__7);
+				setState(44);
+				match(ID);
+				setState(45);
+				match(T__3);
+				setState(46);
+				match(TYPE);
+				}
+				}
+				setState(51);
+				_errHandler.sync(this);
+				_la = _input.LA(1);
 			}
 			}
 		}
@@ -479,25 +356,20 @@ public class langParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\36K\4\2\t\2\4\3\t"+
-		"\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\3\2\3\2\3\2\6\2\24\n\2\r\2"+
-		"\16\2\25\3\3\3\3\3\3\3\3\3\3\3\3\5\3\36\n\3\3\4\3\4\3\4\3\4\3\4\3\5\3"+
-		"\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5"+
-		"\3\5\5\59\n\5\3\6\3\6\3\6\3\6\3\6\5\6@\n\6\3\7\3\7\3\7\3\7\3\7\5\7G\n"+
-		"\7\3\b\3\b\3\b\2\2\t\2\4\6\b\n\f\16\2\3\4\2\16\16\20\21\2J\2\23\3\2\2"+
-		"\2\4\27\3\2\2\2\6\37\3\2\2\2\b8\3\2\2\2\n?\3\2\2\2\fF\3\2\2\2\16H\3\2"+
-		"\2\2\20\21\5\b\5\2\21\22\7\3\2\2\22\24\3\2\2\2\23\20\3\2\2\2\24\25\3\2"+
-		"\2\2\25\23\3\2\2\2\25\26\3\2\2\2\26\3\3\2\2\2\27\35\7\16\2\2\30\31\7\4"+
-		"\2\2\31\32\5\6\4\2\32\33\7\5\2\2\33\36\3\2\2\2\34\36\5\4\3\2\35\30\3\2"+
-		"\2\2\35\34\3\2\2\2\36\5\3\2\2\2\37 \7\16\2\2 !\7\6\2\2!\"\7\17\2\2\"#"+
-		"\7\3\2\2#\7\3\2\2\2$%\7\16\2\2%&\7\7\2\2&9\5\n\6\2\'(\5\n\6\2()\7\b\2"+
-		"\2)*\7\t\2\2*+\5\b\5\2+,\7\n\2\2,-\7\13\2\2-.\7\t\2\2./\5\b\5\2/\60\7"+
-		"\n\2\2\609\3\2\2\2\61\62\5\n\6\2\62\63\7\b\2\2\63\64\7\t\2\2\64\65\5\b"+
-		"\5\2\65\66\7\n\2\2\669\3\2\2\2\679\5\n\6\28$\3\2\2\28\'\3\2\2\28\61\3"+
-		"\2\2\28\67\3\2\2\29\t\3\2\2\2:;\5\f\7\2;<\7\f\2\2<=\5\n\6\2=@\3\2\2\2"+
-		">@\5\f\7\2?:\3\2\2\2?>\3\2\2\2@\13\3\2\2\2AB\5\16\b\2BC\7\r\2\2CD\5\f"+
-		"\7\2DG\3\2\2\2EG\5\16\b\2FA\3\2\2\2FE\3\2\2\2G\r\3\2\2\2HI\t\2\2\2I\17"+
-		"\3\2\2\2\7\25\358?F";
+		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\33\67\4\2\t\2\4\3"+
+		"\t\3\4\4\t\4\4\5\t\5\4\6\t\6\3\2\6\2\16\n\2\r\2\16\2\17\3\3\3\3\3\3\3"+
+		"\3\6\3\26\n\3\r\3\16\3\27\3\3\3\3\3\4\3\4\3\4\3\4\3\4\3\5\3\5\3\5\7\5"+
+		"$\n\5\f\5\16\5\'\13\5\3\5\3\5\3\6\3\6\3\6\3\6\3\6\3\6\3\6\7\6\62\n\6\f"+
+		"\6\16\6\65\13\6\3\6\2\2\7\2\4\6\b\n\2\2\2\65\2\r\3\2\2\2\4\21\3\2\2\2"+
+		"\6\33\3\2\2\2\b \3\2\2\2\n*\3\2\2\2\f\16\5\4\3\2\r\f\3\2\2\2\16\17\3\2"+
+		"\2\2\17\r\3\2\2\2\17\20\3\2\2\2\20\3\3\2\2\2\21\22\7\3\2\2\22\23\7\f\2"+
+		"\2\23\25\7\4\2\2\24\26\5\6\4\2\25\24\3\2\2\2\26\27\3\2\2\2\27\25\3\2\2"+
+		"\2\27\30\3\2\2\2\30\31\3\2\2\2\31\32\7\5\2\2\32\5\3\2\2\2\33\34\7\f\2"+
+		"\2\34\35\7\6\2\2\35\36\7\r\2\2\36\37\7\7\2\2\37\7\3\2\2\2 !\7\f\2\2!%"+
+		"\7\b\2\2\"$\5\n\6\2#\"\3\2\2\2$\'\3\2\2\2%#\3\2\2\2%&\3\2\2\2&(\3\2\2"+
+		"\2\'%\3\2\2\2()\7\t\2\2)\t\3\2\2\2*+\7\f\2\2+,\7\6\2\2,\63\7\r\2\2-.\7"+
+		"\n\2\2./\7\f\2\2/\60\7\6\2\2\60\62\7\r\2\2\61-\3\2\2\2\62\65\3\2\2\2\63"+
+		"\61\3\2\2\2\63\64\3\2\2\2\64\13\3\2\2\2\65\63\3\2\2\2\6\17\27%\63";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {
