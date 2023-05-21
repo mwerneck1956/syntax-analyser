@@ -44,4 +44,16 @@ public interface langVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitParams(langParser.ParamsContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link langParser#type}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitType(langParser.TypeContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link langParser#basicType}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitBasicType(langParser.BasicTypeContext ctx);
 }
