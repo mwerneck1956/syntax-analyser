@@ -27,17 +27,17 @@ public interface langVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitData(langParser.DataContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link langParser#typeDeclaration}.
+	 * Visit a parse tree produced by {@link langParser#decl}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitTypeDeclaration(langParser.TypeDeclarationContext ctx);
+	T visitDecl(langParser.DeclContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link langParser#function}.
+	 * Visit a parse tree produced by {@link langParser#func}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitFunction(langParser.FunctionContext ctx);
+	T visitFunc(langParser.FuncContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link langParser#params}.
 	 * @param ctx the parse tree
@@ -51,9 +51,63 @@ public interface langVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitType(langParser.TypeContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link langParser#basicType}.
+	 * Visit a parse tree produced by {@link langParser#btype}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitBasicType(langParser.BasicTypeContext ctx);
+	T visitBtype(langParser.BtypeContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link langParser#cmd}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitCmd(langParser.CmdContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link langParser#exp}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExp(langParser.ExpContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link langParser#rexp}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitRexp(langParser.RexpContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link langParser#aexp}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitAexp(langParser.AexpContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link langParser#mexp}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitMexp(langParser.MexpContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link langParser#sexp}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSexp(langParser.SexpContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link langParser#pexp}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitPexp(langParser.PexpContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link langParser#lvalue}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitLvalue(langParser.LvalueContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link langParser#exps}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExps(langParser.ExpsContext ctx);
 }
