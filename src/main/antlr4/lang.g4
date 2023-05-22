@@ -3,14 +3,36 @@ grammar lang;
 @parser::header { 
 	package com.compiler.grammar;
 	import com.compiler.ast.*;
-
+	import java.util.HashMap;
  }
 
 @lexer::header { package com.compiler.grammar; }
 
-prog: data* func*;
-data: DATA ID OPEN_BRACKET (decl)* CLOSE_BRACKET;
-decl: ID DOUBLECOLON type SEMI;
+prog
+	returns[Prog ast]:
+	d = data* func* { 
+		$ast = new Prog($d.dataList);
+	};
+data
+	returns[HashMap<String, Data> dataList]:
+	{ $dataList = new HashMap<String, Data>(); } DATA ID OPEN_BRACKET (
+		d = decl
+	)* CLOSE_BRACKET {
+	 	ID id = new ID($ID.line, $ID.pos,  $ID.text);
+		ArrayList<Declaration> declarations = new ArrayList<Declaration>();
+		declarations.add($d.declaration);
+
+		Data data = new Data(id, declarations);
+		$dataList.put(id.getName(), data);
+	};
+decl
+	returns[Declaration declaration]:
+	ID DOUBLECOLON t = type SEMI {
+		{ 
+			ID id = new ID($ID.line, $ID.pos,  $ID.text);
+			$declaration = new Declaration(id, "Float");	 
+		}
+};
 func:
 	ID OPEN_PARENTHESIS (params)? CLOSE_PARENTHESIS (
 		COLON type (COMMA type)*
@@ -40,7 +62,7 @@ rexp:
 aexp: aexp PLUS mexp | aexp MINUS mexp | mexp;
 mexp: mexp TIMES sexp | mexp DIV sexp | mexp MOD sexp | sexp;
 sexp:
-	DENY sexp
+	LOGICALNEGATION sexp
 	| MINUS sexp
 	| LITERAL_TRUE
 	| LITERAL_FALSE
@@ -62,6 +84,7 @@ exps: exp (COMMA exp)*;
 
 /* Regras Léxicas */
 
+//Reserved Words
 DATA: 'data';
 NEW: 'new';
 INT: 'Int';
@@ -90,6 +113,7 @@ WHITESPACE: [ \t]+ -> skip;
 LINE_COMMENT: '--' ~( '\r' | '\n')* NEWLINE -> skip;
 COMMENT: '{-' .*? '*}' -> skip;
 
+//Symbols
 OPEN_BRACKET: '{';
 CLOSE_BRACKET: '}';
 OPEN_PARENTHESIS: '(';
@@ -109,7 +133,7 @@ MINUS: '-';
 TIMES: '*';
 DIV: '/';
 MOD: '%';
-DENY: '!';
+LOGICALNEGATION: '!';
 AND: '&&';
 COLON: ':';
 DOUBLECOLON: '::';

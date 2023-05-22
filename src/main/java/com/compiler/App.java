@@ -17,13 +17,13 @@ public class App {
         // create a parser that feeds off the tokens buffer
         langParser parser = new langParser(tokens);
 
-        // parser.setBuildParseTree(false);
+        parser.setBuildParseTree(false);
 
-        // Node ast = parser.prog().ast;
+        Prog ast = parser.prog().ast;
 
-        // System.out.println(ast.toString());
+        ast.printDataList();
 
-        ParseTree tree = parser.prog();
-        System.out.println(tree.toStringTree(parser));
+        // ParseTree tree = parser.prog();
+        // System.out.println(tree.toStringTree(parser));
     }
 }

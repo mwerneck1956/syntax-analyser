@@ -1,30 +1,9 @@
-
--- Saída esperada:
---Q:2
---R:3
----- The marvelous env Debugger ------ 
---q  :  5
---res  :  3
---quo  :  2
---n  :  13
-
+data teste {
+    id :: String;
+    number_of_workers :: Int;
+}
 
 main(){
-    n = 13;
-    q = 5;
-    divMod(n,q)< quo,res >;
-    
-    print 'Q';
-    print ':';
-    print quo;
-    print '\n';
-    
-    print 'R';
-    print ':';
-    print res;
-    print '\n';
+    n = 13 + 5;
 }
 
-divMod(n :: Int, q :: Int ) : Int, Int{
-    return n / q, n % q;
-}
