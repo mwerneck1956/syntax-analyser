@@ -12,11 +12,9 @@ public class Prog {
    }
 
    public void printDataList() {
-      System.out.println("Imprimindo" + dataList.size());
-
-      // for (Data data : dataList) {
-      // System.out.println(data.toString());
-      // }
+      for (Data value : dataList.values()) {
+         value.printDataList();
+      }
    }
 
    public int interpret(HashMap<String, Integer> Variables) {

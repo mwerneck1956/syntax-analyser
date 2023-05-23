@@ -5,9 +5,9 @@ import java.util.HashMap;
 public class Declaration {
 
    private ID id;
-   private String type;
+   private BasicType type;
 
-   public Declaration(ID id, String type) {
+   public Declaration(ID id, BasicType type) {
       this.id = id;
       this.type = type;
    }
@@ -20,8 +20,13 @@ public class Declaration {
       return id;
    }
 
-   public String getType() {
+   public BasicType getType() {
       return type;
+   }
+
+   @Override
+   public String toString() {
+      return id + " :: " + type.getType();
    }
 
 }

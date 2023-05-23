@@ -30,7 +30,7 @@ decl
 	ID DOUBLECOLON t = type SEMI {
 		{ 
 			ID id = new ID($ID.line, $ID.pos,  $ID.text);
-			$declaration = new Declaration(id, "Float");	 
+			$declaration = new Declaration(id, $t.basicType);	 
 		}
 };
 func:
@@ -38,9 +38,21 @@ func:
 		COLON type (COMMA type)*
 	)? OPEN_BRACKET (cmd)* CLOSE_BRACKET;
 params: ID DOUBLECOLON type ( COMMA ID DOUBLECOLON type)*;
-type: type OPEN_SQUAREBRACKET CLOSE_SQUAREBRACKET | btype;
 
-btype: INT | CHAR | BOOL | FLOAT | TYPE;
+type
+	returns[BasicType basicType]:
+	type OPEN_SQUAREBRACKET CLOSE_SQUAREBRACKET
+	| btype { 
+		$basicType = $btype.basicType;
+	};
+
+btype
+	returns[BasicType basicType]:
+	INT {$basicType  = new BasicType($INT.line, $INT.pos, "Int");}
+	| CHAR {$basicType  = new BasicType($CHAR.line, $CHAR.pos, "CHAR"); }
+	| BOOL {$basicType  = new BasicType($BOOL.line, $BOOL.pos, "CHAR"); }
+	| FLOAT {$basicType  = new BasicType($FLOAT.line, $FLOAT.pos, "Float"); }
+	| TYPE {$basicType  = new BasicType($TYPE.line, $TYPE.pos, $TYPE.text); };
 cmd:
 	OPEN_BRACKET (cmd)* CLOSE_BRACKET
 	| IF OPEN_PARENTHESIS exp CLOSE_PARENTHESIS cmd

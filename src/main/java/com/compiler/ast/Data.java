@@ -18,6 +18,12 @@ public class Data {
       return 0;
    }
 
+   public void printDataList() {
+      for (Declaration d : declarations) {
+         System.out.println(d.toString());
+      }
+   }
+
    @Override
    public String toString() {
       return this.declarations.toString();
