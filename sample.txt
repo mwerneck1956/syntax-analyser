@@ -3,6 +3,11 @@ data teste {
     number_of_workers :: Int;
 }
 
+data teste_teste{
+    id :: Int;
+    number_of_workers :: String;
+}
+
 main(){
     n = 13 + 5;
 }

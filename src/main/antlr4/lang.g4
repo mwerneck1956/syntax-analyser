@@ -10,17 +10,26 @@ grammar lang;
 
 prog
 	returns[Prog ast]:
-	d = data* func* { 
-		$ast = new Prog($d.dataList);
+	d = dataList func* { 
+		$ast = new Prog($d.dataListInstance);
 	};
+
+dataList
+	returns[HashMap<String,Data> dataListInstance]:
+	{ 
+		$dataListInstance = new HashMap<String,Data>();
+ 	} (
+		d = data { 
+		$dataListInstance.put($d.dataObj.getIdName() , $d.dataObj);
+		}
+	)*;
+
 data
-	returns[HashMap<String, Data> dataList]:
-	{ $dataList = new HashMap<String, Data>(); } DATA ID OPEN_BRACKET d = declList CLOSE_BRACKET {
+	returns[Data dataObj]:
+	DATA ID OPEN_BRACKET d = declList CLOSE_BRACKET {
 	 	ID id = new ID($ID.line, $ID.pos,  $ID.text);
 
-
-		Data data = new Data(id, $d.declarationList);
-		$dataList.put(id.getName(), data);
+		$dataObj = new Data(id, $d.declarationList);
 	};
 
 declList
@@ -45,8 +54,8 @@ params: ID DOUBLECOLON type ( COMMA ID DOUBLECOLON type)*;
 
 type
 	returns[BasicType basicType]:
-	// type OPEN_SQUAREBRACKET CLOSE_SQUAREBRACKET
-	btype { 
+	type OPEN_SQUAREBRACKET CLOSE_SQUAREBRACKET
+	| btype { 
 		$basicType = $btype.basicType;
 	};
 

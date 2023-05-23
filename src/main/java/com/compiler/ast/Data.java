@@ -24,6 +24,10 @@ public class Data {
       }
    }
 
+   public String getIdName() {
+      return id.getName();
+   }
+
    @Override
    public String toString() {
       return this.declarations.toString();

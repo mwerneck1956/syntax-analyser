@@ -6,9 +6,7 @@ public class Prog {
    private HashMap<String, Data> dataList;
 
    public Prog(HashMap<String, Data> dataList) {
-
       this.dataList = dataList;
-
    }
 
    public void printDataList() {
