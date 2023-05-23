@@ -50,7 +50,13 @@ func:
 	ID OPEN_PARENTHESIS (params)? CLOSE_PARENTHESIS (
 		COLON type (COMMA type)*
 	)? OPEN_BRACKET (cmd)* CLOSE_BRACKET;
-params: ID DOUBLECOLON type ( COMMA ID DOUBLECOLON type)*;
+params
+	returns[Param param]:
+	ID DOUBLECOLON t = type { 
+
+	ID id = new ID($ID.line, $ID.pos,  $ID.text);
+	$param = new Param(id , $t.basicType);
+} (COMMA ID DOUBLECOLON type)*;
 
 type
 	returns[BasicType basicType]:
@@ -84,17 +90,38 @@ rexp:
 	| rexp EQEQ aexp
 	| rexp DIFF aexp
 	| aexp;
-aexp: aexp PLUS mexp | aexp MINUS mexp | mexp;
-mexp: mexp TIMES sexp | mexp DIV sexp | mexp MOD sexp | sexp;
-sexp:
+aexp
+	returns[Expr binOp]:
+	a = aexp PLUS m = mexp { $binOp = new Add($PLUS.line, $PLUS.pos, $a.binOp, $m.mexpExpr); }
+	| a = aexp MINUS m = mexp { $binOp = new Minus($MINUS.line, $MINUS.pos, $a.binOp, $m.mexpExpr); 
+		}
+	| m = mexp { $binOp = $m.mexpExpr; };
+mexp
+	returns[Expr mexpExpr]:
+	m = mexp TIMES s = sexp {
+		$mexpExpr = new Mult($TIMES.line, $TIMES.pos, $m.mexpExpr , $s.sexpValue);
+	}
+	| m = mexp DIV s = sexp { 
+		$mexpExpr = new Div($DIV.line, $DIV.pos, $m.mexpExpr , $s.sexpValue);
+	}
+	| mexp MOD sexp
+	| s = sexp {  $mexpExpr = $s.sexpValue; };
+sexp
+	returns[Expr sexpValue]:
 	LOGICALNEGATION sexp
 	| MINUS sexp
-	| LITERAL_TRUE
-	| LITERAL_FALSE
-	| LITERAL_NULL
-	| LITERAL_INT
-	| LITERAL_FLOAT
-	| LITERAL_CHAR
+	| LITERAL_TRUE {$sexpValue = new LiteralTrue($LITERAL_TRUE.line,$LITERAL_TRUE.pos);}
+	| LITERAL_FALSE {$sexpValue = new LiteralFalse($LITERAL_FALSE.line,$LITERAL_FALSE.pos);}
+	| LITERAL_NULL {$sexpValue = new LiteralNull($LITERAL_NULL.line,$LITERAL_NULL.pos);}
+	| LITERAL_INT {
+		$sexpValue = new LiteralInt($LITERAL_INT.line,$LITERAL_INT.pos,Integer.parseInt($LITERAL_INT.text) );
+		}
+	| LITERAL_FLOAT {
+		$sexpValue = new LiteralFloat($LITERAL_FLOAT.line,$LITERAL_FLOAT.pos,Float.parseFloat($LITERAL_FLOAT.text) );
+		}
+	| LITERAL_CHAR { 
+		$sexpValue = new LiteralChar($LITERAL_CHAR.line,$LITERAL_CHAR.pos,$LITERAL_CHAR.text );
+	}
 	| pexp;
 pexp:
 	lvalue
