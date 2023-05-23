@@ -27,6 +27,12 @@ public interface langVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitData(langParser.DataContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link langParser#declList}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitDeclList(langParser.DeclListContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link langParser#decl}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

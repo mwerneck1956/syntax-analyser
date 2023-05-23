@@ -15,16 +15,20 @@ prog
 	};
 data
 	returns[HashMap<String, Data> dataList]:
-	{ $dataList = new HashMap<String, Data>(); } DATA ID OPEN_BRACKET (
-		d = decl
-	)* CLOSE_BRACKET {
+	{ $dataList = new HashMap<String, Data>(); } DATA ID OPEN_BRACKET d = declList CLOSE_BRACKET {
 	 	ID id = new ID($ID.line, $ID.pos,  $ID.text);
-		ArrayList<Declaration> declarations = new ArrayList<Declaration>();
-		declarations.add($d.declaration);
 
-		Data data = new Data(id, declarations);
+
+		Data data = new Data(id, $d.declarationList);
 		$dataList.put(id.getName(), data);
 	};
+
+declList
+	returns[ArrayList<Declaration> declarationList]:
+	{$declarationList = new ArrayList<Declaration>();} (
+		decl {$declarationList.add($decl.declaration);}
+	)*;
+
 decl
 	returns[Declaration declaration]:
 	ID DOUBLECOLON t = type SEMI {
@@ -41,8 +45,8 @@ params: ID DOUBLECOLON type ( COMMA ID DOUBLECOLON type)*;
 
 type
 	returns[BasicType basicType]:
-	type OPEN_SQUAREBRACKET CLOSE_SQUAREBRACKET
-	| btype { 
+	// type OPEN_SQUAREBRACKET CLOSE_SQUAREBRACKET
+	btype { 
 		$basicType = $btype.basicType;
 	};
 
