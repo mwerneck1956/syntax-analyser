@@ -1,11 +1,11 @@
 package com.compiler.ast;
 
-public class Minus extends BinOP {
+public class Sub extends BinOP {
 
-   public Minus(int line, int col, Expr l, Expr r) {
+   public Sub(int line, int col, Expr l, Expr r) {
       super(line, col, l, r);
 
-      System.out.println("Add created" + l.toString() + " + " + r.toString());
+      System.out.println("Minus created created" + l.toString() + " - " + r.toString());
    }
 
    public String toString() {

@@ -2,7 +2,7 @@ package com.compiler.ast;
 
 import java.util.HashMap;
 
-public class ID extends Node {
+public class ID extends LValue {
    private String name;
 
    public ID(int line, int column, String name) {

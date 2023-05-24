@@ -72,29 +72,45 @@ btype
 	| BOOL {$basicType  = new BasicType($BOOL.line, $BOOL.pos, "CHAR"); }
 	| FLOAT {$basicType  = new BasicType($FLOAT.line, $FLOAT.pos, "Float"); }
 	| TYPE {$basicType  = new BasicType($TYPE.line, $TYPE.pos, $TYPE.text); };
-cmd:
+cmd
+	returns[Cmd command]:
 	OPEN_BRACKET (cmd)* CLOSE_BRACKET
-	| IF OPEN_PARENTHESIS exp CLOSE_PARENTHESIS cmd
+	| IF OPEN_PARENTHESIS exp1 = exp CLOSE_PARENTHESIS rightSide = cmd { 
+		$command = new If($OPEN_PARENTHESIS.line, $OPEN_PARENTHESIS.pos, $exp1.expInstance, $rightSide.command);
+	}
 	| IF OPEN_PARENTHESIS exp CLOSE_PARENTHESIS cmd ELSE cmd
 	| ITERATE OPEN_PARENTHESIS exp CLOSE_PARENTHESIS cmd
 	| READ lvalue SEMI
-	| PRINT exp SEMI
+	| PRINT e = exp SEMI { 
+		$command = new Print($PRINT.line,$PRINT.pos, $e.expInstance);
+	}
 	| RETURN exp (COMMA exp)* SEMI
-	| lvalue EQ exp SEMI
+	| l = lvalue EQ e = exp SEMI {
+		$command = new Attribution($EQ.line, $EQ.pos, $l.value, $e.expInstance );
+	}
 	| ID OPEN_PARENTHESIS (exps)? CLOSE_PARENTHESIS (
 		RELACIONAL lvalue (COMMA lvalue)* GREATER_THAN
 	)? SEMI;
-exp: exp AND exp | rexp;
-rexp:
-	aexp RELACIONAL aexp
-	| rexp EQEQ aexp
-	| rexp DIFF aexp
-	| aexp;
+exp
+	returns[Expr expInstance]:
+	e1 = exp AND e2 = exp {
+		$expInstance = new And($AND.line , $AND.pos, $e1.expInstance, $e2.expInstance);
+	}
+	| r = rexp { $expInstance = $rexp.rexpExpr; };
+rexp
+	returns[Expr rexpExpr]:
+	a = aexp { $rexpExpr = $a.binOp; }
+	| r = rexp RELACIONAL a = aexp { $rexpExpr = new Equal($EQEQ.line, $EQEQ.pos,  $r.rexpExpr, $a.binOp);  
+		}
+	| r = rexp EQEQ a = aexp { $rexpExpr = new Equal($EQEQ.line, $EQEQ.pos, $r.rexpExpr, $a.binOp);  
+		}
+	| r = rexp DIFF a = aexp { $rexpExpr = new Diff($DIFF.line, $DIFF.pos, $r.rexpExpr, $a.binOp);  
+		};
+
 aexp
 	returns[Expr binOp]:
 	a = aexp PLUS m = mexp { $binOp = new Add($PLUS.line, $PLUS.pos, $a.binOp, $m.mexpExpr); }
-	| a = aexp MINUS m = mexp { $binOp = new Minus($MINUS.line, $MINUS.pos, $a.binOp, $m.mexpExpr); 
-		}
+	| a = aexp MINUS m = mexp { $binOp = new Sub($MINUS.line, $MINUS.pos, $a.binOp, $m.mexpExpr); }
 	| m = mexp { $binOp = $m.mexpExpr; };
 mexp
 	returns[Expr mexpExpr]:
@@ -128,8 +144,9 @@ pexp:
 	| OPEN_PARENTHESIS exp CLOSE_PARENTHESIS
 	| NEW type (OPEN_SQUAREBRACKET exp CLOSE_SQUAREBRACKET)?
 	| ID OPEN_PARENTHESIS (exps)? CLOSE_PARENTHESIS OPEN_SQUAREBRACKET exp CLOSE_SQUAREBRACKET;
-lvalue:
-	ID
+lvalue
+	returns[LValue value]:
+	ID { $value = new ID($ID.line,$ID.pos, $ID.text); }
 	| lvalue OPEN_SQUAREBRACKET exp CLOSE_SQUAREBRACKET
 	| lvalue DOT ID;
 exps: exp (COMMA exp)*;
