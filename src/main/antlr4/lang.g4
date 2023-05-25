@@ -51,12 +51,19 @@ func:
 		COLON type (COMMA type)*
 	)? OPEN_BRACKET (cmd)* CLOSE_BRACKET;
 params
-	returns[Param param]:
+	returns[ArrayList<Param> paramsArray]:
 	ID DOUBLECOLON t = type { 
-
 	ID id = new ID($ID.line, $ID.pos,  $ID.text);
-	$param = new Param(id , $t.basicType);
-} (COMMA ID DOUBLECOLON type)*;
+	Param param = new Param(id , $t.basicType);
+	$paramsArray.add(param);
+
+} (
+		COMMA ID DOUBLECOLON t = type { 
+				ID id = new ID($ID.line, $ID.pos,  $ID.text);
+				Param param = new Param(id , $t.basicType);
+				$paramsArray.add(param);
+	}
+	)*;
 
 type
 	returns[BasicType basicType]:
@@ -149,7 +156,15 @@ lvalue
 	ID { $value = new ID($ID.line,$ID.pos, $ID.text); }
 	| lvalue OPEN_SQUAREBRACKET exp CLOSE_SQUAREBRACKET
 	| lvalue DOT ID;
-exps: exp (COMMA exp)*;
+exps
+	returns[ArrayList<Expr> expressions]:
+	{ $expressions = new ArrayList<Expr>(); } e1 = exp {
+		$expressions.add($e1.expInstance);
+	} (
+		COMMA e2 = exp {
+		$expressions.add($e2.expInstance)
+	}
+	)*;
 
 /* Regras Léxicas */
 

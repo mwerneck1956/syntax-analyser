@@ -1,4 +1,5 @@
 target/
+src/main/antlr4/.antlr
 pom.xml.tag
 pom.xml.releaseBackup
 pom.xml.versionsBackup
