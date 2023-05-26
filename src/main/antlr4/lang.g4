@@ -10,8 +10,8 @@ grammar lang;
 
 prog
 	returns[Prog ast]:
-	d = dataList func* { 
-		$ast = new Prog($d.dataListInstance);
+	dataList func { 
+		$ast = new Prog($dataList.dataListInstance, $func.functionInstance);		
 	};
 
 dataList
@@ -21,6 +21,16 @@ dataList
  	} (
 		d = data { 
 		$dataListInstance.put($d.dataObj.getIdName() , $d.dataObj);
+		}
+	)*;
+
+functions
+	returns[HashMap<String,Function> functionsMap]:
+	{ 
+		$functionsMap = new HashMap<String,Function>();
+	} (
+		func { 
+			System.out.println("New function"  + $func.functionInstance);
 		}
 	)*;
 
@@ -46,13 +56,26 @@ decl
 			$declaration = new Declaration(id, $t.basicType);	 
 		}
 };
-func:
-	ID OPEN_PARENTHESIS (params)? CLOSE_PARENTHESIS (
+
+func
+	returns[Function functionInstance]:
+	//Função sem parametros
+	ID OPEN_PARENTHESIS CLOSE_PARENTHESIS c = cmdList { 
+		ID id = new ID($ID.line, $ID.pos, $ID.text);
+		$functionInstance = new Function(id, $c.commands);
+
+		System.out.println("New function: " + $functionInstance.getName());
+	}
+	| ID OPEN_PARENTHESIS params CLOSE_PARENTHESIS (
 		COLON type (COMMA type)*
-	)? OPEN_BRACKET (cmd)* CLOSE_BRACKET;
+	)? cmdList { 
+		
+	};
 params
 	returns[ArrayList<Param> paramsArray]:
-	ID DOUBLECOLON t = type { 
+	{ 
+		$paramsArray = new ArrayList<Param>
+	} ID DOUBLECOLON t = type { 
 	ID id = new ID($ID.line, $ID.pos,  $ID.text);
 	Param param = new Param(id , $t.basicType);
 	$paramsArray.add(param);
@@ -79,15 +102,31 @@ btype
 	| BOOL {$basicType  = new BasicType($BOOL.line, $BOOL.pos, "CHAR"); }
 	| FLOAT {$basicType  = new BasicType($FLOAT.line, $FLOAT.pos, "Float"); }
 	| TYPE {$basicType  = new BasicType($TYPE.line, $TYPE.pos, $TYPE.text); };
+
+cmdList
+	returns[CmdList commands]:
+	OPEN_BRACKET { 
+		$commands = new CmdList($OPEN_BRACKET.line,$OPEN_BRACKET.pos);
+	 } (
+		c = cmd {
+		$commands.addCommand($c.command);
+	}
+	)* CLOSE_BRACKET;
+
 cmd
 	returns[Cmd command]:
-	OPEN_BRACKET (cmd)* CLOSE_BRACKET
-	| IF OPEN_PARENTHESIS exp1 = exp CLOSE_PARENTHESIS rightSide = cmd { 
+	IF OPEN_PARENTHESIS exp1 = exp CLOSE_PARENTHESIS rightSide = cmd { 
 		$command = new If($OPEN_PARENTHESIS.line, $OPEN_PARENTHESIS.pos, $exp1.expInstance, $rightSide.command);
 	}
-	| IF OPEN_PARENTHESIS exp CLOSE_PARENTHESIS cmd ELSE cmd
-	| ITERATE OPEN_PARENTHESIS exp CLOSE_PARENTHESIS cmd
-	| READ lvalue SEMI
+	| IF OPEN_PARENTHESIS exp1 = exp CLOSE_PARENTHESIS then = cmd ELSE elseCmd = cmd { 
+		$command = new If($OPEN_PARENTHESIS.line, $OPEN_PARENTHESIS.pos, $exp1.expInstance, $then.command, $elseCmd.command);
+	}
+	| ITERATE OPEN_PARENTHESIS e = exp CLOSE_PARENTHESIS c = cmd { 
+		$command = new Iterate($ITERATE.line, $ITERATE.pos,  $e.expInstance , $c.command);
+	}
+	| READ l = lvalue SEMI {
+		$command = new Read($READ.line,$READ.pos , $l.value);
+	}
 	| PRINT e = exp SEMI { 
 		$command = new Print($PRINT.line,$PRINT.pos, $e.expInstance);
 	}

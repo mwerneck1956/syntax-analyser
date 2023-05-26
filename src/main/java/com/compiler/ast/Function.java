@@ -6,18 +6,39 @@ import java.util.ArrayList;
 public class Function extends Cmd {
 
    private ID id;
-   private ArrayList<Cmd> body;
+   private CmdList body;
    private ArrayList<Param> paramlist;
 
-   public Function(ID id, ArrayList<Cmd> body, ArrayList<Param> paramList) {
+   // public Function(ID id, CmdList body, ArrayList<Param> paramList) {
+
+   // super(id.getLine(), id.getCol());
+   // this.body = body;
+   // this.paramlist = paramList;
+   // this.id = id;
+
+   // System.out.println("Function created");
+   // }
+
+   public Function(ID id, CmdList body) {
       super(id.getLine(), id.getCol());
       this.body = body;
-      this.paramlist = paramList;
+      this.paramlist = null;
+      this.id = id;
+
+      System.out.println("Function created without params");
+
+   }
+
+   public String getName() {
+      return this.id.getName();
    }
 
    @Override
    public String toString() {
       // TODO Auto-generated method stub
+      System.out.println("(" + this.id.getName() + ")");
+      System.out.println("{");
+
       return null;
    }
 
