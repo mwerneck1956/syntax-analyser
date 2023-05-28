@@ -27,12 +27,6 @@ public interface langVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitDataList(langParser.DataListContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link langParser#functions}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitFunctions(langParser.FunctionsContext ctx);
-	/**
 	 * Visit a parse tree produced by {@link langParser#data}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -50,6 +44,12 @@ public interface langVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitDecl(langParser.DeclContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link langParser#functions}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitFunctions(langParser.FunctionsContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link langParser#func}.
 	 * @param ctx the parse tree

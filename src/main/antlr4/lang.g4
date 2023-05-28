@@ -10,8 +10,8 @@ grammar lang;
 
 prog
 	returns[Prog ast]:
-	dataList func { 
-		$ast = new Prog($dataList.dataListInstance, $func.functionInstance);		
+	dataList functions { 
+		$ast = new Prog($dataList.dataListInstance, $functions.functionsMap);		
 	};
 
 dataList
@@ -21,16 +21,6 @@ dataList
  	} (
 		d = data { 
 		$dataListInstance.put($d.dataObj.getIdName() , $d.dataObj);
-		}
-	)*;
-
-functions
-	returns[HashMap<String,Function> functionsMap]:
-	{ 
-		$functionsMap = new HashMap<String,Function>();
-	} (
-		func { 
-			System.out.println("New function"  + $func.functionInstance);
 		}
 	)*;
 
@@ -57,24 +47,27 @@ decl
 		}
 };
 
+functions
+	returns[HashMap<String,Function> functionsMap]:
+	{ $functionsMap = new HashMap<String,Function>(); } (
+		func { 
+			$functionsMap.put($func.f.getName() , $func.f);
+		}
+	)*;
+
 func
-	returns[Function functionInstance]:
+	returns[Function f]:
 	//Função sem parametros
 	ID OPEN_PARENTHESIS CLOSE_PARENTHESIS c = cmdList { 
 		ID id = new ID($ID.line, $ID.pos, $ID.text);
-		$functionInstance = new Function(id, $c.commands);
+		$f = new Function(id, $c.commands);
 
-		System.out.println("New function: " + $functionInstance.getName());
-	}
-	| ID OPEN_PARENTHESIS params CLOSE_PARENTHESIS (
-		COLON type (COMMA type)*
-	)? cmdList { 
-		
+		System.out.println("Function created");
 	};
 params
 	returns[ArrayList<Param> paramsArray]:
 	{ 
-		$paramsArray = new ArrayList<Param>
+		$paramsArray = new ArrayList<Param>();
 	} ID DOUBLECOLON t = type { 
 	ID id = new ID($ID.line, $ID.pos,  $ID.text);
 	Param param = new Param(id , $t.basicType);
@@ -105,9 +98,9 @@ btype
 
 cmdList
 	returns[CmdList commands]:
-	OPEN_BRACKET { 
+	{ 
 		$commands = new CmdList($OPEN_BRACKET.line,$OPEN_BRACKET.pos);
-	 } (
+	} OPEN_BRACKET (
 		c = cmd {
 		$commands.addCommand($c.command);
 	}
@@ -201,7 +194,7 @@ exps
 		$expressions.add($e1.expInstance);
 	} (
 		COMMA e2 = exp {
-		$expressions.add($e2.expInstance)
+		$expressions.add($e2.expInstance);
 	}
 	)*;
 

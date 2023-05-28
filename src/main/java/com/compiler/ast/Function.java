@@ -9,24 +9,11 @@ public class Function extends Cmd {
    private CmdList body;
    private ArrayList<Param> paramlist;
 
-   // public Function(ID id, CmdList body, ArrayList<Param> paramList) {
-
-   // super(id.getLine(), id.getCol());
-   // this.body = body;
-   // this.paramlist = paramList;
-   // this.id = id;
-
-   // System.out.println("Function created");
-   // }
-
    public Function(ID id, CmdList body) {
       super(id.getLine(), id.getCol());
       this.body = body;
       this.paramlist = null;
       this.id = id;
-
-      System.out.println("Function created without params");
-
    }
 
    public String getName() {
@@ -35,11 +22,10 @@ public class Function extends Cmd {
 
    @Override
    public String toString() {
-      // TODO Auto-generated method stub
       System.out.println("(" + this.id.getName() + ")");
       System.out.println("{");
 
-      return null;
+      return "";
    }
 
    @Override

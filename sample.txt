@@ -11,3 +11,8 @@ data teste_teste{
 main(){
     print x;
 }
+
+
+main_2(){
+    print x;
+}
