@@ -2,6 +2,7 @@ package com.compiler.ast;
 
 import java.util.HashMap;
 import java.util.ArrayList;
+import com.compiler.visitors.Visitor;
 
 public class Function extends Cmd {
 
@@ -28,9 +29,7 @@ public class Function extends Cmd {
       return "";
    }
 
-   @Override
-   public int interpret(HashMap<String, Integer> Variables) {
-      // TODO Auto-generated method stub
-      return 0;
+   public void accept(Visitor visitor) {
+      visitor.visit(this);
    }
 }

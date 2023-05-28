@@ -2,6 +2,8 @@ package com.compiler.ast;
 
 import java.util.HashMap;
 
+import com.compiler.visitors.Visitor;
+
 public class BinOP extends Expr {
    private Expr left;
    private Expr right;
@@ -29,15 +31,12 @@ public class BinOP extends Expr {
    }
 
    @Override
-   public int interpret(HashMap<String, Integer> Variables) {
-
-      return 0;
+   public String toString() {
+      return null;
    }
 
-   @Override
-   public String toString() {
-      // TODO Auto-generated method stub
-      return null;
+   public void accept(Visitor visitor) {
+      visitor.visit(this);
    }
 
 }

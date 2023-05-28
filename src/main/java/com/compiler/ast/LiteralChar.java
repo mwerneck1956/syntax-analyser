@@ -2,6 +2,8 @@ package com.compiler.ast;
 
 import java.util.HashMap;
 
+import com.compiler.visitors.Visitor;
+
 public class LiteralChar extends Expr {
     private String value;
 
@@ -20,12 +22,7 @@ public class LiteralChar extends Expr {
         return "" + this.value;
     }
 
-    @Override
-    public int interpret(HashMap<String, Integer> Variables) {
-        // TODO Auto-generated method stub
-        return 0;
+    public void accept(Visitor v) {
+        v.visit(this);
     }
-
-    // @Override
-    // public void accept(Visitor v) {v.visit(this);}
 }

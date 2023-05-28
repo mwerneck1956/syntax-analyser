@@ -2,6 +2,8 @@ package com.compiler.ast;
 
 import java.util.HashMap;
 
+import com.compiler.visitors.Visitor;
+
 public class BasicType extends Node {
    private String type;
 
@@ -14,13 +16,13 @@ public class BasicType extends Node {
       return type;
    }
 
-   public int interpret(HashMap<String, Integer> Variables) {
-      return 0;
-   }
-
    @Override
    public String toString() {
       return type;
+   }
+
+   public void accept(Visitor visitor) {
+      visitor.visit(this);
    }
 
 }

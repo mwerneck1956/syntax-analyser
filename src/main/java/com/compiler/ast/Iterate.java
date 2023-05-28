@@ -1,6 +1,6 @@
 package com.compiler.ast;
 
-import java.util.HashMap;
+import com.compiler.visitors.Visitor;
 
 public class Iterate extends Cmd {
 
@@ -16,13 +16,10 @@ public class Iterate extends Cmd {
 
    @Override
    public String toString() {
-      // TODO Auto-generated method stub
       return null;
    }
 
-   @Override
-   public int interpret(HashMap<String, Integer> Variables) {
-      // TODO Auto-generated method stub
-      return 0;
+   public void accept(Visitor visitor) {
+      visitor.visit(this);
    }
 }

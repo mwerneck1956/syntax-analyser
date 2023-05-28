@@ -13,6 +13,6 @@ main(){
 }
 
 
-main_2(){
+mainXX(){
     print x;
 }

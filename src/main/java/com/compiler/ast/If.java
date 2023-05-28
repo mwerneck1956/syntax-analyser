@@ -3,6 +3,8 @@ package com.compiler.ast;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import com.compiler.visitors.Visitor;
+
 public class If extends Cmd {
 
    private Expr condition;
@@ -35,9 +37,7 @@ public class If extends Cmd {
       return null;
    }
 
-   @Override
-   public int interpret(HashMap<String, Integer> Variables) {
-      // TODO Auto-generated method stub
-      return 0;
+   public void accept(Visitor visitor) {
+      visitor.visit(this);
    }
 }

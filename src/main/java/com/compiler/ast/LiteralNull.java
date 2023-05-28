@@ -1,6 +1,7 @@
 package com.compiler.ast;
 
 import java.util.HashMap;
+import com.compiler.visitors.Visitor;
 
 public class LiteralNull extends Expr {
     private Object value;
@@ -19,9 +20,7 @@ public class LiteralNull extends Expr {
         return "null";
     }
 
-    @Override
-    public int interpret(HashMap<String, Integer> Variables) {
-        // TODO Auto-generated method stub
-        return 0;
+    public void accept(Visitor visitor) {
+        visitor.visit(this);
     }
 }

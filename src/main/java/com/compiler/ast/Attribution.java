@@ -1,6 +1,6 @@
 package com.compiler.ast;
 
-import java.util.HashMap;
+import com.compiler.visitors.Visitor;
 
 public class Attribution extends Cmd {
 
@@ -27,9 +27,7 @@ public class Attribution extends Cmd {
       return id.toString() + " = " + expression.toString();
    }
 
-   public int interpret(HashMap<String, Integer> m) {
-      int x = expression.interpret(m);
-      m.put(id.toString(), x);
-      return x;
+   public void accept(Visitor visitor) {
+      visitor.visit(this);
    }
 }

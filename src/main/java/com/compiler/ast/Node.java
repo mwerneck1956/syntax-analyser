@@ -1,8 +1,8 @@
 package com.compiler.ast;
 
-import java.util.HashMap;
+import com.compiler.visitors.Visitable;
 
-public abstract class Node {
+public abstract class Node implements Visitable {
 
    private int line, col;
 
@@ -18,7 +18,5 @@ public abstract class Node {
    public int getCol() {
       return col;
    }
-
-   public abstract int interpret(HashMap<String, Integer> Variables);
 
 }

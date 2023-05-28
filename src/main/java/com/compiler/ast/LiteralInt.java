@@ -1,6 +1,6 @@
 package com.compiler.ast;
 
-import java.util.HashMap;
+import com.compiler.visitors.Visitor;
 
 public class LiteralInt extends Expr {
     private int value;
@@ -23,11 +23,9 @@ public class LiteralInt extends Expr {
         return "" + this.value;
     }
 
-    // @Override
-    // public void accept(Visitor v) {v.visit(this);}
-
-    // @Override
-    public int interpret(HashMap<String, Integer> Variables) {
-        return 0;
+    @Override
+    public void accept(Visitor v) {
+        v.visit(this);
     }
+
 }

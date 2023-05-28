@@ -1,6 +1,7 @@
 package com.compiler.ast;
 
 import java.util.HashMap;
+import com.compiler.visitors.Visitor;
 
 public class LiteralFalse extends Expr {
     private boolean value;
@@ -20,9 +21,7 @@ public class LiteralFalse extends Expr {
         return "" + this.value;
     }
 
-    @Override
-    public int interpret(HashMap<String, Integer> Variables) {
-
-        return 0;
+    public void accept(Visitor visitor) {
+        visitor.visit(this);
     }
 }
