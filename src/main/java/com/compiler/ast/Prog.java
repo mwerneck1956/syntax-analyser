@@ -24,7 +24,17 @@ public class Prog implements Visitable {
 
    @Override
    public void accept(Visitor visitor) {
+      System.out.println("Visitando");
+
       visitor.visit(this);
+   }
+
+   public HashMap<String, Function> getFunctions() {
+      return functions;
+   }
+
+   public HashMap<String, Data> getDataList() {
+      return dataList;
    }
 
 }

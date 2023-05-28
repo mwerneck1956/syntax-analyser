@@ -1,9 +1,32 @@
 package com.compiler.visitors;
 
 import com.compiler.ast.*;
+import java.util.HashMap;
 
 public class InterpretVisitor implements Visitor {
+
+   private HashMap<String, Function> functions;
+
    public InterpretVisitor() {
+      this.functions = new HashMap<String, Function>();
+
+   }
+
+   public void visit(Prog prog) {
+      Node main = null;
+
+      this.functions = prog.getFunctions();
+
+      for (Function f : this.functions.values()) {
+
+         if (f.getName().equals("main")) {
+            main = f;
+         }
+
+      }
+
+      if (main == null)
+         throw new RuntimeException("The program doesnt have a main function");
 
    }
 
@@ -12,10 +35,6 @@ public class InterpretVisitor implements Visitor {
    }
 
    public void visit(Data data) {
-
-   }
-
-   public void visit(Prog prog) {
 
    }
 

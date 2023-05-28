@@ -1,6 +1,5 @@
 package com.compiler.ast;
 
-import java.util.HashMap;
 import java.util.ArrayList;
 import com.compiler.visitors.Visitor;
 
