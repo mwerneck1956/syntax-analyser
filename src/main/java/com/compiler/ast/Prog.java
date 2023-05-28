@@ -2,7 +2,10 @@ package com.compiler.ast;
 
 import java.util.HashMap;
 
-public class Prog {
+import com.compiler.visitors.Visitable;
+import com.compiler.visitors.Visitor;
+
+public class Prog implements Visitable {
    private HashMap<String, Data> dataList;
    private HashMap<String, Function> functions;
 
@@ -19,8 +22,9 @@ public class Prog {
       System.out.println("Functions size : " + this.functions.size());
    }
 
-   public int interpret(HashMap<String, Integer> Variables) {
-      return 0;
+   @Override
+   public void accept(Visitor visitor) {
+      visitor.visit(this);
    }
 
 }
