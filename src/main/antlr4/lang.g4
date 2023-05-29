@@ -61,17 +61,19 @@ func
 	ID OPEN_PARENTHESIS CLOSE_PARENTHESIS c = cmdList { 
 		ID id = new ID($ID.line, $ID.pos, $ID.text);
 		$f = new Function(id, $c.commands);
-
-		System.out.println("Function created");
+	}
+	| ID OPEN_PARENTHESIS params CLOSE_PARENTHESIS c = cmdList { 
+		ID id = new ID($ID.line, $ID.pos, $ID.text);
+		$f = new Function(id, $c.commands , $params.paramsArray);
 	};
 params
 	returns[ArrayList<Param> paramsArray]:
 	{ 
 		$paramsArray = new ArrayList<Param>();
 	} ID DOUBLECOLON t = type { 
-	ID id = new ID($ID.line, $ID.pos,  $ID.text);
-	Param param = new Param(id , $t.basicType);
-	$paramsArray.add(param);
+	ID newId = new ID($ID.line, $ID.pos,  $ID.text);
+	Param newParam = new Param(newId , $t.basicType);
+	$paramsArray.add(newParam);
 
 } (
 		COMMA ID DOUBLECOLON t = type { 

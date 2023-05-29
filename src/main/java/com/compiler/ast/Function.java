@@ -16,6 +16,15 @@ public class Function extends Cmd {
       this.id = id;
    }
 
+   public Function(ID id, CmdList body, ArrayList<Param> params) {
+      super(id.getLine(), id.getCol());
+      this.body = body;
+      this.paramlist = params;
+      this.id = id;
+
+      System.out.println("Params : " + this.paramlist.toString());
+   }
+
    public String getName() {
       return this.id.getName();
    }
