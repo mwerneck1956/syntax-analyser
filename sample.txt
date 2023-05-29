@@ -9,10 +9,5 @@ data teste_teste{
 }
 
 main(){
-    print x;
-}
-
-
-mainXX(){
-    print x;
+    x = 10;
 }

@@ -1,14 +1,18 @@
 package com.compiler.visitors;
 
 import com.compiler.ast.*;
+
 import java.util.HashMap;
+import java.util.Stack;
 
 public class InterpretVisitor implements Visitor {
 
    private HashMap<String, Function> functions;
+   private Stack<Object> operands;
 
    public InterpretVisitor() {
       this.functions = new HashMap<String, Function>();
+      this.operands = new Stack<Object>();
 
    }
 
@@ -19,15 +23,14 @@ public class InterpretVisitor implements Visitor {
 
       for (Function f : this.functions.values()) {
 
-         if (f.getName().equals("main")) {
+         if (f.getName().equals("main"))
             main = f;
-         }
-
       }
 
       if (main == null)
          throw new RuntimeException("The program doesnt have a main function");
 
+      main.accept(this);
    }
 
    public void visit(Add add) {
@@ -39,10 +42,14 @@ public class InterpretVisitor implements Visitor {
    }
 
    public void visit(Attribution attr) {
+      Node id = attr.getID();
 
+      attr.getExp().accept(this);
    }
 
    public void visit(BasicType attr) {
+      System.out.println("Visitando attr");
+
       // TODO Auto-generated method stub
 
    }
@@ -56,12 +63,14 @@ public class InterpretVisitor implements Visitor {
    @Override
    public void visit(CmdList cmdList) {
 
+      for (Cmd c : cmdList.getBody()) {
+         c.accept(this);
+      }
    }
 
    @Override
    public void visit(Function function) {
-      // TODO Auto-generated method stub
-
+      function.getBody().accept(this);
    }
 
    @Override
@@ -102,7 +111,11 @@ public class InterpretVisitor implements Visitor {
 
    @Override
    public void visit(LiteralInt literal) {
-      // TODO Auto-generated method stub
+      try {
+         this.operands.push(literal.getValue());
+      } catch (Exception err) {
+
+      }
 
    }
 

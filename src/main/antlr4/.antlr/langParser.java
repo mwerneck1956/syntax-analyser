@@ -752,6 +752,8 @@ public class langParser extends Parser {
 				((CmdListContext)_localctx).c = cmd();
 
 						_localctx.commands.addCommand(((CmdListContext)_localctx).c.command);
+
+						System.out.println("Adicionando comando" + ((CmdListContext)_localctx).c.command);
 					
 				}
 				}

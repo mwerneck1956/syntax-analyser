@@ -31,4 +31,8 @@ public class Function extends Cmd {
    public void accept(Visitor visitor) {
       visitor.visit(this);
    }
+
+   public CmdList getBody() {
+      return body;
+   }
 }

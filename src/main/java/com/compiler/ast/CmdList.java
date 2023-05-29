@@ -6,18 +6,19 @@ import com.compiler.visitors.Visitor;
 
 public class CmdList extends Cmd {
 
-   private Expr condition;
    private ArrayList<Cmd> body;
 
    public CmdList(int line, int column) {
       super(line, column);
 
       this.body = new ArrayList<Cmd>();
-
-      System.out.println("Command list created");
    }
 
    public void addCommand(Cmd command) {
+
+      if (command != null)
+         System.out.println("Adicionando commando " + command.toString());
+
       body.add(command);
    }
 
@@ -28,5 +29,9 @@ public class CmdList extends Cmd {
 
    public void accept(Visitor visitor) {
       visitor.visit(this);
+   }
+
+   public ArrayList<Cmd> getBody() {
+      return body;
    }
 }
