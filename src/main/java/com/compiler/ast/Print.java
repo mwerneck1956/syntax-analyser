@@ -11,7 +11,7 @@ public class Print extends Cmd {
       super(line, column);
       this.expr = expr;
 
-      System.out.println("Print created");
+      System.out.println("Print created" + expr.toString());
    }
 
    public Expr getExpr() {

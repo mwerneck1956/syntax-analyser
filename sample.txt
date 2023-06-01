@@ -8,6 +8,7 @@ data teste_teste{
     number_of_workers :: String;
 }
 
-main(a :: Float, b :: String){
+main(a :: Float){
     x = 10;
+    print x;
 }

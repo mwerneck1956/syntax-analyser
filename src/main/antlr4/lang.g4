@@ -120,14 +120,15 @@ cmd
 		$command = new Iterate($ITERATE.line, $ITERATE.pos,  $e.expInstance , $c.command);
 	}
 	| READ l = lvalue SEMI {
-		$command = new Read($READ.line,$READ.pos , $l.value);
+		$command = new Read($READ.line,$READ.pos , $l.node);
 	}
 	| PRINT e = exp SEMI { 
+		System.out.println("Exp:" + $e.expInstance);
 		$command = new Print($PRINT.line,$PRINT.pos, $e.expInstance);
 	}
 	| RETURN exp (COMMA exp)* SEMI
 	| l = lvalue EQ e = exp SEMI {
-		$command = new Attribution($EQ.line, $EQ.pos, $l.value, $e.expInstance );
+		$command = new Attribution($EQ.line, $EQ.pos, $l.node, $e.expInstance );
 	}
 	| ID OPEN_PARENTHESIS (exps)? CLOSE_PARENTHESIS (
 		RELACIONAL lvalue (COMMA lvalue)* GREATER_THAN
@@ -179,15 +180,16 @@ sexp
 	| LITERAL_CHAR { 
 		$sexpValue = new LiteralChar($LITERAL_CHAR.line,$LITERAL_CHAR.pos,$LITERAL_CHAR.text );
 	}
-	| pexp;
-pexp:
-	lvalue
+	| pexp { $sexpValue = $pexp.value; };
+pexp
+	returns[LValue value]:
+	l = lvalue { $value = $l.node; }
 	| OPEN_PARENTHESIS exp CLOSE_PARENTHESIS
 	| NEW type (OPEN_SQUAREBRACKET exp CLOSE_SQUAREBRACKET)?
 	| ID OPEN_PARENTHESIS (exps)? CLOSE_PARENTHESIS OPEN_SQUAREBRACKET exp CLOSE_SQUAREBRACKET;
 lvalue
-	returns[LValue value]:
-	ID { $value = new ID($ID.line,$ID.pos, $ID.text); }
+	returns[LValue node]:
+	ID { $node = new ID($ID.line,$ID.pos, $ID.text); }
 	| lvalue OPEN_SQUAREBRACKET exp CLOSE_SQUAREBRACKET
 	| lvalue DOT ID;
 exps

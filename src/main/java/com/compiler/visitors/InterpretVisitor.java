@@ -7,12 +7,15 @@ import java.util.Stack;
 
 public class InterpretVisitor implements Visitor {
 
+   private Stack<HashMap<String, Object>> env;
    private HashMap<String, Function> functions;
    private Stack<Object> operands;
 
    public InterpretVisitor() {
       this.functions = new HashMap<String, Function>();
       this.operands = new Stack<Object>();
+      this.env = new Stack<HashMap<String, Object>>();
+      env.push(new HashMap<String, Object>());
 
    }
 
