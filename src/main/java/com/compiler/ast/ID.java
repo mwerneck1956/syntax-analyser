@@ -28,4 +28,9 @@ public class ID extends LValue {
    public void accept(Visitor visitor) {
       visitor.visit(this);
    }
+
+   @Override
+   public String getId() {
+      return this.name;
+   }
 }

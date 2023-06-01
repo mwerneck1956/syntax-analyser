@@ -10,5 +10,5 @@ data teste_teste{
 
 main(a :: Float){
     x = 10;
-    print x;
+    print x + x;
 }

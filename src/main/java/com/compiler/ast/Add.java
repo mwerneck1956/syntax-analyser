@@ -1,11 +1,13 @@
 package com.compiler.ast;
 
+import com.compiler.visitors.Visitor;
+
 public class Add extends BinOP {
 
    public Add(int line, int col, Expr l, Expr r) {
       super(line, col, l, r);
 
-      System.out.println("Add created" + l.toString() + " + " + r.toString());
+      // System.out.println("Add created" + l.toString() + " + " + r.toString());
    }
 
    public String toString() {
@@ -15,6 +17,10 @@ public class Add extends BinOP {
          RightOperator = "(" + RightOperator + ")";
       }
       return leftOperator + " + " + RightOperator;
+   }
+
+   public void accept(Visitor visitor) {
+      visitor.visit(this);
    }
 
 }

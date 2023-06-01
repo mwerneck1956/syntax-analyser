@@ -37,7 +37,17 @@ public class InterpretVisitor implements Visitor {
    }
 
    public void visit(Add add) {
+      System.out.println("Visiting add");
 
+      add.getLeft().accept(this);
+      add.getRight().accept(this);
+
+      Number left, right;
+
+      left = (Number) operands.pop();
+      right = (Number) operands.pop();
+
+      operands.push(left.intValue() + right.intValue());
    }
 
    public void visit(Data data) {
@@ -45,13 +55,15 @@ public class InterpretVisitor implements Visitor {
    }
 
    public void visit(Attribution attr) {
-      Node id = attr.getID();
+      LValue id = attr.getID();
 
       attr.getExp().accept(this);
+      Object val = operands.pop();
+
+      env.peek().put(id.getId(), val);
    }
 
-   public void visit(BasicType attr) {
-      System.out.println("Visitando attr");
+   public void visit(BasicType bType) {
 
       // TODO Auto-generated method stub
 
@@ -78,8 +90,9 @@ public class InterpretVisitor implements Visitor {
 
    @Override
    public void visit(ID id) {
-      // TODO Auto-generated method stub
+      Object idValue = env.peek().get(id.getName());
 
+      operands.push(idValue);
    }
 
    @Override
@@ -135,8 +148,9 @@ public class InterpretVisitor implements Visitor {
 
    @Override
    public void visit(Print print) {
-      // TODO Auto-generated method stub
+      print.getExpr().accept(this);
 
+      System.out.println(operands.pop());
    }
 
    @Override

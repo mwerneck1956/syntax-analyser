@@ -16,8 +16,8 @@ public class CmdList extends Cmd {
 
    public void addCommand(Cmd command) {
 
-      if (command != null)
-         System.out.println("Adicionando commando " + command);
+      // if (command != null)
+      // System.out.println("Adicionando commando " + command);
 
       body.add(command);
    }
