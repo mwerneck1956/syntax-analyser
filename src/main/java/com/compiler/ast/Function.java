@@ -22,7 +22,7 @@ public class Function extends Cmd {
       this.paramlist = params;
       this.id = id;
 
-      System.out.println("Params : " + this.paramlist.toString());
+      // System.out.println("Params : " + this.paramlist.toString());
    }
 
    public String getName() {

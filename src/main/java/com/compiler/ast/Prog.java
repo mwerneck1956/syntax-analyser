@@ -24,8 +24,6 @@ public class Prog implements Visitable {
 
    @Override
    public void accept(Visitor visitor) {
-      System.out.println("Visitando");
-
       visitor.visit(this);
    }
 

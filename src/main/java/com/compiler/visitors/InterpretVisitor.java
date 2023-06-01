@@ -37,7 +37,7 @@ public class InterpretVisitor implements Visitor {
    }
 
    public void visit(Add add) {
-      System.out.println("Visiting add");
+      // System.out.println("Visiting add");
 
       add.getLeft().accept(this);
       add.getRight().accept(this);
@@ -90,9 +90,18 @@ public class InterpretVisitor implements Visitor {
 
    @Override
    public void visit(ID id) {
-      Object idValue = env.peek().get(id.getName());
+      try {
 
-      operands.push(idValue);
+         if (env.peek().containsKey(id.getName())) {
+            Object idValue = env.peek().get(id.getName());
+            operands.push(idValue);
+         } else
+            throw new RuntimeException("Variable " + id.getName() + " Not declared");
+
+      } catch (Exception e) {
+         throw new RuntimeException(e.getMessage());
+      }
+
    }
 
    @Override

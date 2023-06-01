@@ -1009,7 +1009,6 @@ public class langParser extends Parser {
 				setState(181);
 				match(SEMI);
 				 
-						System.out.println("Exp:" + ((CmdContext)_localctx).e.expInstance);
 						((CmdContext)_localctx).command =  new Print((((CmdContext)_localctx).PRINT!=null?((CmdContext)_localctx).PRINT.getLine():0),(((CmdContext)_localctx).PRINT!=null?((CmdContext)_localctx).PRINT.getCharPositionInLine():0), ((CmdContext)_localctx).e.expInstance);
 					
 				}

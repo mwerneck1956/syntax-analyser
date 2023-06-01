@@ -123,7 +123,6 @@ cmd
 		$command = new Read($READ.line,$READ.pos , $l.node);
 	}
 	| PRINT e = exp SEMI { 
-		System.out.println("Exp:" + $e.expInstance);
 		$command = new Print($PRINT.line,$PRINT.pos, $e.expInstance);
 	}
 	| RETURN exp (COMMA exp)* SEMI

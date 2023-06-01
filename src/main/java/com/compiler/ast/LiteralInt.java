@@ -14,7 +14,7 @@ public class LiteralInt extends Expr {
         super(line, col);
         this.value = value;
 
-        System.out.println("Int criado  " + value);
+        // System.out.println("Int criado " + value);
     }
 
     @Override
