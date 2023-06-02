@@ -1,12 +1,38 @@
 package com.compiler.visitors;
 
-import com.compiler.ast.*;
-
 import java.util.HashMap;
 import java.util.Stack;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import com.compiler.ast.Add;
+import com.compiler.ast.Attribution;
+import com.compiler.ast.BasicType;
+import com.compiler.ast.BinOP;
+import com.compiler.ast.Cmd;
+import com.compiler.ast.CmdList;
+import com.compiler.ast.Data;
+import com.compiler.ast.Div;
+import com.compiler.ast.Function;
+import com.compiler.ast.ID;
+import com.compiler.ast.If;
+import com.compiler.ast.Iterate;
+import com.compiler.ast.LValue;
+import com.compiler.ast.LessThan;
+import com.compiler.ast.LiteralChar;
+import com.compiler.ast.LiteralFalse;
+import com.compiler.ast.LiteralFloat;
+import com.compiler.ast.LiteralInt;
+import com.compiler.ast.LiteralNull;
+import com.compiler.ast.LiteralTrue;
+import com.compiler.ast.Mult;
+import com.compiler.ast.Node;
+import com.compiler.ast.Print;
+import com.compiler.ast.Prog;
+import com.compiler.ast.Read;
+import com.compiler.ast.StmtList;
+import com.compiler.ast.Sub;
 
 public class InterpretVisitor implements Visitor {
 
@@ -178,7 +204,6 @@ public class InterpretVisitor implements Visitor {
    @Override
    public void visit(ID id) {
       try {
-
          logger.info("Visiting id : \"" + id.getName() + "\"");
 
          if (env.peek().containsKey(id.getName())) {
@@ -197,13 +222,29 @@ public class InterpretVisitor implements Visitor {
 
    @Override
    public void visit(If ifExpr) {
-      // TODO Auto-generated method stub
+      logger.info("Visiting if");
 
+      ifExpr.getCondition().accept(this);
+
+      if ((Boolean) operands.pop()) {
+         logger.info("If condition accepted");
+      }
    }
 
    @Override
    public void visit(Iterate iterate) {
-      // TODO Auto-generated method stub
+      try {
+         iterate.getCondition().accept(this);
+
+         while ((Boolean) operands.pop()) {
+            iterate.getBody().accept(this);
+            iterate.getCondition().accept(this);
+         }
+
+         // TODO Auto-generated method stub
+      } catch (Exception err) {
+
+      }
 
    }
 
@@ -219,7 +260,6 @@ public class InterpretVisitor implements Visitor {
 
    }
 
-   @Override
    public void visit(LiteralFloat literal) {
       try {
          this.operands.push(literal.getValue());
@@ -228,7 +268,6 @@ public class InterpretVisitor implements Visitor {
       }
    }
 
-   @Override
    public void visit(LiteralInt literal) {
       try {
          logger.info("Stacking int " + literal.getValue());
@@ -240,18 +279,15 @@ public class InterpretVisitor implements Visitor {
 
    }
 
-   @Override
    public void visit(LiteralNull literal) {
 
    }
 
-   @Override
    public void visit(LiteralTrue literal) {
       // TODO Auto-generated method stub
 
    }
 
-   @Override
    public void visit(Print print) {
       print.getExpr().accept(this);
 
@@ -260,15 +296,32 @@ public class InterpretVisitor implements Visitor {
       System.out.println(operands.pop());
    }
 
-   @Override
    public void visit(Read read) {
-      // TODO Auto-generated method stub
 
    }
 
-   @Override
    public void visit(StmtList stmtList) {
-      // TODO Auto-generated method stub
+
+   }
+
+   public void visit(LessThan lessThan) {
+      try {
+         lessThan.getLeft().accept(this);
+         lessThan.getRight().accept(this);
+
+         Number left, right;
+
+         right = (Number) operands.pop();
+         left = (Number) operands.pop();
+
+         Boolean res = new Boolean((Integer) left < (Integer) right);
+
+         operands.push(res);
+
+         logger.info("Less than added " + res + " To te stack");
+      } catch (Exception err) {
+
+      }
 
    }
 

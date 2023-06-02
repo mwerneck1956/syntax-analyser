@@ -37,6 +37,10 @@ public class If extends Cmd {
       return null;
    }
 
+   public Expr getCondition() {
+      return condition;
+   }
+
    public void accept(Visitor visitor) {
       visitor.visit(this);
    }

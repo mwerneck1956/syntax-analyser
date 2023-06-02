@@ -1,11 +1,11 @@
 package com.compiler.ast;
 
+import com.compiler.visitors.Visitor;
+
 public class LessThan extends BinOP {
 
    public LessThan(int line, int col, Expr l, Expr r) {
       super(line, col, l, r);
-
-      System.out.println("LessThan created" + l.toString() + " < " + r.toString());
    }
 
    public String toString() {
@@ -15,6 +15,10 @@ public class LessThan extends BinOP {
          RightOperator = "(" + RightOperator + ")";
       }
       return leftOperator.toString() + " < " + RightOperator.toString();
+   }
+
+   public void accept(Visitor visitor) {
+      visitor.visit(this);
    }
 
 }

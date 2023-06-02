@@ -119,6 +119,9 @@ cmd
 	| ITERATE OPEN_PARENTHESIS e = exp CLOSE_PARENTHESIS c = cmd { 
 		$command = new Iterate($ITERATE.line, $ITERATE.pos,  $e.expInstance , $c.command);
 	}
+	| ITERATE OPEN_PARENTHESIS e = exp CLOSE_PARENTHESIS cmdList { 
+		$command = new Iterate($ITERATE.line, $ITERATE.pos,  $e.expInstance , $cmdList.commands);
+	}
 	| READ l = lvalue SEMI {
 		$command = new Read($READ.line,$READ.pos , $l.node);
 	}
@@ -141,7 +144,7 @@ exp
 rexp
 	returns[Expr rexpExpr]:
 	a = aexp { $rexpExpr = $a.binOp; }
-	| r = rexp RELACIONAL a = aexp { $rexpExpr = new Equal($EQEQ.line, $EQEQ.pos,  $r.rexpExpr, $a.binOp);  
+	| r = rexp RELACIONAL a = aexp { $rexpExpr = new LessThan($EQEQ.line, $EQEQ.pos,  $r.rexpExpr, $a.binOp);  
 		}
 	| r = rexp EQEQ a = aexp { $rexpExpr = new Equal($EQEQ.line, $EQEQ.pos, $r.rexpExpr, $a.binOp);  
 		}

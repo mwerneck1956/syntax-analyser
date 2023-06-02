@@ -22,4 +22,12 @@ public class Iterate extends Cmd {
    public void accept(Visitor visitor) {
       visitor.visit(this);
    }
+
+   public Expr getCondition() {
+      return condition;
+   }
+
+   public Cmd getBody() {
+      return body;
+   }
 }

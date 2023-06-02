@@ -49,4 +49,6 @@ public interface Visitor {
 
    public abstract void visit(Sub sub);
 
+   public abstract void visit(LessThan lessThan);
+
 }
