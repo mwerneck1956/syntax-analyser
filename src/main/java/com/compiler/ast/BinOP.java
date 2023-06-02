@@ -1,7 +1,5 @@
 package com.compiler.ast;
 
-import java.util.HashMap;
-
 import com.compiler.visitors.Visitor;
 
 public class BinOP extends Expr {

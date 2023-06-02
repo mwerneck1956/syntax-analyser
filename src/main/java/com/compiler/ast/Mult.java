@@ -1,5 +1,7 @@
 package com.compiler.ast;
 
+import com.compiler.visitors.Visitor;
+
 public class Mult extends BinOP {
 
    public Mult(int line, int col, Expr l, Expr r) {
@@ -8,6 +10,7 @@ public class Mult extends BinOP {
       System.out.println("Mult criada :" + l.toString() + " * " + r.toString());
    }
 
-   // @Override
-   // public void accept(Visitor v) {v.visit(this);}
+   public void accept(Visitor visitor) {
+      visitor.visit(this);
+   }
 }

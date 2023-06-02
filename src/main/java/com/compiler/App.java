@@ -5,7 +5,12 @@ import com.compiler.grammar.*;
 import com.compiler.visitors.InterpretVisitor;
 import com.compiler.ast.*;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 public class App {
+
+    private static final Logger logger = LogManager.getLogger(InterpretVisitor.class);
 
     public static void main(String args[]) throws Exception {
         CharStream stream = CharStreams.fromFileName(args[0]);
@@ -20,6 +25,8 @@ public class App {
         Prog ast = parser.prog().ast;
 
         InterpretVisitor visitor = new InterpretVisitor();
+
+        logger.info("teste");
 
         ast.accept(visitor);
         // ast.printDataList();

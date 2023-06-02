@@ -1,6 +1,7 @@
 package com.compiler.ast;
 
-//mexp DIV sexp #div
+import com.compiler.visitors.Visitor;
+
 public class Div extends BinOP {
 
    public Div(int line, int col, Expr l, Expr r) {
@@ -9,6 +10,7 @@ public class Div extends BinOP {
       System.out.println("Div criada :" + l.toString() + " / " + r.toString());
    }
 
-   // @Override
-   // public void accept(Visitor v) {v.visit(this);}
+   public void accept(Visitor visitor) {
+      visitor.visit(this);
+   }
 }

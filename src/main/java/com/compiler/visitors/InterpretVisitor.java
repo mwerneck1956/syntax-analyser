@@ -5,10 +5,12 @@ import com.compiler.ast.*;
 import java.util.HashMap;
 import java.util.Stack;
 
-import javax.management.RuntimeErrorException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class InterpretVisitor implements Visitor {
 
+   private static final Logger logger = LogManager.getLogger(InterpretVisitor.class);
    private Stack<HashMap<String, Object>> env;
    private HashMap<String, Function> functions;
    private Stack<Object> operands;
@@ -41,6 +43,8 @@ public class InterpretVisitor implements Visitor {
    public void visit(Add add) {
       try {
 
+         logger.info("Visiting add");
+
          add.getLeft().accept(this);
          add.getRight().accept(this);
 
@@ -55,6 +59,72 @@ public class InterpretVisitor implements Visitor {
             res = left.floatValue() + right.floatValue();
          else
             res = left.intValue() + right.intValue();
+
+         operands.push(res);
+      } catch (Exception err) {
+         throw new RuntimeException(err.getMessage());
+      }
+
+   }
+
+   public void visit(Sub sub) {
+      try {
+         sub.getLeft().accept(this);
+         sub.getRight().accept(this);
+
+         Number left, right, res;
+
+         left = (Number) operands.pop();
+         right = (Number) operands.pop();
+
+         if (left instanceof Float || right instanceof Float)
+            res = left.floatValue() - right.floatValue();
+         else
+            res = left.intValue() - right.intValue();
+
+         operands.push(res);
+      } catch (Exception err) {
+         throw new RuntimeException(err.getMessage());
+      }
+
+   }
+
+   public void visit(Mult mult) {
+      try {
+         mult.getLeft().accept(this);
+         mult.getRight().accept(this);
+
+         Number left, right, res;
+
+         left = (Number) operands.pop();
+         right = (Number) operands.pop();
+
+         if (left instanceof Float || right instanceof Float)
+            res = left.floatValue() * right.floatValue();
+         else
+            res = left.intValue() * right.intValue();
+
+         operands.push(res);
+      } catch (Exception err) {
+         throw new RuntimeException(err.getMessage());
+      }
+
+   }
+
+   public void visit(Div div) {
+      try {
+         div.getLeft().accept(this);
+         div.getRight().accept(this);
+
+         Number left, right, res;
+
+         left = (Number) operands.pop();
+         right = (Number) operands.pop();
+
+         if (left instanceof Float || right instanceof Float)
+            res = left.floatValue() / right.floatValue();
+         else
+            res = left.intValue() / right.intValue();
 
          operands.push(res);
       } catch (Exception err) {
@@ -153,6 +223,7 @@ public class InterpretVisitor implements Visitor {
    @Override
    public void visit(LiteralInt literal) {
       try {
+
          this.operands.push(literal.getValue());
       } catch (Exception err) {
 
@@ -187,29 +258,6 @@ public class InterpretVisitor implements Visitor {
    @Override
    public void visit(StmtList stmtList) {
       // TODO Auto-generated method stub
-
-   }
-
-   @Override
-   public void visit(Sub sub) {
-      try {
-         sub.getLeft().accept(this);
-         sub.getRight().accept(this);
-
-         Number left, right, res;
-
-         left = (Number) operands.pop();
-         right = (Number) operands.pop();
-
-         if (left instanceof Float || right instanceof Float)
-            res = left.floatValue() - right.floatValue();
-         else
-            res = left.intValue() - right.intValue();
-
-         operands.push(res);
-      } catch (Exception err) {
-         throw new RuntimeException(err.getMessage());
-      }
 
    }
 
