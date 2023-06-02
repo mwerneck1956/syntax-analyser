@@ -5,6 +5,8 @@ import com.compiler.ast.*;
 import java.util.HashMap;
 import java.util.Stack;
 
+import javax.management.RuntimeErrorException;
+
 public class InterpretVisitor implements Visitor {
 
    private Stack<HashMap<String, Object>> env;
@@ -37,17 +39,28 @@ public class InterpretVisitor implements Visitor {
    }
 
    public void visit(Add add) {
-      // System.out.println("Visiting add");
+      try {
 
-      add.getLeft().accept(this);
-      add.getRight().accept(this);
+         add.getLeft().accept(this);
+         add.getRight().accept(this);
 
-      Number left, right;
+         Number left, right, res;
 
-      left = (Number) operands.pop();
-      right = (Number) operands.pop();
+         left = (Number) operands.pop();
+         right = (Number) operands.pop();
 
-      operands.push(left.intValue() + right.intValue());
+         // System.out.println("Visiting add");
+
+         if (left instanceof Float || right instanceof Float)
+            res = left.floatValue() + right.floatValue();
+         else
+            res = left.intValue() + right.intValue();
+
+         operands.push(res);
+      } catch (Exception err) {
+         throw new RuntimeException(err.getMessage());
+      }
+
    }
 
    public void visit(Data data) {
@@ -130,8 +143,11 @@ public class InterpretVisitor implements Visitor {
 
    @Override
    public void visit(LiteralFloat literal) {
-      // TODO Auto-generated method stub
+      try {
+         this.operands.push(literal.getValue());
+      } catch (Exception err) {
 
+      }
    }
 
    @Override
