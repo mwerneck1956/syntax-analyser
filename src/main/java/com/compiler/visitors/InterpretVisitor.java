@@ -192,7 +192,24 @@ public class InterpretVisitor implements Visitor {
 
    @Override
    public void visit(Sub sub) {
-      // TODO Auto-generated method stub
+      try {
+         sub.getLeft().accept(this);
+         sub.getRight().accept(this);
+
+         Number left, right, res;
+
+         left = (Number) operands.pop();
+         right = (Number) operands.pop();
+
+         if (left instanceof Float || right instanceof Float)
+            res = left.floatValue() - right.floatValue();
+         else
+            res = left.intValue() - right.intValue();
+
+         operands.push(res);
+      } catch (Exception err) {
+         throw new RuntimeException(err.getMessage());
+      }
 
    }
 

@@ -7,7 +7,6 @@ public class Add extends BinOP {
    public Add(int line, int col, Expr l, Expr r) {
       super(line, col, l, r);
 
-      // System.out.println("Add created" + l.toString() + " + " + r.toString());
    }
 
    public String toString() {

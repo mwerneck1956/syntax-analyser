@@ -1,23 +1,26 @@
 package com.compiler.ast;
 
+import com.compiler.visitors.Visitor;
+
 public class Sub extends BinOP {
 
    public Sub(int line, int col, Expr l, Expr r) {
       super(line, col, l, r);
 
-      System.out.println("Minus created created" + l.toString() + " - " + r.toString());
    }
 
    public String toString() {
 
-      return "";
+      String leftOperator = getLeft().toString();
+      String RightOperator = getRight().toString();
+      if (getRight() instanceof Sub) {
+         RightOperator = "(" + RightOperator + ")";
+      }
+      return leftOperator + " - " + RightOperator;
+   }
 
-      // String leftOperator = getLeft().toString();
-      // String RightOperator = getRight().toString();
-      // if (getRight() instanceof Add) {
-      // RightOperator = "(" + RightOperator + ")";
-      // }
-      // return leftOperator + " + " + RightOperator;
+   public void accept(Visitor visitor) {
+      visitor.visit(this);
    }
 
 }
