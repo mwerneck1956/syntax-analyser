@@ -91,6 +91,8 @@ public class InterpretVisitor implements Visitor {
 
    public void visit(Mult mult) {
       try {
+         logger.info("Visiting mult");
+
          mult.getLeft().accept(this);
          mult.getRight().accept(this);
 
@@ -143,6 +145,8 @@ public class InterpretVisitor implements Visitor {
       attr.getExp().accept(this);
       Object val = operands.pop();
 
+      logger.info("New attribution " + id.getId() + " = " + val);
+
       env.peek().put(id.getId(), val);
    }
 
@@ -175,9 +179,13 @@ public class InterpretVisitor implements Visitor {
    public void visit(ID id) {
       try {
 
+         logger.info("Visiting id : \"" + id.getName() + "\"");
+
          if (env.peek().containsKey(id.getName())) {
             Object idValue = env.peek().get(id.getName());
             operands.push(idValue);
+
+            logger.info("Adding variable " + id.getName() + " = " + idValue + " to the env");
          } else
             throw new RuntimeException("Variable " + id.getName() + " Not declared");
 
@@ -223,6 +231,7 @@ public class InterpretVisitor implements Visitor {
    @Override
    public void visit(LiteralInt literal) {
       try {
+         logger.info("Stacking int " + literal.getValue());
 
          this.operands.push(literal.getValue());
       } catch (Exception err) {
@@ -245,6 +254,8 @@ public class InterpretVisitor implements Visitor {
    @Override
    public void visit(Print print) {
       print.getExpr().accept(this);
+
+      logger.info("Visiting print");
 
       System.out.println(operands.pop());
    }

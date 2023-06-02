@@ -9,6 +9,10 @@ public interface Visitor {
 
    public abstract void visit(Add add);
 
+   public abstract void visit(Mult mult);
+
+   public abstract void visit(Div div);
+
    public abstract void visit(Print print);
 
    public abstract void visit(Read read);
