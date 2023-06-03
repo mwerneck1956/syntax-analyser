@@ -14,12 +14,14 @@ public class InterpretVisitor implements Visitor {
    private Stack<HashMap<String, Object>> env;
    private HashMap<String, Function> functions;
    private Stack<Object> operands;
+   private Boolean returnMode;
 
    public InterpretVisitor() {
       this.functions = new HashMap<String, Function>();
       this.operands = new Stack<Object>();
       this.env = new Stack<HashMap<String, Object>>();
       env.push(new HashMap<String, Object>());
+      this.returnMode = false;
 
    }
 
@@ -161,6 +163,9 @@ public class InterpretVisitor implements Visitor {
    public void visit(CmdList cmdList) {
 
       for (Cmd c : cmdList.getBody()) {
+         if (returnMode)
+            break;
+
          c.accept(this);
       }
    }
@@ -206,6 +211,19 @@ public class InterpretVisitor implements Visitor {
                   expr.accept(this);
 
                func.accept(this);
+
+               if (functionCall.getReturnsId().size() > 0 && returnMode) {
+                  // Tenho que colocar no env esse id com o valor novo;
+
+                  String returnVariableName = functionCall.getReturnsId().get(0).getId();
+
+                  Object value = operands.pop();
+                  this.env.peek().put(returnVariableName, value);
+
+                  logger.info("Putting return variable " + returnVariableName + " with value : " + value);
+
+                  returnMode = false;
+               }
             }
 
             else
@@ -367,5 +385,13 @@ public class InterpretVisitor implements Visitor {
       Object paramValue = operands.pop();
 
       env.peek().put(param.getId().getId(), paramValue);
+   }
+
+   public void visit(Return ret) {
+      logger.info("Visiting a return");
+
+      ret.getReturnedExprs().get(0).accept(this);
+
+      returnMode = true;
    }
 }

@@ -8,12 +8,16 @@ data teste_teste{
     number_of_workers :: String;
 }
 
-teste(x :: Int, b :: Float){
+teste(x :: Int, b :: Float) : Int , Float{
     c = x + b;
-    print c;
+    
+    return c;
 }
 
 main(){
     x = 3;
-    teste(x + 3, x + 5);
+
+    teste(5, 5.5)<c>;
+
+    print c;
 }

@@ -57,4 +57,6 @@ public interface Visitor {
 
    public abstract void visit(Param param);
 
+   public abstract void visit(Return ret);
+
 }

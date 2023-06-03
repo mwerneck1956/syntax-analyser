@@ -1,26 +1,21 @@
-2023-06-03 15:21:07,949 [com.compiler.App.main()] INFO  InterpretVisitor:173 - Executing main function
-2023-06-03 15:21:07,951 [com.compiler.App.main()] INFO  InterpretVisitor:294 - Stacking int 3
-2023-06-03 15:21:07,951 [com.compiler.App.main()] INFO  InterpretVisitor:149 - New attribution x = 3
-2023-06-03 15:21:07,951 [com.compiler.App.main()] INFO  InterpretVisitor:197 - Trying to call function teste
-2023-06-03 15:21:07,951 [com.compiler.App.main()] INFO  InterpretVisitor:46 - Visiting add with x + 3
-2023-06-03 15:21:07,951 [com.compiler.App.main()] INFO  InterpretVisitor:228 - Visiting id : "x"
-2023-06-03 15:21:07,954 [com.compiler.App.main()] INFO  InterpretVisitor:234 - Adding value 3 to the operands
-2023-06-03 15:21:07,954 [com.compiler.App.main()] INFO  InterpretVisitor:294 - Stacking int 3
-2023-06-03 15:21:07,954 [com.compiler.App.main()] INFO  InterpretVisitor:62 - Add finished storing 6 to the operands
-2023-06-03 15:21:07,954 [com.compiler.App.main()] INFO  InterpretVisitor:46 - Visiting add with x + 5
-2023-06-03 15:21:07,954 [com.compiler.App.main()] INFO  InterpretVisitor:228 - Visiting id : "x"
-2023-06-03 15:21:07,954 [com.compiler.App.main()] INFO  InterpretVisitor:234 - Adding value 3 to the operands
-2023-06-03 15:21:07,954 [com.compiler.App.main()] INFO  InterpretVisitor:294 - Stacking int 5
-2023-06-03 15:21:07,955 [com.compiler.App.main()] INFO  InterpretVisitor:62 - Add finished storing 8 to the operands
-2023-06-03 15:21:07,955 [com.compiler.App.main()] INFO  InterpretVisitor:176 - Executing teste function
-2023-06-03 15:21:07,955 [com.compiler.App.main()] INFO  InterpretVisitor:185 - Params in the stack : {b=6, x=8}
-2023-06-03 15:21:07,955 [com.compiler.App.main()] INFO  InterpretVisitor:46 - Visiting add with x + b
-2023-06-03 15:21:07,955 [com.compiler.App.main()] INFO  InterpretVisitor:228 - Visiting id : "x"
-2023-06-03 15:21:07,955 [com.compiler.App.main()] INFO  InterpretVisitor:234 - Adding value 8 to the operands
-2023-06-03 15:21:07,955 [com.compiler.App.main()] INFO  InterpretVisitor:228 - Visiting id : "b"
-2023-06-03 15:21:07,955 [com.compiler.App.main()] INFO  InterpretVisitor:234 - Adding value 6 to the operands
-2023-06-03 15:21:07,955 [com.compiler.App.main()] INFO  InterpretVisitor:62 - Add finished storing 14 to the operands
-2023-06-03 15:21:07,955 [com.compiler.App.main()] INFO  InterpretVisitor:149 - New attribution c = 14
-2023-06-03 15:21:07,955 [com.compiler.App.main()] INFO  InterpretVisitor:228 - Visiting id : "c"
-2023-06-03 15:21:07,955 [com.compiler.App.main()] INFO  InterpretVisitor:234 - Adding value 14 to the operands
-2023-06-03 15:21:07,955 [com.compiler.App.main()] INFO  InterpretVisitor:315 - Visiting print
+2023-06-03 17:20:47,869 [com.compiler.App.main()] INFO  InterpretVisitor:178 - Executing main function
+2023-06-03 17:20:47,871 [com.compiler.App.main()] INFO  InterpretVisitor:312 - Stacking int 3
+2023-06-03 17:20:47,871 [com.compiler.App.main()] INFO  InterpretVisitor:151 - New attribution x = 3
+2023-06-03 17:20:47,871 [com.compiler.App.main()] INFO  InterpretVisitor:202 - Trying to call function teste
+2023-06-03 17:20:47,871 [com.compiler.App.main()] INFO  InterpretVisitor:312 - Stacking int 5
+2023-06-03 17:20:47,871 [com.compiler.App.main()] INFO  InterpretVisitor:181 - Executing teste function
+2023-06-03 17:20:47,874 [com.compiler.App.main()] INFO  InterpretVisitor:190 - Params in the stack : {b=5, x=5.5}
+2023-06-03 17:20:47,874 [com.compiler.App.main()] INFO  InterpretVisitor:48 - Visiting add with x + b
+2023-06-03 17:20:47,874 [com.compiler.App.main()] INFO  InterpretVisitor:246 - Visiting id : "x"
+2023-06-03 17:20:47,874 [com.compiler.App.main()] INFO  InterpretVisitor:252 - Adding value 5.5 to the operands
+2023-06-03 17:20:47,874 [com.compiler.App.main()] INFO  InterpretVisitor:246 - Visiting id : "b"
+2023-06-03 17:20:47,874 [com.compiler.App.main()] INFO  InterpretVisitor:252 - Adding value 5 to the operands
+2023-06-03 17:20:47,875 [com.compiler.App.main()] INFO  InterpretVisitor:64 - Add finished storing 10.5 to the operands
+2023-06-03 17:20:47,875 [com.compiler.App.main()] INFO  InterpretVisitor:151 - New attribution c = 10.5
+2023-06-03 17:20:47,875 [com.compiler.App.main()] INFO  InterpretVisitor:391 - Visiting a return
+2023-06-03 17:20:47,875 [com.compiler.App.main()] INFO  InterpretVisitor:246 - Visiting id : "c"
+2023-06-03 17:20:47,875 [com.compiler.App.main()] INFO  InterpretVisitor:252 - Adding value 10.5 to the operands
+2023-06-03 17:20:47,875 [com.compiler.App.main()] INFO  InterpretVisitor:223 - Putting return variable c with value : 10.5
+2023-06-03 17:20:47,875 [com.compiler.App.main()] INFO  InterpretVisitor:246 - Visiting id : "c"
+2023-06-03 17:20:47,875 [com.compiler.App.main()] INFO  InterpretVisitor:252 - Adding value 10.5 to the operands
+2023-06-03 17:20:47,875 [com.compiler.App.main()] INFO  InterpretVisitor:333 - Visiting print

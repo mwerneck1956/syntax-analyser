@@ -38,6 +38,10 @@ public class FunctionCall extends Cmd {
       return params;
    }
 
+   public ArrayList<LValue> getReturnsId() {
+      return ReturnsId;
+   }
+
    public void accept(Visitor visitor) {
       visitor.visit(this);
    }

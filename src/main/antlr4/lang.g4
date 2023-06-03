@@ -57,14 +57,25 @@ functions
 
 func
 	returns[Function f]:
-	//Função sem parametros
-	ID OPEN_PARENTHESIS CLOSE_PARENTHESIS c = cmdList { 
+	ID {
 		ID id = new ID($ID.line, $ID.pos, $ID.text);
-		$f = new Function(id, $c.commands);
+		Function func = new Function(id);
+	 } OPEN_PARENTHESIS (
+		params { 
+		func.setParamlist($params.paramsArray);
+	 }
+	)? CLOSE_PARENTHESIS (
+		COLON type { 
+		func.addReturn($type.basicType);
+	} (
+			COMMA type { 
+		func.addReturn($type.basicType);
 	}
-	| ID OPEN_PARENTHESIS params CLOSE_PARENTHESIS c = cmdList { 
-		ID id = new ID($ID.line, $ID.pos, $ID.text);
-		$f = new Function(id, $c.commands , $params.paramsArray);
+		)*
+	)? cmdList { 
+		func.setBody($cmdList.commands);
+
+		$f = func;
 	};
 params
 	returns[ArrayList<Param> paramsArray]:
@@ -130,7 +141,17 @@ cmd
 	| PRINT e = exp SEMI { 
 		$command = new Print($PRINT.line,$PRINT.pos, $e.expInstance);
 	}
-	| RETURN exp (COMMA exp)* SEMI
+	| RETURN { 
+	 	Return returnCmd = new Return($RETURN.line,$RETURN.pos);
+	} exp { 
+		returnCmd.addExpr($exp.expInstance);
+	} (
+		COMMA exp { 
+		returnCmd.addExpr($exp.expInstance);
+	}
+	)* SEMI { 
+		$command = returnCmd;
+	}
 	| l = lvalue EQ e = exp SEMI {
 		$command = new Attribution($EQ.line, $EQ.pos, $l.node, $e.expInstance );
 	}
