@@ -55,4 +55,6 @@ public interface Visitor {
 
    public abstract void visit(GreatherThan lessThan);
 
+   public abstract void visit(Param param);
+
 }

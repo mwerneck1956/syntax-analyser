@@ -1,11 +1,14 @@
 package com.compiler.ast;
 
-public class Param {
+import com.compiler.visitors.Visitor;
+
+public class Param extends Node {
 
    private ID id;
    private BasicType type;
 
    public Param(ID id, BasicType type) {
+      super(id.getLine(), id.getCol());
       this.id = id;
       this.type = type;
    }
@@ -21,6 +24,10 @@ public class Param {
    @Override
    public String toString() {
       return id.toString() + "::" + type.toString();
+   }
+
+   public void accept(Visitor visitor) {
+      visitor.visit(this);
    }
 
 }

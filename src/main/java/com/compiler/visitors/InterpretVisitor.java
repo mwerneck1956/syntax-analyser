@@ -6,36 +6,7 @@ import java.util.Stack;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.compiler.ast.Add;
-import com.compiler.ast.Attribution;
-import com.compiler.ast.BasicType;
-import com.compiler.ast.BinOP;
-import com.compiler.ast.Cmd;
-import com.compiler.ast.CmdList;
-import com.compiler.ast.CustomRuntimeException;
-import com.compiler.ast.Data;
-import com.compiler.ast.Div;
-import com.compiler.ast.Function;
-import com.compiler.ast.FunctionCall;
-import com.compiler.ast.GreatherThan;
-import com.compiler.ast.ID;
-import com.compiler.ast.If;
-import com.compiler.ast.Iterate;
-import com.compiler.ast.LValue;
-import com.compiler.ast.LessThan;
-import com.compiler.ast.LiteralChar;
-import com.compiler.ast.LiteralFalse;
-import com.compiler.ast.LiteralFloat;
-import com.compiler.ast.LiteralInt;
-import com.compiler.ast.LiteralNull;
-import com.compiler.ast.LiteralTrue;
-import com.compiler.ast.Mult;
-import com.compiler.ast.Node;
-import com.compiler.ast.Print;
-import com.compiler.ast.Prog;
-import com.compiler.ast.Read;
-import com.compiler.ast.StmtList;
-import com.compiler.ast.Sub;
+import com.compiler.ast.*;
 
 public class InterpretVisitor implements Visitor {
 
@@ -72,7 +43,7 @@ public class InterpretVisitor implements Visitor {
    public void visit(Add add) {
       try {
 
-         logger.info("Visiting add");
+         logger.info("Visiting add with " + add.toString());
 
          add.getLeft().accept(this);
          add.getRight().accept(this);
@@ -82,14 +53,13 @@ public class InterpretVisitor implements Visitor {
          right = (Number) operands.pop();
          left = (Number) operands.pop();
 
-         // System.out.println("Visiting add");
-
          if (left instanceof Float || right instanceof Float)
             res = left.floatValue() + right.floatValue();
          else
             res = left.intValue() + right.intValue();
 
          operands.push(res);
+         logger.info("Add finished storing " + res + " to the operands");
       } catch (Exception err) {
          throw new RuntimeException(err.getMessage());
       }
@@ -174,21 +144,16 @@ public class InterpretVisitor implements Visitor {
       attr.getExp().accept(this);
       Object val = operands.pop();
 
-      logger.info("New attribution " + id.getId() + " = " + val);
-
       env.peek().put(id.getId(), val);
 
+      logger.info("New attribution " + id.getId() + " = " + val);
    }
 
    public void visit(BasicType bType) {
 
-      // TODO Auto-generated method stub
-
    }
 
-   @Override
    public void visit(BinOP binOp) {
-      // TODO Auto-generated method stub
 
    }
 
@@ -204,18 +169,57 @@ public class InterpretVisitor implements Visitor {
    public void visit(Function function) {
       boolean isMainFunction = function.getName().equals("main");
 
-      System.out.println("Interpretando " + function.getName());
-
       if (isMainFunction) {
+         logger.info("Executing main function");
          function.getBody().accept(this);
       } else {
+         logger.info("Executing " + function.getName() + " function");
+
          HashMap<String, Object> localEnv = new HashMap<String, Object>();
          this.env.push(localEnv);
+
+         if (function.getParamlist().size() > 0) {
+            for (Param p : function.getParamlist())
+               p.accept(this);
+
+            logger.info("Params in the stack : " + this.env.peek().toString());
+         }
 
          function.getBody().accept(this);
          this.env.pop();
       }
 
+   }
+
+   public void visit(FunctionCall functionCall) {
+      try {
+
+         logger.info("Trying to call function " + functionCall.getFunctionName());
+
+         Function func = functions.get(functionCall.getFunctionName());
+
+         if (func != null) {
+            int receivedParams = functionCall.getParams().size();
+
+            if (func.isQuantityOfParamsValid(receivedParams)) {
+               for (Expr expr : functionCall.getParams())
+                  expr.accept(this);
+
+               func.accept(this);
+            }
+
+            else
+               throw new CustomRuntimeException("Function " + functionCall.getFunctionName() + " expected "
+                     + func.getParamlist().size() + " params", functionCall);
+
+         } else {
+            String errMessage = "Function: " + functionCall.getFunctionName() + " Not declared";
+            throw new CustomRuntimeException(errMessage, functionCall);
+         }
+
+      } catch (Exception err) {
+
+      }
    }
 
    @Override
@@ -227,7 +231,7 @@ public class InterpretVisitor implements Visitor {
             Object idValue = env.peek().get(id.getName());
             operands.push(idValue);
 
-            logger.info("Adding variable " + id.getName() + " = " + idValue + " to the env");
+            logger.info("Adding value " + idValue + " to the operands");
          } else
             throw new RuntimeException("Variable " + id.getName() + " Not declared");
 
@@ -321,24 +325,6 @@ public class InterpretVisitor implements Visitor {
 
    }
 
-   public void visit(FunctionCall functionCall) {
-      try {
-
-         Function func = functions.get(functionCall.getFunctionName());
-
-         if (func != null) {
-            func.accept(this);
-
-         } else {
-            String errMessage = "Function: " + functionCall.getFunctionName() + " Not declared";
-            throw new CustomRuntimeException(errMessage, functionCall);
-         }
-
-      } catch (Exception err) {
-
-      }
-   }
-
    public void visit(LessThan lessThan) {
       try {
          lessThan.getLeft().accept(this);
@@ -377,4 +363,9 @@ public class InterpretVisitor implements Visitor {
       logger.info("Bigger than added " + res + " To te stack");
    }
 
+   public void visit(Param param) {
+      Object paramValue = operands.pop();
+
+      env.peek().put(param.getId().getId(), paramValue);
+   }
 }

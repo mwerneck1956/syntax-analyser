@@ -12,7 +12,7 @@ public class Function extends Cmd {
    public Function(ID id, CmdList body) {
       super(id.getLine(), id.getCol());
       this.body = body;
-      this.paramlist = null;
+      this.paramlist = new ArrayList<Param>();
       this.id = id;
    }
 
@@ -21,8 +21,6 @@ public class Function extends Cmd {
       this.body = body;
       this.paramlist = params;
       this.id = id;
-
-      // System.out.println("Params : " + this.paramlist.toString());
    }
 
    public String getName() {
@@ -35,6 +33,14 @@ public class Function extends Cmd {
       System.out.println("{");
 
       return "";
+   }
+
+   public Boolean isQuantityOfParamsValid(int receivedParams) {
+      return receivedParams == this.paramlist.size();
+   }
+
+   public ArrayList<Param> getParamlist() {
+      return paramlist;
    }
 
    public void accept(Visitor visitor) {

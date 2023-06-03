@@ -13,15 +13,10 @@ public class FunctionCall extends Cmd {
       this.functionName = functionName;
       this.params = new ArrayList<Expr>();
       this.ReturnsId = new ArrayList<LValue>();
-
-      System.out.println("Function call called: " + functionName);
-
    }
 
    public void addParams(ArrayList<Expr> lvalue) {
       this.params = lvalue;
-
-      System.out.println("Function call params: " + lvalue);
    }
 
    public void addReturn(LValue returnId) {
@@ -37,6 +32,10 @@ public class FunctionCall extends Cmd {
    @Override
    public String toString() {
       return "";
+   }
+
+   public ArrayList<Expr> getParams() {
+      return params;
    }
 
    public void accept(Visitor visitor) {
