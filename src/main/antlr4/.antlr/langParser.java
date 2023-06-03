@@ -1653,7 +1653,6 @@ public class langParser extends Parser {
 				setState(341);
 				((SexpContext)_localctx).LITERAL_TRUE = match(LITERAL_TRUE);
 				 
-						System.out.println("Achei um true");
 						((SexpContext)_localctx).sexpValue =  new LiteralTrue((((SexpContext)_localctx).LITERAL_TRUE!=null?((SexpContext)_localctx).LITERAL_TRUE.getLine():0),(((SexpContext)_localctx).LITERAL_TRUE!=null?((SexpContext)_localctx).LITERAL_TRUE.getCharPositionInLine():0));
 						
 					

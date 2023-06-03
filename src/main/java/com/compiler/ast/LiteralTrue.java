@@ -12,9 +12,6 @@ public class LiteralTrue extends Expr {
     public LiteralTrue(int line, int col) {
         super(line, col);
         this.value = true;
-
-        System.out.println("Literal true criado");
-
     }
 
     public String toString() {

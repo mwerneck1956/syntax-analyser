@@ -206,7 +206,6 @@ sexp
 		$sexpValue = new Not($LOGICALNEGATION.line, $LOGICALNEGATION.pos, $sexp.sexpValue);
 	}
 	| LITERAL_TRUE { 
-		System.out.println("Achei um true");
 		$sexpValue = new LiteralTrue($LITERAL_TRUE.line,$LITERAL_TRUE.pos);
 		
 	}
