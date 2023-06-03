@@ -155,7 +155,9 @@ exp
 rexp
 	returns[Expr rexpExpr]:
 	a = aexp { $rexpExpr = $a.binOp; }
-	| r = rexp RELACIONAL a = aexp { $rexpExpr = new LessThan($EQEQ.line, $EQEQ.pos,  $r.rexpExpr, $a.binOp);  
+	| r = rexp RELACIONAL a = aexp { $rexpExpr = new LessThan($EQEQ.line, $EQEQ.pos,  $r.rexpExpr, $a.binOp);
+		}
+	| r = rexp GREATER_THAN a = aexp { $rexpExpr = new GreatherThan($EQEQ.line, $EQEQ.pos,  $r.rexpExpr, $a.binOp);  
 		}
 	| r = rexp EQEQ a = aexp { $rexpExpr = new Equal($EQEQ.line, $EQEQ.pos, $r.rexpExpr, $a.binOp);  
 		}

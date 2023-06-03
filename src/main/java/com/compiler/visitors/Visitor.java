@@ -53,4 +53,6 @@ public interface Visitor {
 
    public abstract void visit(LessThan lessThan);
 
+   public abstract void visit(GreatherThan lessThan);
+
 }

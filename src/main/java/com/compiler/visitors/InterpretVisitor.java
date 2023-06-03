@@ -17,6 +17,7 @@ import com.compiler.ast.Data;
 import com.compiler.ast.Div;
 import com.compiler.ast.Function;
 import com.compiler.ast.FunctionCall;
+import com.compiler.ast.GreatherThan;
 import com.compiler.ast.ID;
 import com.compiler.ast.If;
 import com.compiler.ast.Iterate;
@@ -170,20 +171,12 @@ public class InterpretVisitor implements Visitor {
    public void visit(Attribution attr) {
       LValue id = attr.getID();
 
-      Object current = env.peek().get(id.getId());
+      attr.getExp().accept(this);
+      Object val = operands.pop();
 
-      if (current == null) {
-         attr.getExp().accept(this);
-         Object val = operands.pop();
+      logger.info("New attribution " + id.getId() + " = " + val);
 
-         logger.info("New attribution " + id.getId() + " = " + val);
-
-         env.peek().put(id.getId(), val);
-      } else {
-         String errMessage = "Variable : " + id.getId() + " Already declared";
-
-         throw new CustomRuntimeException(errMessage, attr);
-      }
+      env.peek().put(id.getId(), val);
 
    }
 
@@ -216,8 +209,6 @@ public class InterpretVisitor implements Visitor {
       if (isMainFunction) {
          function.getBody().accept(this);
       } else {
-         System.out.println("Inst main");
-
          HashMap<String, Object> localEnv = new HashMap<String, Object>();
          this.env.push(localEnv);
 
@@ -340,7 +331,6 @@ public class InterpretVisitor implements Visitor {
 
          } else {
             String errMessage = "Function: " + functionCall.getFunctionName() + " Not declared";
-
             throw new CustomRuntimeException(errMessage, functionCall);
          }
 
@@ -368,6 +358,23 @@ public class InterpretVisitor implements Visitor {
 
       }
 
+   }
+
+   public void visit(GreatherThan greatherThan) {
+
+      greatherThan.getLeft().accept(this);
+      greatherThan.getRight().accept(this);
+
+      Number left, right;
+
+      right = (Number) operands.pop();
+      left = (Number) operands.pop();
+
+      Boolean res = new Boolean((Integer) left > (Integer) right);
+
+      operands.push(res);
+
+      logger.info("Bigger than added " + res + " To te stack");
    }
 
 }
