@@ -55,6 +55,8 @@ public interface Visitor {
 
    public abstract void visit(GreatherThan lessThan);
 
+   public abstract void visit(Not not);
+
    public abstract void visit(Param param);
 
    public abstract void visit(Return ret);

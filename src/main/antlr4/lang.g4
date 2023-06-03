@@ -202,11 +202,18 @@ mexp
 	| s = sexp {  $mexpExpr = $s.sexpValue; };
 sexp
 	returns[Expr sexpValue]:
-	LOGICALNEGATION sexp
-	| MINUS sexp
-	| LITERAL_TRUE {$sexpValue = new LiteralTrue($LITERAL_TRUE.line,$LITERAL_TRUE.pos);}
+	LOGICALNEGATION sexp { 
+		$sexpValue = new Not($LOGICALNEGATION.line, $LOGICALNEGATION.pos, $sexp.sexpValue);
+	}
+	| LITERAL_TRUE { 
+		System.out.println("Achei um true");
+		$sexpValue = new LiteralTrue($LITERAL_TRUE.line,$LITERAL_TRUE.pos);
+		
+	}
 	| LITERAL_FALSE {$sexpValue = new LiteralFalse($LITERAL_FALSE.line,$LITERAL_FALSE.pos);}
-	| LITERAL_NULL {$sexpValue = new LiteralNull($LITERAL_NULL.line,$LITERAL_NULL.pos);}
+	| LITERAL_NULL {
+		$sexpValue = new LiteralNull($LITERAL_NULL.line,$LITERAL_NULL.pos);
+	}
 	| LITERAL_INT {
 		$sexpValue = new LiteralInt($LITERAL_INT.line,$LITERAL_INT.pos,Integer.parseInt($LITERAL_INT.text) );
 		}
@@ -253,16 +260,16 @@ READ: 'read';
 ITERATE: 'iterate';
 IF: 'if';
 ELSE: 'else';
+LITERAL_TRUE: 'true';
+LITERAL_FALSE: 'false';
+LITERAL_NULL: 'null';
 
 ID: [a-z]+ [A-za-z_]*;
 TYPE: [A-Z][A-Za-z]*;
 
 LITERAL_INT: [0-9]+;
 LITERAL_FLOAT: [0-9]* '.' [0-9]+;
-LITERAL_CHAR: '\'' ( '\\' [btnr"'\\] | ~[\r\n\\"]) '\'';
-LITERAL_TRUE: 'true';
-LITERAL_FALSE: 'false';
-LITERAL_NULL: 'null';
+LITERAL_CHAR: '\'' ( '\\' ~[\r\n\\"] | [a-z] | [A-Z]) '\'';
 
 NEWLINE: '\r'? '\n' -> skip;
 WHITESPACE: [ \t]+ -> skip;

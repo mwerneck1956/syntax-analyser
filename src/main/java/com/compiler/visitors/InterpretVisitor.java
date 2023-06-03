@@ -301,41 +301,30 @@ public class InterpretVisitor implements Visitor {
 
    @Override
    public void visit(LiteralChar literal) {
-      // TODO Auto-generated method stub
+      this.operands.push(new String(literal.getValue()));
 
    }
 
    @Override
    public void visit(LiteralFalse literal) {
-      // TODO Auto-generated method stub
-
+      this.operands.push(new Boolean(false));
    }
 
    public void visit(LiteralFloat literal) {
-      try {
-         this.operands.push(literal.getValue());
-      } catch (Exception err) {
-
-      }
+      this.operands.push(new Float(literal.getValue()));
    }
 
    public void visit(LiteralInt literal) {
-      try {
-         logger.info("Stacking int " + literal.getValue());
-
-         this.operands.push(literal.getValue());
-      } catch (Exception err) {
-
-      }
+      this.operands.push(new Integer(literal.getValue()));
 
    }
 
    public void visit(LiteralNull literal) {
-
+      this.operands.push(null);
    }
 
    public void visit(LiteralTrue literal) {
-      // TODO Auto-generated method stub
+      this.operands.push(new Boolean(true));
 
    }
 
@@ -409,5 +398,10 @@ public class InterpretVisitor implements Visitor {
 
          e.accept(this);
       }
+   }
+
+   public void visit(Not not) {
+      logger.info("Not visited" + not.toString());
+
    }
 }

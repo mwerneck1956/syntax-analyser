@@ -1,6 +1,5 @@
 package com.compiler.ast;
 
-import java.util.HashMap;
 import com.compiler.visitors.Visitor;
 
 public class LiteralTrue extends Expr {
@@ -14,10 +13,11 @@ public class LiteralTrue extends Expr {
         super(line, col);
         this.value = true;
 
+        System.out.println("Literal true criado");
+
     }
 
     public String toString() {
-        // TODO Auto-generated method stub
         return null;
     }
 
