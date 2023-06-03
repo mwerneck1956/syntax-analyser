@@ -618,6 +618,8 @@ public class langParser extends Parser {
 			setState(116);
 			((TypeContext)_localctx).btype = btype();
 			 
+
+
 					((TypeContext)_localctx).basicType =  ((TypeContext)_localctx).btype.basicType;
 				
 			}
@@ -689,7 +691,7 @@ public class langParser extends Parser {
 				{
 				setState(127);
 				((BtypeContext)_localctx).INT = match(INT);
-				((BtypeContext)_localctx).basicType =  new BasicType((((BtypeContext)_localctx).INT!=null?((BtypeContext)_localctx).INT.getLine():0), (((BtypeContext)_localctx).INT!=null?((BtypeContext)_localctx).INT.getCharPositionInLine():0), "Int");
+				((BtypeContext)_localctx).basicType =  new BasicType((((BtypeContext)_localctx).INT!=null?((BtypeContext)_localctx).INT.getLine():0), (((BtypeContext)_localctx).INT!=null?((BtypeContext)_localctx).INT.getCharPositionInLine():0), "Int"); 
 				}
 				break;
 			case CHAR:

@@ -3,7 +3,6 @@ package com.compiler.ast;
 import java.util.HashMap;
 
 public class Declaration {
-
    private ID id;
    private BasicType type;
 

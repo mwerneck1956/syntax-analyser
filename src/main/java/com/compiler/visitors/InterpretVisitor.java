@@ -170,12 +170,21 @@ public class InterpretVisitor implements Visitor {
    public void visit(Attribution attr) {
       LValue id = attr.getID();
 
-      attr.getExp().accept(this);
-      Object val = operands.pop();
+      Object current = env.peek().get(id.getId());
 
-      logger.info("New attribution " + id.getId() + " = " + val);
+      if (current == null) {
+         attr.getExp().accept(this);
+         Object val = operands.pop();
 
-      env.peek().put(id.getId(), val);
+         logger.info("New attribution " + id.getId() + " = " + val);
+
+         env.peek().put(id.getId(), val);
+      } else {
+         String errMessage = "Variable : " + id.getId() + " Already declared";
+
+         throw new CustomRuntimeException(errMessage, attr);
+      }
+
    }
 
    public void visit(BasicType bType) {
@@ -200,7 +209,22 @@ public class InterpretVisitor implements Visitor {
 
    @Override
    public void visit(Function function) {
-      function.getBody().accept(this);
+      boolean isMainFunction = function.getName().equals("main");
+
+      System.out.println("Interpretando " + function.getName());
+
+      if (isMainFunction) {
+         function.getBody().accept(this);
+      } else {
+         System.out.println("Inst main");
+
+         HashMap<String, Object> localEnv = new HashMap<String, Object>();
+         this.env.push(localEnv);
+
+         function.getBody().accept(this);
+         this.env.pop();
+      }
+
    }
 
    @Override
@@ -312,8 +336,7 @@ public class InterpretVisitor implements Visitor {
          Function func = functions.get(functionCall.getFunctionName());
 
          if (func != null) {
-
-            func.getBody().accept(this);
+            func.accept(this);
 
          } else {
             String errMessage = "Function: " + functionCall.getFunctionName() + " Not declared";
