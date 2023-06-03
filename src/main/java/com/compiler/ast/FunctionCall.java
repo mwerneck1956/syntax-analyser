@@ -21,8 +21,6 @@ public class FunctionCall extends Cmd {
 
    public void addReturn(LValue returnId) {
       this.ReturnsId.add(returnId);
-
-      System.out.println("Function call return: " + returnId);
    }
 
    public String getFunctionName() {

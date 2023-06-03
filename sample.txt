@@ -10,14 +10,16 @@ data teste_teste{
 
 teste(x :: Int, b :: Float) : Int , Float{
     c = x + b;
-    
-    return c;
+    e = x * x;
+
+    return c,e;
 }
 
 main(){
     x = 3;
 
-    teste(5, 5.5)<c>;
+    teste(5, 5.5)<c,b>;
 
     print c;
+    print b;
 }

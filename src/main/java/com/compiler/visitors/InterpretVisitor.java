@@ -1,7 +1,9 @@
 package com.compiler.visitors;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Stack;
+import java.util.Collections;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -183,9 +185,17 @@ public class InterpretVisitor implements Visitor {
          HashMap<String, Object> localEnv = new HashMap<String, Object>();
          this.env.push(localEnv);
 
-         if (function.getParamlist().size() > 0) {
-            for (Param p : function.getParamlist())
+         ArrayList<Param> functionParams = function.getParamlist();
+
+         if (functionParams.size() > 0) {
+
+            // Collections.reverse(functionParams);
+
+            for (int i = functionParams.size() - 1; i >= 0; i--) {
+               Param p = functionParams.get(i);
+
                p.accept(this);
+            }
 
             logger.info("Params in the stack : " + this.env.peek().toString());
          }
@@ -215,12 +225,14 @@ public class InterpretVisitor implements Visitor {
                if (functionCall.getReturnsId().size() > 0 && returnMode) {
                   // Tenho que colocar no env esse id com o valor novo;
 
-                  String returnVariableName = functionCall.getReturnsId().get(0).getId();
+                  for (LValue returnId : functionCall.getReturnsId()) {
+                     String returnVariableName = returnId.getId();
 
-                  Object value = operands.pop();
-                  this.env.peek().put(returnVariableName, value);
+                     Object value = operands.pop();
+                     this.env.peek().put(returnVariableName, value);
 
-                  logger.info("Putting return variable " + returnVariableName + " with value : " + value);
+                     logger.info("Putting return variable " + returnVariableName + " with value : " + value);
+                  }
 
                   returnMode = false;
                }
@@ -390,8 +402,12 @@ public class InterpretVisitor implements Visitor {
    public void visit(Return ret) {
       logger.info("Visiting a return");
 
-      ret.getReturnedExprs().get(0).accept(this);
-
       returnMode = true;
+
+      for (int i = ret.getReturnedExprs().size() - 1; i >= 0; i--) {
+         Expr e = ret.getReturnedExprs().get(i);
+
+         e.accept(this);
+      }
    }
 }
