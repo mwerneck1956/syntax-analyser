@@ -12,7 +12,6 @@ public class Attribution extends Cmd {
       this.id = id;
       this.expression = expression;
 
-      // System.out.println("Attribution criada" + " " + this.toString());
    }
 
    public LValue getID() {

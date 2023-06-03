@@ -16,7 +16,9 @@ teste(x :: Int, b :: Float) : Int , Float{
 }
 
 main(){
-    x = true;
-
-    print  x;
+    a = 5;
+    b = 10;
+    c = (a + b) * b;
+    
+    print c;
 }

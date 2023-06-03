@@ -226,7 +226,8 @@ sexp
 pexp
 	returns[LValue value]:
 	l = lvalue { $value = $l.node; }
-	| OPEN_PARENTHESIS exp CLOSE_PARENTHESIS
+	| OPEN_PARENTHESIS exp CLOSE_PARENTHESIS { $value = new ParenthesisExpression($OPEN_PARENTHESIS.line, $OPEN_PARENTHESIS.pos, $exp.expInstance); 
+	}
 	| NEW type (OPEN_SQUAREBRACKET exp CLOSE_SQUAREBRACKET)?
 	| ID OPEN_PARENTHESIS (exps)? CLOSE_PARENTHESIS OPEN_SQUAREBRACKET exp CLOSE_SQUAREBRACKET;
 lvalue

@@ -1,11 +1,12 @@
 package com.compiler.ast;
 
+import com.compiler.visitors.Visitor;
+
 public class Equal extends BinOP {
 
    public Equal(int line, int col, Expr l, Expr r) {
       super(line, col, l, r);
 
-      System.out.println("Equal created" + l.toString() + " === " + r.toString());
    }
 
    public String toString() {
@@ -15,6 +16,10 @@ public class Equal extends BinOP {
          RightOperator = "(" + RightOperator + ")";
       }
       return leftOperator.toString() + " == " + RightOperator.toString();
+   }
+
+   public void accept(Visitor visitor) {
+      visitor.visit(this);
    }
 
 }

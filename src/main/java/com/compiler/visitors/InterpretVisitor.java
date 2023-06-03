@@ -3,7 +3,6 @@ package com.compiler.visitors;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Stack;
-import java.util.Collections;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -65,7 +64,7 @@ public class InterpretVisitor implements Visitor {
          operands.push(res);
          logger.info("Add finished storing " + res + " to the operands");
       } catch (Exception err) {
-         throw new RuntimeException(err.getMessage());
+         throw new CustomRuntimeException(err.getMessage(), add);
       }
 
    }
@@ -138,6 +137,27 @@ public class InterpretVisitor implements Visitor {
 
    }
 
+   public void visit(Equal equal) {
+      try {
+
+         equal.getLeft().accept(this);
+         equal.getRight().accept(this);
+
+         Object left, right;
+
+         right = operands.pop();
+         left = operands.pop();
+
+         operands.push(left.equals(right));
+
+         logger.info("Testing if " + right.toString() + " == " + left.toString());
+
+      } catch (Exception err) {
+         throw new RuntimeException(err.getMessage());
+      }
+
+   }
+
    public void visit(Data data) {
 
    }
@@ -189,8 +209,6 @@ public class InterpretVisitor implements Visitor {
 
          if (functionParams.size() > 0) {
 
-            // Collections.reverse(functionParams);
-
             for (int i = functionParams.size() - 1; i >= 0; i--) {
                Param p = functionParams.get(i);
 
@@ -223,7 +241,6 @@ public class InterpretVisitor implements Visitor {
                func.accept(this);
 
                if (functionCall.getReturnsId().size() > 0 && returnMode) {
-                  // Tenho que colocar no env esse id com o valor novo;
 
                   for (LValue returnId : functionCall.getReturnsId()) {
                      String returnVariableName = returnId.getId();
@@ -340,10 +357,6 @@ public class InterpretVisitor implements Visitor {
 
    }
 
-   public void visit(StmtList stmtList) {
-
-   }
-
    public void visit(LessThan lessThan) {
       try {
          lessThan.getLeft().accept(this);
@@ -398,6 +411,10 @@ public class InterpretVisitor implements Visitor {
 
          e.accept(this);
       }
+   }
+
+   public void visit(ParenthesisExpression parenthesisExpression) {
+      parenthesisExpression.getExpr().accept(this);
    }
 
    public void visit(Not not) {

@@ -1,6 +1,5 @@
 package com.compiler.ast;
 
-import java.util.HashMap;
 import java.util.ArrayList;
 import com.compiler.visitors.Visitor;
 
@@ -16,14 +15,10 @@ public class CmdList extends Cmd {
 
    public void addCommand(Cmd command) {
 
-      // if (command != null)
-      // System.out.println("Adicionando commando " + command);
-
       body.add(command);
    }
 
    public String toString() {
-      // TODO Auto-generated method stub
       return null;
    }
 

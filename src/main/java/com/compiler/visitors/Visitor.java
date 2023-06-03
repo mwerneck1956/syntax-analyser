@@ -47,8 +47,6 @@ public interface Visitor {
 
    public abstract void visit(LiteralTrue literal);
 
-   public abstract void visit(StmtList stmtList);
-
    public abstract void visit(Sub sub);
 
    public abstract void visit(LessThan lessThan);
@@ -57,8 +55,12 @@ public interface Visitor {
 
    public abstract void visit(Not not);
 
+   public abstract void visit(Equal equal);
+
    public abstract void visit(Param param);
 
    public abstract void visit(Return ret);
+
+   public abstract void visit(ParenthesisExpression parenthesisExpression);
 
 }

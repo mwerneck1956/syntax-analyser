@@ -1,8 +1,5 @@
 package com.compiler.ast;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-
 import com.compiler.visitors.Visitor;
 
 public class If extends Cmd {
@@ -18,7 +15,6 @@ public class If extends Cmd {
       this.then = then;
       this.onElse = onElse;
 
-      System.out.println("If criado com else");
    }
 
    public If(int line, int column, Expr condition, Cmd then) {
@@ -27,8 +23,6 @@ public class If extends Cmd {
       this.condition = condition;
       this.then = then;
       this.onElse = null;
-
-      System.out.println("If criado sem else");
    }
 
    @Override
@@ -39,6 +33,14 @@ public class If extends Cmd {
 
    public Expr getCondition() {
       return condition;
+   }
+
+   public Cmd getThen() {
+      return then;
+   }
+
+   public Cmd getOnElse() {
+      return onElse;
    }
 
    public void accept(Visitor visitor) {
