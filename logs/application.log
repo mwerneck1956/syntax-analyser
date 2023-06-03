@@ -1,11 +1,18 @@
-2023-06-03 10:43:29,737 [com.compiler.App.main()] INFO  InterpretVisitor:275 - Stacking int 5
-2023-06-03 10:43:29,740 [com.compiler.App.main()] INFO  InterpretVisitor:176 - New attribution x = 5
-2023-06-03 10:43:29,740 [com.compiler.App.main()] INFO  InterpretVisitor:74 - Visiting add
-2023-06-03 10:43:29,741 [com.compiler.App.main()] INFO  InterpretVisitor:209 - Visiting id : "x"
-2023-06-03 10:43:29,741 [com.compiler.App.main()] INFO  InterpretVisitor:215 - Adding variable x = 5 to the env
-2023-06-03 10:43:29,741 [com.compiler.App.main()] INFO  InterpretVisitor:122 - Visiting mult
-2023-06-03 10:43:29,744 [com.compiler.App.main()] INFO  InterpretVisitor:209 - Visiting id : "x"
-2023-06-03 10:43:29,744 [com.compiler.App.main()] INFO  InterpretVisitor:215 - Adding variable x = 5 to the env
-2023-06-03 10:43:29,744 [com.compiler.App.main()] INFO  InterpretVisitor:209 - Visiting id : "x"
-2023-06-03 10:43:29,744 [com.compiler.App.main()] INFO  InterpretVisitor:215 - Adding variable x = 5 to the env
-2023-06-03 10:43:29,744 [com.compiler.App.main()] INFO  InterpretVisitor:296 - Visiting print
+2023-06-03 10:52:55,237 [com.compiler.App.main()] INFO  InterpretVisitor:275 - Stacking int 5
+2023-06-03 10:52:55,239 [com.compiler.App.main()] INFO  InterpretVisitor:176 - New attribution x = 5
+2023-06-03 10:52:55,239 [com.compiler.App.main()] INFO  InterpretVisitor:74 - Visiting add
+2023-06-03 10:52:55,240 [com.compiler.App.main()] INFO  InterpretVisitor:209 - Visiting id : "x"
+2023-06-03 10:52:55,240 [com.compiler.App.main()] INFO  InterpretVisitor:215 - Adding variable x = 5 to the env
+2023-06-03 10:52:55,240 [com.compiler.App.main()] INFO  InterpretVisitor:122 - Visiting mult
+2023-06-03 10:52:55,242 [com.compiler.App.main()] INFO  InterpretVisitor:209 - Visiting id : "x"
+2023-06-03 10:52:55,243 [com.compiler.App.main()] INFO  InterpretVisitor:215 - Adding variable x = 5 to the env
+2023-06-03 10:52:55,243 [com.compiler.App.main()] INFO  InterpretVisitor:209 - Visiting id : "x"
+2023-06-03 10:52:55,243 [com.compiler.App.main()] INFO  InterpretVisitor:215 - Adding variable x = 5 to the env
+2023-06-03 10:52:55,243 [com.compiler.App.main()] INFO  InterpretVisitor:296 - Visiting print
+2023-06-03 10:52:55,243 [com.compiler.App.main()] INFO  InterpretVisitor:74 - Visiting add
+2023-06-03 10:52:55,243 [com.compiler.App.main()] INFO  InterpretVisitor:275 - Stacking int 10
+2023-06-03 10:52:55,243 [com.compiler.App.main()] INFO  InterpretVisitor:275 - Stacking int 3
+2023-06-03 10:52:55,244 [com.compiler.App.main()] INFO  InterpretVisitor:176 - New attribution y = 13
+2023-06-03 10:52:55,244 [com.compiler.App.main()] INFO  InterpretVisitor:209 - Visiting id : "y"
+2023-06-03 10:52:55,244 [com.compiler.App.main()] INFO  InterpretVisitor:215 - Adding variable y = 13 to the env
+2023-06-03 10:52:55,244 [com.compiler.App.main()] INFO  InterpretVisitor:296 - Visiting print

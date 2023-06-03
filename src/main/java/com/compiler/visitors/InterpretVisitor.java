@@ -245,7 +245,7 @@ public class InterpretVisitor implements Visitor {
          }
 
       } catch (Exception err) {
-         throw new CustomRuntimeException(err.getMessage(), iterate.getLine(), iterate.getCol());
+         throw new CustomRuntimeException(err.getMessage(), iterate);
       }
 
    }
@@ -307,7 +307,23 @@ public class InterpretVisitor implements Visitor {
    }
 
    public void visit(FunctionCall functionCall) {
+      try {
 
+         Function func = functions.get(functionCall.getFunctionName());
+
+         if (func != null) {
+
+            func.getBody().accept(this);
+
+         } else {
+            String errMessage = "Function: " + functionCall.getFunctionName() + " Not declared";
+
+            throw new CustomRuntimeException(errMessage, functionCall);
+         }
+
+      } catch (Exception err) {
+
+      }
    }
 
    public void visit(LessThan lessThan) {
