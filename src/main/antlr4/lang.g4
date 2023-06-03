@@ -132,9 +132,18 @@ cmd
 	| l = lvalue EQ e = exp SEMI {
 		$command = new Attribution($EQ.line, $EQ.pos, $l.node, $e.expInstance );
 	}
-	| ID OPEN_PARENTHESIS (exps)? CLOSE_PARENTHESIS (
-		RELACIONAL lvalue (COMMA lvalue)* GREATER_THAN
-	)? SEMI;
+	| ID { 
+
+		FunctionCall functionCall = new FunctionCall($ID.line, $ID.pos, $ID.text);
+	} OPEN_PARENTHESIS (
+		exps {  functionCall.addParams($exps.expressions); }
+	)? CLOSE_PARENTHESIS (
+		RELACIONAL lvalue { functionCall.addReturn($lvalue.node);  } (
+			COMMA lvalue { 
+			functionCall.addReturn($lvalue.node);
+		}
+		)* GREATER_THAN
+	)? SEMI {  $command = functionCall; };
 exp
 	returns[Expr expInstance]:
 	e1 = exp AND e2 = exp {

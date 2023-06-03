@@ -9,15 +9,8 @@ data teste_teste{
 }
 
 main(a :: Float){
-    x = 10;
-    y = 30;
-    print x * x ;
+    x = 5;
+    print x + x * x;
 
-    iterate(x < 20){
-        print x;
-        x = x + 3;
-    }
-
-    
-
+    teste(a,b)<b,c>;
 }

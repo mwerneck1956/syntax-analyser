@@ -23,10 +23,6 @@ public class Print extends Cmd {
       return expr.toString();
    }
 
-   public int interpret(HashMap<String, Integer> Variables) {
-      return 0;
-   }
-
    public void accept(Visitor visitor) {
       visitor.visit(this);
    }

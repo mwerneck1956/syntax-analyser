@@ -12,9 +12,11 @@ import com.compiler.ast.BasicType;
 import com.compiler.ast.BinOP;
 import com.compiler.ast.Cmd;
 import com.compiler.ast.CmdList;
+import com.compiler.ast.CustomRuntimeException;
 import com.compiler.ast.Data;
 import com.compiler.ast.Div;
 import com.compiler.ast.Function;
+import com.compiler.ast.FunctionCall;
 import com.compiler.ast.ID;
 import com.compiler.ast.If;
 import com.compiler.ast.Iterate;
@@ -76,8 +78,8 @@ public class InterpretVisitor implements Visitor {
 
          Number left, right, res;
 
-         left = (Number) operands.pop();
          right = (Number) operands.pop();
+         left = (Number) operands.pop();
 
          // System.out.println("Visiting add");
 
@@ -234,6 +236,7 @@ public class InterpretVisitor implements Visitor {
    @Override
    public void visit(Iterate iterate) {
       try {
+
          iterate.getCondition().accept(this);
 
          while ((Boolean) operands.pop()) {
@@ -241,9 +244,8 @@ public class InterpretVisitor implements Visitor {
             iterate.getCondition().accept(this);
          }
 
-         // TODO Auto-generated method stub
       } catch (Exception err) {
-
+         throw new CustomRuntimeException(err.getMessage(), iterate.getLine(), iterate.getCol());
       }
 
    }
@@ -301,6 +303,10 @@ public class InterpretVisitor implements Visitor {
    }
 
    public void visit(StmtList stmtList) {
+
+   }
+
+   public void visit(FunctionCall functionCall) {
 
    }
 

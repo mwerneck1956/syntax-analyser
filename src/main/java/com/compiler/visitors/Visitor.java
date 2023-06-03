@@ -27,6 +27,8 @@ public interface Visitor {
 
    public abstract void visit(Function function);
 
+   public abstract void visit(FunctionCall functionCall);
+
    public abstract void visit(ID id);
 
    public abstract void visit(If ifExpr);
