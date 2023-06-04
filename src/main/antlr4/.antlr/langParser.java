@@ -847,9 +847,9 @@ public class langParser extends Parser {
 		public Cmd command;
 		public Token OPEN_PARENTHESIS;
 		public ExpContext exp1;
-		public CmdContext rightSide;
-		public CmdContext then;
-		public CmdContext elseCmd;
+		public CmdListContext rightSide;
+		public CmdListContext then;
+		public CmdListContext elseCmd;
 		public Token ITERATE;
 		public ExpContext e;
 		public CmdContext c;
@@ -872,16 +872,16 @@ public class langParser extends Parser {
 		public ExpContext exp(int i) {
 			return getRuleContext(ExpContext.class,i);
 		}
-		public List<CmdContext> cmd() {
-			return getRuleContexts(CmdContext.class);
+		public List<CmdListContext> cmdList() {
+			return getRuleContexts(CmdListContext.class);
 		}
-		public CmdContext cmd(int i) {
-			return getRuleContext(CmdContext.class,i);
+		public CmdListContext cmdList(int i) {
+			return getRuleContext(CmdListContext.class,i);
 		}
 		public TerminalNode ELSE() { return getToken(langParser.ELSE, 0); }
 		public TerminalNode ITERATE() { return getToken(langParser.ITERATE, 0); }
-		public CmdListContext cmdList() {
-			return getRuleContext(CmdListContext.class,0);
+		public CmdContext cmd() {
+			return getRuleContext(CmdContext.class,0);
 		}
 		public TerminalNode READ() { return getToken(langParser.READ, 0); }
 		public TerminalNode SEMI() { return getToken(langParser.SEMI, 0); }
@@ -930,9 +930,9 @@ public class langParser extends Parser {
 				setState(165);
 				match(CLOSE_PARENTHESIS);
 				setState(166);
-				((CmdContext)_localctx).rightSide = cmd();
+				((CmdContext)_localctx).rightSide = cmdList();
 				 
-						((CmdContext)_localctx).command =  new If((((CmdContext)_localctx).OPEN_PARENTHESIS!=null?((CmdContext)_localctx).OPEN_PARENTHESIS.getLine():0), (((CmdContext)_localctx).OPEN_PARENTHESIS!=null?((CmdContext)_localctx).OPEN_PARENTHESIS.getCharPositionInLine():0), ((CmdContext)_localctx).exp1.expInstance, ((CmdContext)_localctx).rightSide.command);
+						((CmdContext)_localctx).command =  new If((((CmdContext)_localctx).OPEN_PARENTHESIS!=null?((CmdContext)_localctx).OPEN_PARENTHESIS.getLine():0), (((CmdContext)_localctx).OPEN_PARENTHESIS!=null?((CmdContext)_localctx).OPEN_PARENTHESIS.getCharPositionInLine():0), ((CmdContext)_localctx).exp1.expInstance, ((CmdContext)_localctx).rightSide.commands);
 					
 				}
 				break;
@@ -948,13 +948,13 @@ public class langParser extends Parser {
 				setState(172);
 				match(CLOSE_PARENTHESIS);
 				setState(173);
-				((CmdContext)_localctx).then = cmd();
+				((CmdContext)_localctx).then = cmdList();
 				setState(174);
 				match(ELSE);
 				setState(175);
-				((CmdContext)_localctx).elseCmd = cmd();
+				((CmdContext)_localctx).elseCmd = cmdList();
 				 
-						((CmdContext)_localctx).command =  new If((((CmdContext)_localctx).OPEN_PARENTHESIS!=null?((CmdContext)_localctx).OPEN_PARENTHESIS.getLine():0), (((CmdContext)_localctx).OPEN_PARENTHESIS!=null?((CmdContext)_localctx).OPEN_PARENTHESIS.getCharPositionInLine():0), ((CmdContext)_localctx).exp1.expInstance, ((CmdContext)_localctx).then.command, ((CmdContext)_localctx).elseCmd.command);
+						((CmdContext)_localctx).command =  new If((((CmdContext)_localctx).OPEN_PARENTHESIS!=null?((CmdContext)_localctx).OPEN_PARENTHESIS.getLine():0), (((CmdContext)_localctx).OPEN_PARENTHESIS!=null?((CmdContext)_localctx).OPEN_PARENTHESIS.getCharPositionInLine():0), ((CmdContext)_localctx).exp1.expInstance, ((CmdContext)_localctx).then.commands, ((CmdContext)_localctx).elseCmd.commands);
 					
 				}
 				break;
@@ -2152,10 +2152,10 @@ public class langParser extends Parser {
 		"\2\2\2\u009e\u00a1\3\2\2\2\u009f\u009d\3\2\2\2\u009f\u00a0\3\2\2\2\u00a0"+
 		"\u00a2\3\2\2\2\u00a1\u009f\3\2\2\2\u00a2\u00a3\7\34\2\2\u00a3\27\3\2\2"+
 		"\2\u00a4\u00a5\7\r\2\2\u00a5\u00a6\7\35\2\2\u00a6\u00a7\5\32\16\2\u00a7"+
-		"\u00a8\7\36\2\2\u00a8\u00a9\5\30\r\2\u00a9\u00aa\b\r\1\2\u00aa\u00fe\3"+
+		"\u00a8\7\36\2\2\u00a8\u00a9\5\26\f\2\u00a9\u00aa\b\r\1\2\u00aa\u00fe\3"+
 		"\2\2\2\u00ab\u00ac\7\r\2\2\u00ac\u00ad\7\35\2\2\u00ad\u00ae\5\32\16\2"+
-		"\u00ae\u00af\7\36\2\2\u00af\u00b0\5\30\r\2\u00b0\u00b1\7\16\2\2\u00b1"+
-		"\u00b2\5\30\r\2\u00b2\u00b3\b\r\1\2\u00b3\u00fe\3\2\2\2\u00b4\u00b5\7"+
+		"\u00ae\u00af\7\36\2\2\u00af\u00b0\5\26\f\2\u00b0\u00b1\7\16\2\2\u00b1"+
+		"\u00b2\5\26\f\2\u00b2\u00b3\b\r\1\2\u00b3\u00fe\3\2\2\2\u00b4\u00b5\7"+
 		"\f\2\2\u00b5\u00b6\7\35\2\2\u00b6\u00b7\5\32\16\2\u00b7\u00b8\7\36\2\2"+
 		"\u00b8\u00b9\5\30\r\2\u00b9\u00ba\b\r\1\2\u00ba\u00fe\3\2\2\2\u00bb\u00bc"+
 		"\7\f\2\2\u00bc\u00bd\7\35\2\2\u00bd\u00be\5\32\16\2\u00be\u00bf\7\36\2"+

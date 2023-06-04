@@ -123,11 +123,11 @@ cmdList
 
 cmd
 	returns[Cmd command]:
-	IF OPEN_PARENTHESIS exp1 = exp CLOSE_PARENTHESIS rightSide = cmd { 
-		$command = new If($OPEN_PARENTHESIS.line, $OPEN_PARENTHESIS.pos, $exp1.expInstance, $rightSide.command);
+	IF OPEN_PARENTHESIS exp1 = exp CLOSE_PARENTHESIS rightSide = cmdList { 
+		$command = new If($OPEN_PARENTHESIS.line, $OPEN_PARENTHESIS.pos, $exp1.expInstance, $rightSide.commands);
 	}
-	| IF OPEN_PARENTHESIS exp1 = exp CLOSE_PARENTHESIS then = cmd ELSE elseCmd = cmd { 
-		$command = new If($OPEN_PARENTHESIS.line, $OPEN_PARENTHESIS.pos, $exp1.expInstance, $then.command, $elseCmd.command);
+	| IF OPEN_PARENTHESIS exp1 = exp CLOSE_PARENTHESIS then = cmdList ELSE elseCmd = cmdList { 
+		$command = new If($OPEN_PARENTHESIS.line, $OPEN_PARENTHESIS.pos, $exp1.expInstance, $then.commands, $elseCmd.commands);
 	}
 	| ITERATE OPEN_PARENTHESIS e = exp CLOSE_PARENTHESIS c = cmd { 
 		$command = new Iterate($ITERATE.line, $ITERATE.pos,  $e.expInstance , $c.command);

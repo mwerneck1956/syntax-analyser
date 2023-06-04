@@ -227,7 +227,7 @@ public class InterpretVisitor implements Visitor {
    public void visit(FunctionCall functionCall) {
       try {
 
-         logger.info("Trying to call function " + functionCall.getFunctionName());
+         logger.info("Calling function:  " + functionCall.getFunctionName());
 
          Function func = functions.get(functionCall.getFunctionName());
 
@@ -295,7 +295,11 @@ public class InterpretVisitor implements Visitor {
       ifExpr.getCondition().accept(this);
 
       if ((Boolean) operands.pop()) {
-         logger.info("If condition accepted");
+         ifExpr.getThen().accept(this);
+
+      } else if (ifExpr.getOnElse() != null) {
+         ifExpr.getOnElse().accept(this);
+
       }
    }
 
@@ -414,6 +418,8 @@ public class InterpretVisitor implements Visitor {
    }
 
    public void visit(ParenthesisExpression parenthesisExpression) {
+      logger.info("Visiting expr " + parenthesisExpression.toString());
+
       parenthesisExpression.getExpr().accept(this);
    }
 

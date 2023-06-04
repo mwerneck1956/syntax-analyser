@@ -16,9 +16,5 @@ teste(x :: Int, b :: Float) : Int , Float{
 }
 
 main(){
-    a = 5;
-    b = 10;
-    c = (a + b) * b;
-    
-    print c;
+    teste(30, 20)<a,b>;
 }
