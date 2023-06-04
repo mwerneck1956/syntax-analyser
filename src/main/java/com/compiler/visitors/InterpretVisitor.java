@@ -6,6 +6,8 @@ import java.util.Stack;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+//Tem 27
+
 import com.compiler.ast.Add;
 import com.compiler.ast.Attribution;
 import com.compiler.ast.BasicType;

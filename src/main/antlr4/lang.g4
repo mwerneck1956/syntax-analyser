@@ -6,6 +6,8 @@ grammar lang;
 	import java.util.HashMap;
  }
 
+ //tem 20
+
 @lexer::header { package com.compiler.grammar; }
 
 prog
