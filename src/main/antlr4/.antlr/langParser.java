@@ -1,4 +1,4 @@
-// Generated from c:\Users\Cliente\Desktop\UFJF\Compiladores\syntax-analyser\src\main\antlr4\lang.g4 by ANTLR 4.9.2
+// Generated from c:\Users\pedro\OneDrive\Área de Trabalho\UFJF\Trabalhos\syntax-analyser\src\main\antlr4\lang.g4 by ANTLR 4.9.2
  
 	package com.compiler.grammar;
 	import com.compiler.ast.*;
