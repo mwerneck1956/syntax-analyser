@@ -14,6 +14,7 @@ public class InterpretVisitor implements Visitor {
    private static final Logger logger = LogManager.getLogger(InterpretVisitor.class);
    private Stack<HashMap<String, Object>> env;
    private HashMap<String, Function> functions;
+   private HashMap<String, Data> datas;
    private Stack<Object> operands;
    private Boolean returnMode;
 
@@ -22,6 +23,7 @@ public class InterpretVisitor implements Visitor {
       this.operands = new Stack<Object>();
       this.env = new Stack<HashMap<String, Object>>();
       env.push(new HashMap<String, Object>());
+      this.datas = new HashMap<String, Data>();
       this.returnMode = false;
 
    }
@@ -30,6 +32,7 @@ public class InterpretVisitor implements Visitor {
       Node main = null;
 
       this.functions = prog.getFunctions();
+      this.datas = prog.getDataList();
 
       for (Function f : this.functions.values()) {
 
@@ -203,12 +206,35 @@ public class InterpretVisitor implements Visitor {
    public void visit(Attribution attr) {
       LValue id = attr.getID();
 
-      attr.getExp().accept(this);
-      Object val = operands.pop();
+      if (id instanceof AttributeAccess) {
 
-      env.peek().put(id.getId(), val);
+         AttributeAccess access = (AttributeAccess) id;
 
-      logger.info("New attribution " + id.getId() + " = " + val);
+         LValue leftSideId = access.getLeftValue();
+
+         if (this.env.peek().containsKey(leftSideId.getId())) {
+
+            HashMap<String, Object> var = (HashMap<String, Object>) this.env.peek().get(leftSideId.getId());
+
+            attr.getExp().accept(this);
+            Object val = operands.pop();
+
+            var.put(access.getAcessId().getName(), val);
+            env.peek().put(id.getId(), val);
+
+         } else {
+            throw new CustomRuntimeException("Var " + leftSideId.getId() + " not  declared", leftSideId);
+         }
+
+      } else {
+         attr.getExp().accept(this);
+         Object val = operands.pop();
+
+         env.peek().put(id.getId(), val);
+
+         logger.info("New attribution " + id.getId() + " = " + val);
+      }
+
    }
 
    public void visit(BasicType bType) {
@@ -499,6 +525,40 @@ public class InterpretVisitor implements Visitor {
    }
 
    public void visit(AttributeAccess attributeAccess) {
+      try {
+         LValue leftSideId = attributeAccess.getLeftValue();
 
+         if (this.env.peek().containsKey(leftSideId.getId())) {
+            HashMap<String, Object> var = (HashMap<String, Object>) this.env.peek().get(leftSideId.getId());
+
+            Object idValue = var.get(attributeAccess.getAcessId().getId());
+            operands.push(idValue);
+
+         } else {
+            throw new CustomRuntimeException("Var " + leftSideId.getId() + " not  declared", leftSideId);
+         }
+
+      } catch (Exception err) {
+
+      }
+   }
+
+   public void visit(NewData data) {
+      try {
+         Data dataObj = datas.get(data.getTypeName());
+
+         if (dataObj == null)
+            throw new CustomRuntimeException("Data : " + data.getTypeName() + " is not declared", data);
+
+         HashMap<String, Object> localEnv = new HashMap<String, Object>();
+
+         for (Declaration decl : dataObj.getDeclarations())
+            localEnv.put(decl.getIdName(), null);
+
+         operands.push(localEnv);
+
+      } catch (Exception err) {
+
+      }
    }
 }

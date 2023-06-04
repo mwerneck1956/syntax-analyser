@@ -19,6 +19,10 @@ public class Declaration {
       return id;
    }
 
+   public String getIdName() {
+      return id.getId();
+   }
+
    public BasicType getType() {
       return type;
    }

@@ -1,9 +1,9 @@
-data teste {
-    id :: String;
-    number_of_workers :: Int;
+data Square {
+    lado :: Int;
+    r ::  Int;
 }
 
-data teste_teste{
+data SquareRect{
     id :: Int;
     number_of_workers :: String;
 }
@@ -16,12 +16,11 @@ teste(x :: Int, b :: Float) : Int , Float{
 }
 
 main(){
-    teste(30, 20)<a,b>;
-    
-    a.b = 10;
+    a = new Square;
 
-    a = 10;
-    b = 10;
+    a.lado = 99;
+    a.beta = 20;
 
-    print a == b;
+    print a.lado;
+    print a.beta;
 }

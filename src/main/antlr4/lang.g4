@@ -26,8 +26,8 @@ dataList
 
 data
 	returns[Data dataObj]:
-	DATA ID OPEN_BRACKET d = declList CLOSE_BRACKET {
-	 	ID id = new ID($ID.line, $ID.pos,  $ID.text);
+	DATA TYPE OPEN_BRACKET d = declList CLOSE_BRACKET {
+	 	ID id = new ID($TYPE.line, $TYPE.pos,  $TYPE.text);
 
 		$dataObj = new Data(id, $d.declarationList);
 	};
@@ -232,7 +232,15 @@ pexp
 	l = lvalue { $value = $l.node; }
 	| OPEN_PARENTHESIS exp CLOSE_PARENTHESIS { $value = new ParenthesisExpression($OPEN_PARENTHESIS.line, $OPEN_PARENTHESIS.pos, $exp.expInstance); 
 	}
-	| NEW type (OPEN_SQUAREBRACKET exp CLOSE_SQUAREBRACKET)?
+	| NEW type { 
+		NewData newData = new NewData($NEW.line, $NEW.pos, $type.basicType);
+	} (
+		OPEN_SQUAREBRACKET exp { 
+		newData.setExpr($exp.expInstance);
+	} CLOSE_SQUAREBRACKET
+	)? { 
+		$value =  newData;
+	}
 	| ID OPEN_PARENTHESIS (exps)? CLOSE_PARENTHESIS OPEN_SQUAREBRACKET exp CLOSE_SQUAREBRACKET;
 lvalue
 	returns[LValue node]:

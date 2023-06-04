@@ -14,8 +14,8 @@ public class Data {
       this.declarations = declarations;
    }
 
-   public int interpret(HashMap<String, Integer> Variables) {
-      return 0;
+   public ArrayList<Declaration> getDeclarations() {
+      return declarations;
    }
 
    public void printDataList() {

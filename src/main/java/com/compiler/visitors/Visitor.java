@@ -71,4 +71,6 @@ public interface Visitor {
 
    public abstract void visit(AttributeAccess attributeAccess);
 
+   public abstract void visit(NewData newData);
+
 }

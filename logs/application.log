@@ -1,33 +1,4 @@
-2023-06-04 10:56:22,688 [com.compiler.App.main()] INFO  InterpretVisitor:238 - Executing main function
-2023-06-04 10:56:22,690 [com.compiler.App.main()] INFO  InterpretVisitor:268 - Calling function:  teste
-2023-06-04 10:56:22,690 [com.compiler.App.main()] INFO  InterpretVisitor:241 - Executing teste function
-2023-06-04 10:56:22,690 [com.compiler.App.main()] INFO  InterpretVisitor:256 - Params in the stack : {b=20, x=30}
-2023-06-04 10:56:22,691 [com.compiler.App.main()] INFO  InterpretVisitor:49 - Visiting add with x + b
-2023-06-04 10:56:22,691 [com.compiler.App.main()] INFO  InterpretVisitor:313 - Visiting id : "x"
-2023-06-04 10:56:22,693 [com.compiler.App.main()] INFO  InterpretVisitor:319 - Adding value 30 to the operands
-2023-06-04 10:56:22,694 [com.compiler.App.main()] INFO  InterpretVisitor:313 - Visiting id : "b"
-2023-06-04 10:56:22,694 [com.compiler.App.main()] INFO  InterpretVisitor:319 - Adding value 20 to the operands
-2023-06-04 10:56:22,694 [com.compiler.App.main()] INFO  InterpretVisitor:65 - Add finished storing 50 to the operands
-2023-06-04 10:56:22,694 [com.compiler.App.main()] INFO  InterpretVisitor:211 - New attribution c = 50
-2023-06-04 10:56:22,694 [com.compiler.App.main()] INFO  InterpretVisitor:115 - Visiting mult
-2023-06-04 10:56:22,694 [com.compiler.App.main()] INFO  InterpretVisitor:313 - Visiting id : "x"
-2023-06-04 10:56:22,694 [com.compiler.App.main()] INFO  InterpretVisitor:319 - Adding value 30 to the operands
-2023-06-04 10:56:22,694 [com.compiler.App.main()] INFO  InterpretVisitor:313 - Visiting id : "x"
-2023-06-04 10:56:22,694 [com.compiler.App.main()] INFO  InterpretVisitor:319 - Adding value 30 to the operands
-2023-06-04 10:56:22,694 [com.compiler.App.main()] INFO  InterpretVisitor:211 - New attribution e = 900
-2023-06-04 10:56:22,694 [com.compiler.App.main()] INFO  InterpretVisitor:472 - Visiting a return
-2023-06-04 10:56:22,694 [com.compiler.App.main()] INFO  InterpretVisitor:313 - Visiting id : "e"
-2023-06-04 10:56:22,694 [com.compiler.App.main()] INFO  InterpretVisitor:319 - Adding value 900 to the operands
-2023-06-04 10:56:22,695 [com.compiler.App.main()] INFO  InterpretVisitor:313 - Visiting id : "c"
-2023-06-04 10:56:22,695 [com.compiler.App.main()] INFO  InterpretVisitor:319 - Adding value 50 to the operands
-2023-06-04 10:56:22,695 [com.compiler.App.main()] INFO  InterpretVisitor:289 - Putting return variable a with value : 50
-2023-06-04 10:56:22,695 [com.compiler.App.main()] INFO  InterpretVisitor:289 - Putting return variable b with value : 900
-2023-06-04 10:56:22,695 [com.compiler.App.main()] INFO  InterpretVisitor:211 - New attribution b = 10
-2023-06-04 10:56:22,695 [com.compiler.App.main()] INFO  InterpretVisitor:211 - New attribution a = 10
-2023-06-04 10:56:22,695 [com.compiler.App.main()] INFO  InterpretVisitor:211 - New attribution b = 10
-2023-06-04 10:56:22,695 [com.compiler.App.main()] INFO  InterpretVisitor:313 - Visiting id : "a"
-2023-06-04 10:56:22,695 [com.compiler.App.main()] INFO  InterpretVisitor:319 - Adding value 10 to the operands
-2023-06-04 10:56:22,695 [com.compiler.App.main()] INFO  InterpretVisitor:313 - Visiting id : "b"
-2023-06-04 10:56:22,695 [com.compiler.App.main()] INFO  InterpretVisitor:319 - Adding value 10 to the operands
-2023-06-04 10:56:22,695 [com.compiler.App.main()] INFO  InterpretVisitor:172 - Testing if 10 == 10
-2023-06-04 10:56:22,695 [com.compiler.App.main()] INFO  InterpretVisitor:392 - Visiting print
+2023-06-04 16:56:20,102 [com.compiler.App.main()] INFO  InterpretVisitor:264 - Executing main function
+2023-06-04 16:56:20,105 [com.compiler.App.main()] INFO  InterpretVisitor:235 - New attribution a = {lado=null, r=null}
+2023-06-04 16:56:20,105 [com.compiler.App.main()] INFO  InterpretVisitor:418 - Visiting print
+2023-06-04 16:56:20,105 [com.compiler.App.main()] INFO  InterpretVisitor:418 - Visiting print
