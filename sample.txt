@@ -8,16 +8,13 @@ data teste_teste{
     number_of_workers :: String;
 }
 
-main(a :: Float){
-    x = 10;
-    y = 30;
-    print x * x ;
+teste(x :: Int, b :: Float) : Int , Float{
+    c = x + b;
+    e = x * x;
 
-    iterate(x < 20){
-        print x;
-        x = x + 3;
-    }
+    return c,e;
+}
 
-    
-
+main(){
+    teste(30, 20)<a,b>;
 }

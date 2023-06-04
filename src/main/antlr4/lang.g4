@@ -59,14 +59,25 @@ functions
 
 func
 	returns[Function f]:
-	//Função sem parametros
-	ID OPEN_PARENTHESIS CLOSE_PARENTHESIS c = cmdList { 
+	ID {
 		ID id = new ID($ID.line, $ID.pos, $ID.text);
-		$f = new Function(id, $c.commands);
+		Function func = new Function(id);
+	 } OPEN_PARENTHESIS (
+		params { 
+		func.setParamlist($params.paramsArray);
+	 }
+	)? CLOSE_PARENTHESIS (
+		COLON type { 
+		func.addReturn($type.basicType);
+	} (
+			COMMA type { 
+		func.addReturn($type.basicType);
 	}
-	| ID OPEN_PARENTHESIS params CLOSE_PARENTHESIS c = cmdList { 
-		ID id = new ID($ID.line, $ID.pos, $ID.text);
-		$f = new Function(id, $c.commands , $params.paramsArray);
+		)*
+	)? cmdList { 
+		func.setBody($cmdList.commands);
+
+		$f = func;
 	};
 params
 	returns[ArrayList<Param> paramsArray]:
@@ -89,12 +100,14 @@ type
 	returns[BasicType basicType]:
 	type OPEN_SQUAREBRACKET CLOSE_SQUAREBRACKET
 	| btype { 
+
+
 		$basicType = $btype.basicType;
 	};
 
 btype
 	returns[BasicType basicType]:
-	INT {$basicType  = new BasicType($INT.line, $INT.pos, "Int");}
+	INT {$basicType  = new BasicType($INT.line, $INT.pos, "Int"); }
 	| CHAR {$basicType  = new BasicType($CHAR.line, $CHAR.pos, "CHAR"); }
 	| BOOL {$basicType  = new BasicType($BOOL.line, $BOOL.pos, "CHAR"); }
 	| FLOAT {$basicType  = new BasicType($FLOAT.line, $FLOAT.pos, "Float"); }
@@ -112,11 +125,11 @@ cmdList
 
 cmd
 	returns[Cmd command]:
-	IF OPEN_PARENTHESIS exp1 = exp CLOSE_PARENTHESIS rightSide = cmd { 
-		$command = new If($OPEN_PARENTHESIS.line, $OPEN_PARENTHESIS.pos, $exp1.expInstance, $rightSide.command);
+	IF OPEN_PARENTHESIS exp1 = exp CLOSE_PARENTHESIS rightSide = cmdList { 
+		$command = new If($OPEN_PARENTHESIS.line, $OPEN_PARENTHESIS.pos, $exp1.expInstance, $rightSide.commands);
 	}
-	| IF OPEN_PARENTHESIS exp1 = exp CLOSE_PARENTHESIS then = cmd ELSE elseCmd = cmd { 
-		$command = new If($OPEN_PARENTHESIS.line, $OPEN_PARENTHESIS.pos, $exp1.expInstance, $then.command, $elseCmd.command);
+	| IF OPEN_PARENTHESIS exp1 = exp CLOSE_PARENTHESIS then = cmdList ELSE elseCmd = cmdList { 
+		$command = new If($OPEN_PARENTHESIS.line, $OPEN_PARENTHESIS.pos, $exp1.expInstance, $then.commands, $elseCmd.commands);
 	}
 	| ITERATE OPEN_PARENTHESIS e = exp CLOSE_PARENTHESIS c = cmd { 
 		$command = new Iterate($ITERATE.line, $ITERATE.pos,  $e.expInstance , $c.command);
@@ -130,13 +143,32 @@ cmd
 	| PRINT e = exp SEMI { 
 		$command = new Print($PRINT.line,$PRINT.pos, $e.expInstance);
 	}
-	| RETURN exp (COMMA exp)* SEMI
+	| RETURN { 
+	 	Return returnCmd = new Return($RETURN.line,$RETURN.pos);
+	} exp { 
+		returnCmd.addExpr($exp.expInstance);
+	} (
+		COMMA exp { 
+		returnCmd.addExpr($exp.expInstance);
+	}
+	)* SEMI { 
+		$command = returnCmd;
+	}
 	| l = lvalue EQ e = exp SEMI {
 		$command = new Attribution($EQ.line, $EQ.pos, $l.node, $e.expInstance );
 	}
-	| ID OPEN_PARENTHESIS (exps)? CLOSE_PARENTHESIS (
-		RELACIONAL lvalue (COMMA lvalue)* GREATER_THAN
-	)? SEMI;
+	| ID { 
+
+		FunctionCall functionCall = new FunctionCall($ID.line, $ID.pos, $ID.text);
+	} OPEN_PARENTHESIS (
+		exps {  functionCall.addParams($exps.expressions); }
+	)? CLOSE_PARENTHESIS (
+		RELACIONAL lvalue { functionCall.addReturn($lvalue.node);  } (
+			COMMA lvalue { 
+			functionCall.addReturn($lvalue.node);
+		}
+		)* GREATER_THAN
+	)? SEMI {  $command = functionCall; };
 exp
 	returns[Expr expInstance]:
 	e1 = exp AND e2 = exp {
@@ -146,7 +178,9 @@ exp
 rexp
 	returns[Expr rexpExpr]:
 	a = aexp { $rexpExpr = $a.binOp; }
-	| r = rexp RELACIONAL a = aexp { $rexpExpr = new LessThan($EQEQ.line, $EQEQ.pos,  $r.rexpExpr, $a.binOp);  
+	| r = rexp RELACIONAL a = aexp { $rexpExpr = new LessThan($EQEQ.line, $EQEQ.pos,  $r.rexpExpr, $a.binOp);
+		}
+	| r = rexp GREATER_THAN a = aexp { $rexpExpr = new GreatherThan($EQEQ.line, $EQEQ.pos,  $r.rexpExpr, $a.binOp);  
 		}
 	| r = rexp EQEQ a = aexp { $rexpExpr = new Equal($EQEQ.line, $EQEQ.pos, $r.rexpExpr, $a.binOp);  
 		}
@@ -170,11 +204,17 @@ mexp
 	| s = sexp {  $mexpExpr = $s.sexpValue; };
 sexp
 	returns[Expr sexpValue]:
-	LOGICALNEGATION sexp
-	| MINUS sexp
-	| LITERAL_TRUE {$sexpValue = new LiteralTrue($LITERAL_TRUE.line,$LITERAL_TRUE.pos);}
+	LOGICALNEGATION sexp { 
+		$sexpValue = new Not($LOGICALNEGATION.line, $LOGICALNEGATION.pos, $sexp.sexpValue);
+	}
+	| LITERAL_TRUE { 
+		$sexpValue = new LiteralTrue($LITERAL_TRUE.line,$LITERAL_TRUE.pos);
+		
+	}
 	| LITERAL_FALSE {$sexpValue = new LiteralFalse($LITERAL_FALSE.line,$LITERAL_FALSE.pos);}
-	| LITERAL_NULL {$sexpValue = new LiteralNull($LITERAL_NULL.line,$LITERAL_NULL.pos);}
+	| LITERAL_NULL {
+		$sexpValue = new LiteralNull($LITERAL_NULL.line,$LITERAL_NULL.pos);
+	}
 	| LITERAL_INT {
 		$sexpValue = new LiteralInt($LITERAL_INT.line,$LITERAL_INT.pos,Integer.parseInt($LITERAL_INT.text) );
 		}
@@ -188,7 +228,8 @@ sexp
 pexp
 	returns[LValue value]:
 	l = lvalue { $value = $l.node; }
-	| OPEN_PARENTHESIS exp CLOSE_PARENTHESIS
+	| OPEN_PARENTHESIS exp CLOSE_PARENTHESIS { $value = new ParenthesisExpression($OPEN_PARENTHESIS.line, $OPEN_PARENTHESIS.pos, $exp.expInstance); 
+	}
 	| NEW type (OPEN_SQUAREBRACKET exp CLOSE_SQUAREBRACKET)?
 	| ID OPEN_PARENTHESIS (exps)? CLOSE_PARENTHESIS OPEN_SQUAREBRACKET exp CLOSE_SQUAREBRACKET;
 lvalue
@@ -221,16 +262,16 @@ READ: 'read';
 ITERATE: 'iterate';
 IF: 'if';
 ELSE: 'else';
+LITERAL_TRUE: 'true';
+LITERAL_FALSE: 'false';
+LITERAL_NULL: 'null';
 
 ID: [a-z]+ [A-za-z_]*;
 TYPE: [A-Z][A-Za-z]*;
 
 LITERAL_INT: [0-9]+;
 LITERAL_FLOAT: [0-9]* '.' [0-9]+;
-LITERAL_CHAR: '\'' ( '\\' [btnr"'\\] | ~[\r\n\\"]) '\'';
-LITERAL_TRUE: 'true';
-LITERAL_FALSE: 'false';
-LITERAL_NULL: 'null';
+LITERAL_CHAR: '\'' ( '\\' ~[\r\n\\"] | [a-z] | [A-Z]) '\'';
 
 NEWLINE: '\r'? '\n' -> skip;
 WHITESPACE: [ \t]+ -> skip;

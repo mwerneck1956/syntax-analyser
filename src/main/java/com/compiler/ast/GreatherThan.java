@@ -2,11 +2,10 @@ package com.compiler.ast;
 
 import com.compiler.visitors.Visitor;
 
-public class Equal extends BinOP {
+public class GreatherThan extends BinOP {
 
-   public Equal(int line, int col, Expr l, Expr r) {
+   public GreatherThan(int line, int col, Expr l, Expr r) {
       super(line, col, l, r);
-
    }
 
    public String toString() {
@@ -15,7 +14,7 @@ public class Equal extends BinOP {
       if (getRight() instanceof Add) {
          RightOperator = "(" + RightOperator + ")";
       }
-      return leftOperator.toString() + " == " + RightOperator.toString();
+      return leftOperator.toString() + " > " + RightOperator.toString();
    }
 
    public void accept(Visitor visitor) {

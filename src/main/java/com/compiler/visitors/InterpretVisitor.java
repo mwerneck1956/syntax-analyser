@@ -1,40 +1,13 @@
 package com.compiler.visitors;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Stack;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-//Tem 27
-
-import com.compiler.ast.Add;
-import com.compiler.ast.Attribution;
-import com.compiler.ast.BasicType;
-import com.compiler.ast.BinOP;
-import com.compiler.ast.Cmd;
-import com.compiler.ast.CmdList;
-import com.compiler.ast.Data;
-import com.compiler.ast.Div;
-import com.compiler.ast.Function;
-import com.compiler.ast.ID;
-import com.compiler.ast.If;
-import com.compiler.ast.Iterate;
-import com.compiler.ast.LValue;
-import com.compiler.ast.LessThan;
-import com.compiler.ast.LiteralChar;
-import com.compiler.ast.LiteralFalse;
-import com.compiler.ast.LiteralFloat;
-import com.compiler.ast.LiteralInt;
-import com.compiler.ast.LiteralNull;
-import com.compiler.ast.LiteralTrue;
-import com.compiler.ast.Mult;
-import com.compiler.ast.Node;
-import com.compiler.ast.Print;
-import com.compiler.ast.Prog;
-import com.compiler.ast.Read;
-import com.compiler.ast.StmtList;
-import com.compiler.ast.Sub;
+import com.compiler.ast.*;
 
 public class InterpretVisitor implements Visitor {
 
@@ -42,12 +15,14 @@ public class InterpretVisitor implements Visitor {
    private Stack<HashMap<String, Object>> env;
    private HashMap<String, Function> functions;
    private Stack<Object> operands;
+   private Boolean returnMode;
 
    public InterpretVisitor() {
       this.functions = new HashMap<String, Function>();
       this.operands = new Stack<Object>();
       this.env = new Stack<HashMap<String, Object>>();
       env.push(new HashMap<String, Object>());
+      this.returnMode = false;
 
    }
 
@@ -71,17 +46,15 @@ public class InterpretVisitor implements Visitor {
    public void visit(Add add) {
       try {
 
-         logger.info("Visiting add");
+         logger.info("Visiting add with " + add.toString());
 
          add.getLeft().accept(this);
          add.getRight().accept(this);
 
          Number left, right, res;
 
-         left = (Number) operands.pop();
          right = (Number) operands.pop();
-
-         // System.out.println("Visiting add");
+         left = (Number) operands.pop();
 
          if (left instanceof Float || right instanceof Float)
             res = left.floatValue() + right.floatValue();
@@ -89,8 +62,9 @@ public class InterpretVisitor implements Visitor {
             res = left.intValue() + right.intValue();
 
          operands.push(res);
+         logger.info("Add finished storing " + res + " to the operands");
       } catch (Exception err) {
-         throw new RuntimeException(err.getMessage());
+         throw new CustomRuntimeException(err.getMessage(), add);
       }
 
    }
@@ -163,6 +137,27 @@ public class InterpretVisitor implements Visitor {
 
    }
 
+   public void visit(Equal equal) {
+      try {
+
+         equal.getLeft().accept(this);
+         equal.getRight().accept(this);
+
+         Object left, right;
+
+         right = operands.pop();
+         left = operands.pop();
+
+         operands.push(left.equals(right));
+
+         logger.info("Testing if " + right.toString() + " == " + left.toString());
+
+      } catch (Exception err) {
+         throw new RuntimeException(err.getMessage());
+      }
+
+   }
+
    public void visit(Data data) {
 
    }
@@ -173,20 +168,16 @@ public class InterpretVisitor implements Visitor {
       attr.getExp().accept(this);
       Object val = operands.pop();
 
-      logger.info("New attribution " + id.getId() + " = " + val);
-
       env.peek().put(id.getId(), val);
+
+      logger.info("New attribution " + id.getId() + " = " + val);
    }
 
    public void visit(BasicType bType) {
 
-      // TODO Auto-generated method stub
-
    }
 
-   @Override
    public void visit(BinOP binOp) {
-      // TODO Auto-generated method stub
 
    }
 
@@ -194,13 +185,88 @@ public class InterpretVisitor implements Visitor {
    public void visit(CmdList cmdList) {
 
       for (Cmd c : cmdList.getBody()) {
+         if (returnMode)
+            break;
+
          c.accept(this);
       }
    }
 
    @Override
    public void visit(Function function) {
-      function.getBody().accept(this);
+      boolean isMainFunction = function.getName().equals("main");
+
+      if (isMainFunction) {
+         logger.info("Executing main function");
+         function.getBody().accept(this);
+      } else {
+         logger.info("Executing " + function.getName() + " function");
+
+         HashMap<String, Object> localEnv = new HashMap<String, Object>();
+         this.env.push(localEnv);
+
+         ArrayList<Param> functionParams = function.getParamlist();
+
+         if (functionParams.size() > 0) {
+
+            for (int i = functionParams.size() - 1; i >= 0; i--) {
+               Param p = functionParams.get(i);
+
+               p.accept(this);
+            }
+
+            logger.info("Params in the stack : " + this.env.peek().toString());
+         }
+
+         function.getBody().accept(this);
+         this.env.pop();
+      }
+
+   }
+
+   public void visit(FunctionCall functionCall) {
+      try {
+
+         logger.info("Calling function:  " + functionCall.getFunctionName());
+
+         Function func = functions.get(functionCall.getFunctionName());
+
+         if (func != null) {
+            int receivedParams = functionCall.getParams().size();
+
+            if (func.isQuantityOfParamsValid(receivedParams)) {
+               for (Expr expr : functionCall.getParams())
+                  expr.accept(this);
+
+               func.accept(this);
+
+               if (functionCall.getReturnsId().size() > 0 && returnMode) {
+
+                  for (LValue returnId : functionCall.getReturnsId()) {
+                     String returnVariableName = returnId.getId();
+
+                     Object value = operands.pop();
+                     this.env.peek().put(returnVariableName, value);
+
+                     logger.info("Putting return variable " + returnVariableName + " with value : " + value);
+                  }
+
+                  returnMode = false;
+               }
+            }
+
+            else
+               throw new CustomRuntimeException("Function " + functionCall.getFunctionName() + " expected "
+                     + func.getParamlist().size() + " params", functionCall);
+
+         } else {
+            String errMessage = "Function: " + functionCall.getFunctionName() + " Not declared";
+            throw new CustomRuntimeException(errMessage, functionCall);
+         }
+
+      } catch (Exception err) {
+
+      }
    }
 
    @Override
@@ -212,7 +278,7 @@ public class InterpretVisitor implements Visitor {
             Object idValue = env.peek().get(id.getName());
             operands.push(idValue);
 
-            logger.info("Adding variable " + id.getName() + " = " + idValue + " to the env");
+            logger.info("Adding value " + idValue + " to the operands");
          } else
             throw new RuntimeException("Variable " + id.getName() + " Not declared");
 
@@ -229,13 +295,18 @@ public class InterpretVisitor implements Visitor {
       ifExpr.getCondition().accept(this);
 
       if ((Boolean) operands.pop()) {
-         logger.info("If condition accepted");
+         ifExpr.getThen().accept(this);
+
+      } else if (ifExpr.getOnElse() != null) {
+         ifExpr.getOnElse().accept(this);
+
       }
    }
 
    @Override
    public void visit(Iterate iterate) {
       try {
+
          iterate.getCondition().accept(this);
 
          while ((Boolean) operands.pop()) {
@@ -243,50 +314,38 @@ public class InterpretVisitor implements Visitor {
             iterate.getCondition().accept(this);
          }
 
-         // TODO Auto-generated method stub
       } catch (Exception err) {
-
+         throw new CustomRuntimeException(err.getMessage(), iterate);
       }
 
    }
 
    @Override
    public void visit(LiteralChar literal) {
-      // TODO Auto-generated method stub
+      this.operands.push(new String(literal.getValue()));
 
    }
 
    @Override
    public void visit(LiteralFalse literal) {
-      // TODO Auto-generated method stub
-
+      this.operands.push(new Boolean(false));
    }
 
    public void visit(LiteralFloat literal) {
-      try {
-         this.operands.push(literal.getValue());
-      } catch (Exception err) {
-
-      }
+      this.operands.push(new Float(literal.getValue()));
    }
 
    public void visit(LiteralInt literal) {
-      try {
-         logger.info("Stacking int " + literal.getValue());
-
-         this.operands.push(literal.getValue());
-      } catch (Exception err) {
-
-      }
+      this.operands.push(new Integer(literal.getValue()));
 
    }
 
    public void visit(LiteralNull literal) {
-
+      this.operands.push(null);
    }
 
    public void visit(LiteralTrue literal) {
-      // TODO Auto-generated method stub
+      this.operands.push(new Boolean(true));
 
    }
 
@@ -299,10 +358,6 @@ public class InterpretVisitor implements Visitor {
    }
 
    public void visit(Read read) {
-
-   }
-
-   public void visit(StmtList stmtList) {
 
    }
 
@@ -327,4 +382,49 @@ public class InterpretVisitor implements Visitor {
 
    }
 
+   public void visit(GreatherThan greatherThan) {
+
+      greatherThan.getLeft().accept(this);
+      greatherThan.getRight().accept(this);
+
+      Number left, right;
+
+      right = (Number) operands.pop();
+      left = (Number) operands.pop();
+
+      Boolean res = new Boolean((Integer) left > (Integer) right);
+
+      operands.push(res);
+
+      logger.info("Bigger than added " + res + " To te stack");
+   }
+
+   public void visit(Param param) {
+      Object paramValue = operands.pop();
+
+      env.peek().put(param.getId().getId(), paramValue);
+   }
+
+   public void visit(Return ret) {
+      logger.info("Visiting a return");
+
+      returnMode = true;
+
+      for (int i = ret.getReturnedExprs().size() - 1; i >= 0; i--) {
+         Expr e = ret.getReturnedExprs().get(i);
+
+         e.accept(this);
+      }
+   }
+
+   public void visit(ParenthesisExpression parenthesisExpression) {
+      logger.info("Visiting expr " + parenthesisExpression.toString());
+
+      parenthesisExpression.getExpr().accept(this);
+   }
+
+   public void visit(Not not) {
+      logger.info("Not visited" + not.toString());
+
+   }
 }

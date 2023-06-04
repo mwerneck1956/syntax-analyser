@@ -8,21 +8,14 @@ public class Function extends Cmd {
    private ID id;
    private CmdList body;
    private ArrayList<Param> paramlist;
+   private ArrayList<BasicType> returns;
 
-   public Function(ID id, CmdList body) {
+   public Function(ID id) {
       super(id.getLine(), id.getCol());
-      this.body = body;
-      this.paramlist = null;
+      this.body = null;
+      this.paramlist = new ArrayList<Param>();
       this.id = id;
-   }
-
-   public Function(ID id, CmdList body, ArrayList<Param> params) {
-      super(id.getLine(), id.getCol());
-      this.body = body;
-      this.paramlist = params;
-      this.id = id;
-
-      // System.out.println("Params : " + this.paramlist.toString());
+      this.returns = new ArrayList<BasicType>();
    }
 
    public String getName() {
@@ -37,11 +30,37 @@ public class Function extends Cmd {
       return "";
    }
 
-   public void accept(Visitor visitor) {
-      visitor.visit(this);
+   public Boolean isQuantityOfParamsValid(int receivedParams) {
+      return receivedParams == this.paramlist.size();
+   }
+
+   public void setParamlist(ArrayList<Param> paramlist) {
+      this.paramlist = paramlist;
+   }
+
+   public ArrayList<Param> getParamlist() {
+      return paramlist;
+   }
+
+   public void addReturn(BasicType type) {
+      this.returns.add(type);
+
+   }
+
+   public void setBody(CmdList body) {
+      this.body = body;
    }
 
    public CmdList getBody() {
       return body;
    }
+
+   public ArrayList<BasicType> getReturns() {
+      return returns;
+   }
+
+   public void accept(Visitor visitor) {
+      visitor.visit(this);
+   }
+
 }

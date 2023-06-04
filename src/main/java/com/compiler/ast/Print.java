@@ -1,7 +1,5 @@
 package com.compiler.ast;
 
-import java.util.HashMap;
-
 import com.compiler.visitors.Visitor;
 
 public class Print extends Cmd {
@@ -21,10 +19,6 @@ public class Print extends Cmd {
    @Override
    public String toString() {
       return expr.toString();
-   }
-
-   public int interpret(HashMap<String, Integer> Variables) {
-      return 0;
    }
 
    public void accept(Visitor visitor) {
