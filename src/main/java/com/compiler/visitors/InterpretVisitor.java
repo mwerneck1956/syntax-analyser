@@ -497,4 +497,8 @@ public class InterpretVisitor implements Visitor {
 
       operands.push(new Boolean(!(Boolean) expr));
    }
+
+   public void visit(AttributeAccess attributeAccess) {
+
+   }
 }

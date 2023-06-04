@@ -238,7 +238,9 @@ lvalue
 	returns[LValue node]:
 	ID { $node = new ID($ID.line,$ID.pos, $ID.text); }
 	| lvalue OPEN_SQUAREBRACKET exp CLOSE_SQUAREBRACKET
-	| lvalue DOT ID;
+	| l = lvalue DOT ID { 
+		$node = new AttributeAccess($DOT.line,$DOT.pos, $l.node, new ID($ID.line,$ID.pos, $ID.text));
+	};
 exps
 	returns[ArrayList<Expr> expressions]:
 	{ $expressions = new ArrayList<Expr>(); } e1 = exp {

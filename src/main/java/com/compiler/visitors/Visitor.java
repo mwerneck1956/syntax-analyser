@@ -69,4 +69,6 @@ public interface Visitor {
 
    public abstract void visit(And and);
 
+   public abstract void visit(AttributeAccess attributeAccess);
+
 }

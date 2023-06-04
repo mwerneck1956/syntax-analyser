@@ -17,6 +17,8 @@ teste(x :: Int, b :: Float) : Int , Float{
 
 main(){
     teste(30, 20)<a,b>;
+    
+    a.b = 10;
 
     a = 10;
     b = 10;
