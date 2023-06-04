@@ -177,6 +177,25 @@ public class InterpretVisitor implements Visitor {
 
    }
 
+   public void visit(Diff diff) {
+      try {
+
+         diff.getLeft().accept(this);
+         diff.getRight().accept(this);
+
+         Object left, right;
+
+         right = operands.pop();
+         left = operands.pop();
+
+         operands.push(!left.equals(right));
+
+      } catch (Exception err) {
+         throw new RuntimeException(err.getMessage());
+      }
+
+   }
+
    public void visit(Data data) {
 
    }

@@ -59,6 +59,8 @@ public interface Visitor {
 
    public abstract void visit(Equal equal);
 
+   public abstract void visit(Diff diff);
+
    public abstract void visit(Param param);
 
    public abstract void visit(Return ret);
