@@ -1,4 +1,9 @@
-2023-06-04 16:56:20,102 [com.compiler.App.main()] INFO  InterpretVisitor:264 - Executing main function
-2023-06-04 16:56:20,105 [com.compiler.App.main()] INFO  InterpretVisitor:235 - New attribution a = {lado=null, r=null}
-2023-06-04 16:56:20,105 [com.compiler.App.main()] INFO  InterpretVisitor:418 - Visiting print
-2023-06-04 16:56:20,105 [com.compiler.App.main()] INFO  InterpretVisitor:418 - Visiting print
+2023-06-04 18:46:30,386 [com.compiler.App.main()] INFO  InterpretVisitor:266 - Executing main function
+2023-06-04 18:46:31,867 [com.compiler.App.main()] INFO  InterpretVisitor:54 - Visiting add with x + 1
+2023-06-04 18:46:31,867 [com.compiler.App.main()] INFO  InterpretVisitor:341 - Visiting id : "x"
+2023-06-04 18:46:31,867 [com.compiler.App.main()] INFO  InterpretVisitor:347 - Adding value 5 to the operands
+2023-06-04 18:46:31,868 [com.compiler.App.main()] INFO  InterpretVisitor:70 - Add finished storing 6 to the operands
+2023-06-04 18:46:31,868 [com.compiler.App.main()] INFO  InterpretVisitor:237 - New attribution x = 6
+2023-06-04 18:46:31,871 [com.compiler.App.main()] INFO  InterpretVisitor:341 - Visiting id : "x"
+2023-06-04 18:46:31,871 [com.compiler.App.main()] INFO  InterpretVisitor:347 - Adding value 6 to the operands
+2023-06-04 18:46:31,871 [com.compiler.App.main()] INFO  InterpretVisitor:420 - Visiting print

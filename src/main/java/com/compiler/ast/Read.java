@@ -1,7 +1,5 @@
 package com.compiler.ast;
 
-import java.util.HashMap;
-
 import com.compiler.visitors.Visitor;
 
 public class Read extends Cmd {
@@ -18,6 +16,10 @@ public class Read extends Cmd {
 
    public void accept(Visitor visitor) {
       visitor.visit(this);
+   }
+
+   public LValue getLvalue() {
+      return lvalue;
    }
 
 }

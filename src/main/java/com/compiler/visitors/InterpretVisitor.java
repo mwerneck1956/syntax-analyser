@@ -3,11 +3,13 @@ package com.compiler.visitors;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Stack;
+import java.util.Scanner;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.compiler.ast.*;
+import com.compiler.util.Util;
 
 public class InterpretVisitor implements Visitor {
 
@@ -421,6 +423,21 @@ public class InterpretVisitor implements Visitor {
    }
 
    public void visit(Read read) {
+      Scanner scanner = new Scanner(System.in);
+
+      String value = scanner.nextLine();
+      scanner.close();
+
+      if (Util.isInteger(value)) {
+         this.env.peek().put(read.getLvalue().getId(), Integer.parseInt(value));
+      } else if (Util.isDouble(value)) {
+         this.env.peek().put(read.getLvalue().getId(), Double.parseDouble(value));
+      } else {
+         this.env.peek().put(read.getLvalue().getId(), value);
+      }
+
+      // Attribution attr = new Attribution(read.getLine(), read.getCol(),
+      // read.getLvalue());
 
    }
 
@@ -539,7 +556,7 @@ public class InterpretVisitor implements Visitor {
          }
 
       } catch (Exception err) {
-
+         throw new CustomRuntimeException(err.getMessage(), attributeAccess);
       }
    }
 
@@ -558,7 +575,7 @@ public class InterpretVisitor implements Visitor {
          operands.push(localEnv);
 
       } catch (Exception err) {
-
+         throw new CustomRuntimeException(err.getMessage(), data);
       }
    }
 }

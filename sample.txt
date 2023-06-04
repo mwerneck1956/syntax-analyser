@@ -16,11 +16,8 @@ teste(x :: Int, b :: Float) : Int , Float{
 }
 
 main(){
-    a = new Square;
+    read x;
 
-    a.lado = 99;
-    a.beta = 20;
-
-    print a.lado;
-    print a.beta;
+    x = x + 1;
+    print x;
 }
