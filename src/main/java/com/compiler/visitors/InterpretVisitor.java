@@ -91,6 +91,25 @@ public class InterpretVisitor implements Visitor {
 
    }
 
+   public void visit(Mod mod) {
+      try {
+         mod.getLeft().accept(this);
+         mod.getRight().accept(this);
+
+         Number left, right, res;
+
+         right = (Number) operands.pop();
+         left = (Number) operands.pop();
+
+         res = left.intValue() % right.intValue();
+
+         operands.push(res);
+      } catch (Exception err) {
+         throw new RuntimeException(err.getMessage());
+      }
+
+   }
+
    public void visit(Mult mult) {
       try {
          logger.info("Visiting mult");

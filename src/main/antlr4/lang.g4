@@ -129,6 +129,9 @@ cmd
 	| IF OPEN_PARENTHESIS exp1 = exp CLOSE_PARENTHESIS then = cmdList ELSE elseCmd = cmdList { 
 		$command = new If($OPEN_PARENTHESIS.line, $OPEN_PARENTHESIS.pos, $exp1.expInstance, $then.commands, $elseCmd.commands);
 	}
+	| IF OPEN_PARENTHESIS exp1 = exp CLOSE_PARENTHESIS cmd { 
+		$command = new If($OPEN_PARENTHESIS.line, $OPEN_PARENTHESIS.pos, $exp1.expInstance, $cmd.command);
+	}
 	| ITERATE OPEN_PARENTHESIS e = exp CLOSE_PARENTHESIS c = cmd { 
 		$command = new Iterate($ITERATE.line, $ITERATE.pos,  $e.expInstance , $c.command);
 	}
@@ -198,7 +201,8 @@ mexp
 	| m = mexp DIV s = sexp { 
 		$mexpExpr = new Div($DIV.line, $DIV.pos, $m.mexpExpr , $s.sexpValue);
 	}
-	| mexp MOD sexp
+	| m = mexp MOD s = sexp { $mexpExpr = new Mod($MOD.line, $MOD.pos,  $m.mexpExpr , $s.sexpValue); 
+		}
 	| s = sexp {  $mexpExpr = $s.sexpValue; };
 sexp
 	returns[Expr sexpValue]:

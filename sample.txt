@@ -18,9 +18,7 @@ teste(x :: Int, b :: Float) : Int , Float{
 main(){
     teste(30, 20)<a,b>;
 
-    a = 0;
+    a = 12 % 5;
 
-    if(!a){
-        print 'a';
-    }
+    print a;
 }

@@ -43,6 +43,10 @@ public class If extends Cmd {
       return onElse;
    }
 
+   public void setOnElse(Cmd onElse) {
+      this.onElse = onElse;
+   }
+
    public void accept(Visitor visitor) {
       visitor.visit(this);
    }
