@@ -132,6 +132,9 @@ cmd
 	| IF OPEN_PARENTHESIS exp1 = exp CLOSE_PARENTHESIS cmd { 
 		$command = new If($OPEN_PARENTHESIS.line, $OPEN_PARENTHESIS.pos, $exp1.expInstance, $cmd.command);
 	}
+	| IF OPEN_PARENTHESIS exp1 = exp CLOSE_PARENTHESIS thenCmd = cmd ELSE elseSimpleCmd = cmd { 
+		$command = new If($OPEN_PARENTHESIS.line, $OPEN_PARENTHESIS.pos, $exp1.expInstance, $thenCmd.command, $elseSimpleCmd.command);
+	}
 	| ITERATE OPEN_PARENTHESIS e = exp CLOSE_PARENTHESIS c = cmd { 
 		$command = new Iterate($ITERATE.line, $ITERATE.pos,  $e.expInstance , $c.command);
 	}

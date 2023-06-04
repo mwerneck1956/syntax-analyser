@@ -19,5 +19,9 @@ main(){
     read x;
 
     x = x + 1;
-    print x;
+    if(x > 2)
+        print x;
+    else
+        print x + 2;
+
 }
