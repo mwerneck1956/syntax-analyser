@@ -19,4 +19,8 @@ public class Not extends Expr {
    public void accept(Visitor visitor) {
       visitor.visit(this);
    }
+
+   public Expr getExpression() {
+      return expression;
+   }
 }

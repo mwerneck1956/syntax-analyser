@@ -392,11 +392,11 @@ public class InterpretVisitor implements Visitor {
          left = operands.pop();
 
          if (right instanceof Number) {
-            right = new Integer(right.toString()) > 0;
+            right = new Integer(right.toString()) != 0;
          }
 
          if (left instanceof Number) {
-            left = new Integer(left.toString()) > 0;
+            left = new Integer(left.toString()) != 0;
          }
 
          operands.push(new Boolean((Boolean) left && (Boolean) right));
@@ -449,7 +449,14 @@ public class InterpretVisitor implements Visitor {
    }
 
    public void visit(Not not) {
-      logger.info("Not visited" + not.toString());
+      not.getExpression().accept(this);
 
+      Object expr = operands.pop();
+
+      if (expr instanceof Number) {
+         expr = new Integer(expr.toString()) != 0;
+      }
+
+      operands.push(new Boolean(!(Boolean) expr));
    }
 }
