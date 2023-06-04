@@ -1,11 +1,11 @@
 package com.compiler.ast;
 
+import com.compiler.visitors.Visitor;
+
 public class And extends BinOP {
 
    public And(int line, int col, Expr l, Expr r) {
       super(line, col, l, r);
-
-      System.out.println("And created" + l.toString() + " && " + r.toString());
    }
 
    public String toString() {
@@ -15,6 +15,10 @@ public class And extends BinOP {
          RightOperator = "(" + RightOperator + ")";
       }
       return leftOperator + " + " + RightOperator;
+   }
+
+   public void accept(Visitor visitor) {
+      visitor.visit(this);
    }
 
 }

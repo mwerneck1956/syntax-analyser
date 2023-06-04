@@ -17,4 +17,11 @@ teste(x :: Int, b :: Float) : Int , Float{
 
 main(){
     teste(30, 20)<a,b>;
+
+    a = 1;
+    b = 2;
+
+    if(a && b){
+        print 'a';
+    }
 }

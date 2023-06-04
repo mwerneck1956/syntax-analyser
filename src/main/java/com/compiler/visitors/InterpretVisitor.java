@@ -326,7 +326,6 @@ public class InterpretVisitor implements Visitor {
 
    }
 
-   @Override
    public void visit(LiteralFalse literal) {
       this.operands.push(new Boolean(false));
    }
@@ -378,6 +377,32 @@ public class InterpretVisitor implements Visitor {
          logger.info("Less than added " + res + " To te stack");
       } catch (Exception err) {
 
+      }
+
+   }
+
+   public void visit(And and) {
+      try {
+         and.getLeft().accept(this);
+         and.getRight().accept(this);
+
+         Object left, right;
+
+         right = operands.pop();
+         left = operands.pop();
+
+         if (right instanceof Number) {
+            right = new Integer(right.toString()) > 0;
+         }
+
+         if (left instanceof Number) {
+            left = new Integer(left.toString()) > 0;
+         }
+
+         operands.push(new Boolean((Boolean) left && (Boolean) right));
+
+      } catch (Exception err) {
+         throw new CustomRuntimeException(err.getMessage(), and);
       }
 
    }

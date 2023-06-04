@@ -63,4 +63,6 @@ public interface Visitor {
 
    public abstract void visit(ParenthesisExpression parenthesisExpression);
 
+   public abstract void visit(And and);
+
 }
