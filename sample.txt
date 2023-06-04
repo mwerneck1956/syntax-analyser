@@ -16,12 +16,7 @@ teste(x :: Int, b :: Float) : Int , Float{
 }
 
 main(){
-    read x;
+    x = '\\';
 
-    x = x + 1;
-    if(x > 2)
-        print x;
-    else
-        print x + 2;
-
+    print x;
 }

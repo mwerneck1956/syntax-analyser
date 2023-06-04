@@ -73,4 +73,6 @@ public interface Visitor {
 
    public abstract void visit(NewData newData);
 
+   public abstract void visit(ArrayPositionAccess arrayPositionAccess);
+
 }

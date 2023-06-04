@@ -562,6 +562,7 @@ public class InterpretVisitor implements Visitor {
 
    public void visit(NewData data) {
       try {
+
          Data dataObj = datas.get(data.getTypeName());
 
          if (dataObj == null)
@@ -577,5 +578,9 @@ public class InterpretVisitor implements Visitor {
       } catch (Exception err) {
          throw new CustomRuntimeException(err.getMessage(), data);
       }
+   }
+
+   public void visit(ArrayPositionAccess arrayPositionAccess) {
+
    }
 }

@@ -658,8 +658,6 @@ public class langParser extends Parser {
 			setState(127);
 			((TypeContext)_localctx).btype = btype();
 			 
-
-
 					((TypeContext)_localctx).basicType =  ((TypeContext)_localctx).btype.basicType;
 				
 			}
@@ -1918,16 +1916,17 @@ public class langParser extends Parser {
 		public LValue node;
 		public LvalueContext l;
 		public Token ID;
+		public Token OPEN_SQUAREBRACKET;
+		public ExpContext exp;
 		public Token DOT;
 		public TerminalNode ID() { return getToken(langParser.ID, 0); }
-		public LvalueContext lvalue() {
-			return getRuleContext(LvalueContext.class,0);
-		}
 		public TerminalNode OPEN_SQUAREBRACKET() { return getToken(langParser.OPEN_SQUAREBRACKET, 0); }
 		public ExpContext exp() {
 			return getRuleContext(ExpContext.class,0);
 		}
-		public TerminalNode CLOSE_SQUAREBRACKET() { return getToken(langParser.CLOSE_SQUAREBRACKET, 0); }
+		public LvalueContext lvalue() {
+			return getRuleContext(LvalueContext.class,0);
+		}
 		public TerminalNode DOT() { return getToken(langParser.DOT, 0); }
 		public LvalueContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -1970,15 +1969,18 @@ public class langParser extends Parser {
 					case 1:
 						{
 						_localctx = new LvalueContext(_parentctx, _parentState);
+						_localctx.l = _prevctx;
+						_localctx.l = _prevctx;
 						pushNewRecursionContext(_localctx, _startState, RULE_lvalue);
 						setState(412);
 						if (!(precpred(_ctx, 2))) throw new FailedPredicateException(this, "precpred(_ctx, 2)");
 						setState(413);
-						match(OPEN_SQUAREBRACKET);
+						((LvalueContext)_localctx).OPEN_SQUAREBRACKET = match(OPEN_SQUAREBRACKET);
 						setState(414);
-						exp(0);
-						setState(415);
-						match(CLOSE_SQUAREBRACKET);
+						((LvalueContext)_localctx).exp = exp(0);
+
+						          		((LvalueContext)_localctx).node =  new ArrayPositionAccess((((LvalueContext)_localctx).OPEN_SQUAREBRACKET!=null?((LvalueContext)_localctx).OPEN_SQUAREBRACKET.getLine():0),(((LvalueContext)_localctx).OPEN_SQUAREBRACKET!=null?((LvalueContext)_localctx).OPEN_SQUAREBRACKET.getCharPositionInLine():0), ((LvalueContext)_localctx).l.node, ((LvalueContext)_localctx).exp.expInstance);
+						          	 
 						}
 						break;
 					case 2:
@@ -2304,8 +2306,8 @@ public class langParser extends Parser {
 		"\7 \2\2\u0197\u0199\3\2\2\2\u0198\u017a\3\2\2\2\u0198\u017d\3\2\2\2\u0198"+
 		"\u0182\3\2\2\2\u0198\u018e\3\2\2\2\u0199%\3\2\2\2\u019a\u019b\b\24\1\2"+
 		"\u019b\u019c\7\22\2\2\u019c\u019d\b\24\1\2\u019d\u01a9\3\2\2\2\u019e\u019f"+
-		"\f\4\2\2\u019f\u01a0\7\37\2\2\u01a0\u01a1\5\32\16\2\u01a1\u01a2\7 \2\2"+
-		"\u01a2\u01a8\3\2\2\2\u01a3\u01a4\f\3\2\2\u01a4\u01a5\7\"\2\2\u01a5\u01a6"+
+		"\f\4\2\2\u019f\u01a0\7\37\2\2\u01a0\u01a1\5\32\16\2\u01a1\u01a2\b\24\1"+
+		"\2\u01a2\u01a8\3\2\2\2\u01a3\u01a4\f\3\2\2\u01a4\u01a5\7\"\2\2\u01a5\u01a6"+
 		"\7\22\2\2\u01a6\u01a8\b\24\1\2\u01a7\u019e\3\2\2\2\u01a7\u01a3\3\2\2\2"+
 		"\u01a8\u01ab\3\2\2\2\u01a9\u01a7\3\2\2\2\u01a9\u01aa\3\2\2\2\u01aa\'\3"+
 		"\2\2\2\u01ab\u01a9\3\2\2\2\u01ac\u01ad\b\25\1\2\u01ad\u01ae\5\32\16\2"+

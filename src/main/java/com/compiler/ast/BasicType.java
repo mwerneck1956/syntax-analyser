@@ -1,7 +1,5 @@
 package com.compiler.ast;
 
-import java.util.HashMap;
-
 import com.compiler.visitors.Visitor;
 
 public class BasicType extends Node {

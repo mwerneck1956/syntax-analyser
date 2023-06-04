@@ -98,8 +98,6 @@ type
 	returns[BasicType basicType]:
 	type OPEN_SQUAREBRACKET CLOSE_SQUAREBRACKET
 	| btype { 
-
-
 		$basicType = $btype.basicType;
 	};
 
@@ -248,7 +246,9 @@ pexp
 lvalue
 	returns[LValue node]:
 	ID { $node = new ID($ID.line,$ID.pos, $ID.text); }
-	| lvalue OPEN_SQUAREBRACKET exp CLOSE_SQUAREBRACKET
+	| l = lvalue OPEN_SQUAREBRACKET exp {
+		$node = new ArrayPositionAccess($OPEN_SQUAREBRACKET.line,$OPEN_SQUAREBRACKET.pos, $l.node, $exp.expInstance);
+	 }
 	| l = lvalue DOT ID { 
 		$node = new AttributeAccess($DOT.line,$DOT.pos, $l.node, new ID($ID.line,$ID.pos, $ID.text));
 	};
@@ -286,7 +286,8 @@ TYPE: [A-Z][A-Za-z]*;
 
 LITERAL_INT: [0-9]+;
 LITERAL_FLOAT: [0-9]* '.' [0-9]+;
-LITERAL_CHAR: '\'' ( '\\' ~[\r\n\\"] | [a-z] | [A-Z]) '\'';
+LITERAL_CHAR:
+	'\'' ('\\' | '\\\\' | ~[\r\n\\"] | [a-z] | [A-Z]) '\'';
 
 NEWLINE: '\r'? '\n' -> skip;
 WHITESPACE: [ \t]+ -> skip;

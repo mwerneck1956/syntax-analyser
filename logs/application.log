@@ -1,13 +1,5 @@
-2023-06-04 18:59:45,551 [com.compiler.App.main()] INFO  InterpretVisitor:266 - Executing main function
-2023-06-04 18:59:51,816 [com.compiler.App.main()] INFO  InterpretVisitor:54 - Visiting add with x + 1
-2023-06-04 18:59:51,816 [com.compiler.App.main()] INFO  InterpretVisitor:341 - Visiting id : "x"
-2023-06-04 18:59:51,817 [com.compiler.App.main()] INFO  InterpretVisitor:347 - Adding value 2 to the operands
-2023-06-04 18:59:51,817 [com.compiler.App.main()] INFO  InterpretVisitor:70 - Add finished storing 3 to the operands
-2023-06-04 18:59:51,817 [com.compiler.App.main()] INFO  InterpretVisitor:237 - New attribution x = 3
-2023-06-04 18:59:51,820 [com.compiler.App.main()] INFO  InterpretVisitor:359 - Visiting if
-2023-06-04 18:59:51,820 [com.compiler.App.main()] INFO  InterpretVisitor:341 - Visiting id : "x"
-2023-06-04 18:59:51,820 [com.compiler.App.main()] INFO  InterpretVisitor:347 - Adding value 3 to the operands
-2023-06-04 18:59:51,821 [com.compiler.App.main()] INFO  InterpretVisitor:505 - Bigger than added true To te stack
-2023-06-04 18:59:51,821 [com.compiler.App.main()] INFO  InterpretVisitor:341 - Visiting id : "x"
-2023-06-04 18:59:51,821 [com.compiler.App.main()] INFO  InterpretVisitor:347 - Adding value 3 to the operands
-2023-06-04 18:59:51,821 [com.compiler.App.main()] INFO  InterpretVisitor:420 - Visiting print
+2023-06-04 20:27:52,054 [com.compiler.App.main()] INFO  InterpretVisitor:266 - Executing main function
+2023-06-04 20:27:52,056 [com.compiler.App.main()] INFO  InterpretVisitor:237 - New attribution x = '\\'
+2023-06-04 20:27:52,057 [com.compiler.App.main()] INFO  InterpretVisitor:341 - Visiting id : "x"
+2023-06-04 20:27:52,057 [com.compiler.App.main()] INFO  InterpretVisitor:347 - Adding value '\\' to the operands
+2023-06-04 20:27:52,057 [com.compiler.App.main()] INFO  InterpretVisitor:420 - Visiting print
