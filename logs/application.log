@@ -1,5 +1,3 @@
-2023-06-04 20:38:44,519 [com.compiler.App.main()] INFO  InterpretVisitor:271 - Executing main function
-2023-06-04 20:38:44,522 [com.compiler.App.main()] INFO  InterpretVisitor:242 - New attribution x = '\\'
-2023-06-04 20:38:44,522 [com.compiler.App.main()] INFO  InterpretVisitor:346 - Visiting id : "x"
-2023-06-04 20:38:44,522 [com.compiler.App.main()] INFO  InterpretVisitor:352 - Adding value '\\' to the operands
-2023-06-04 20:38:44,522 [com.compiler.App.main()] INFO  InterpretVisitor:425 - Visiting print
+2023-06-04 21:06:06,608 [com.compiler.App.main()] INFO  InterpretVisitor:271 - Executing main function
+2023-06-04 21:06:06,610 [com.compiler.App.main()] INFO  InterpretVisitor:242 - New attribution z = {idade=null, salario=null}
+2023-06-04 21:06:06,610 [com.compiler.App.main()] INFO  InterpretVisitor:425 - Visiting print

@@ -1,11 +1,16 @@
-/*  
-    Matheus Gomes Luz Werneck (201835037) 
-    Pedro Henrique Almeida Cardoso Reis (201835039)
-*/
+/* 
+ Matheus Gomes Luz Werneck (201835037) 
+ Pedro Henrique Almeida Cardoso Reis (201835039)
+ */
 
 grammar lang;
 
 @parser::header { 
+	/*  
+    Matheus Gomes Luz Werneck (201835037) 
+    Pedro Henrique Almeida Cardoso Reis (201835039)
+	*/
+
 	package com.compiler.grammar;
 	import com.compiler.ast.*;
 	import java.util.HashMap;

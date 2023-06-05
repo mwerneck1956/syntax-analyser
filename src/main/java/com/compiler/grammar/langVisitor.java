@@ -1,5 +1,10 @@
 // Generated from lang.g4 by ANTLR 4.8
  
+	/*  
+    Matheus Gomes Luz Werneck (201835037) 
+    Pedro Henrique Almeida Cardoso Reis (201835039)
+	*/
+
 	package com.compiler.grammar;
 	import com.compiler.ast.*;
 	import java.util.HashMap;

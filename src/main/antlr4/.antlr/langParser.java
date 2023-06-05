@@ -1,5 +1,10 @@
-// Generated from c:\Users\pedro\OneDrive\Área de Trabalho\UFJF\Trabalhos\syntax-analyser\src\main\antlr4\lang.g4 by ANTLR 4.9.2
+// Generated from c:\Users\Cliente\Desktop\UFJF\Compiladores\syntax-analyser\src\main\antlr4\lang.g4 by ANTLR 4.9.2
  
+	/*  
+    Matheus Gomes Luz Werneck (201835037) 
+    Pedro Henrique Almeida Cardoso Reis (201835039)
+	*/
+
 	package com.compiler.grammar;
 	import com.compiler.ast.*;
 	import java.util.HashMap;
