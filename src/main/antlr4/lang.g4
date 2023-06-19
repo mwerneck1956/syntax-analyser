@@ -113,10 +113,10 @@ type
 
 btype
 	returns[BasicType basicType]:
-	INT {$basicType  = new BasicType($INT.line, $INT.pos, "Int"); }
+	INT {$basicType  = new TypeInt($INT.line, $INT.pos); }
 	| CHAR {$basicType  = new BasicType($CHAR.line, $CHAR.pos, "CHAR"); }
-	| BOOL {$basicType  = new BasicType($BOOL.line, $BOOL.pos, "CHAR"); }
-	| FLOAT {$basicType  = new BasicType($FLOAT.line, $FLOAT.pos, "Float"); }
+	| BOOL {$basicType  = new TypeBoolean($BOOL.line, $BOOL.pos); }
+	| FLOAT {$basicType  = new TypeFloat($FLOAT.line, $FLOAT.pos); }
 	| TYPE {$basicType  = new BasicType($TYPE.line, $TYPE.pos, $TYPE.text); };
 
 cmdList

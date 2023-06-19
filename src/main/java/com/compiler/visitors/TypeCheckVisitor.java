@@ -12,27 +12,49 @@ import java.util.Scanner;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
 import com.compiler.ast.*;
+import com.compiler.typeCheckUtils.*;
 import com.compiler.util.Util;
 
-public class InterpretVisitor implements Visitor {
+public class TypeCheckVisitor implements Visitor {
 
    private static final Logger logger = LogManager.getLogger(InterpretVisitor.class);
+   private STyFloat tyfloat = STyFloat.newSTyFloat();
+   private STyBool tybool = STyBool.newSTyBool();
+   private STyErr tyerr = STyErr.newSTyErr();
+
+   private ArrayList<String> errors;
    private Stack<HashMap<String, Object>> env;
    private HashMap<String, Function> functions;
    private HashMap<String, Data> datas;
+
+   private Stack<SType> typeStack;
    private Stack<Object> operands;
+
    private Boolean returnMode;
 
-   public InterpretVisitor() {
+   public TypeCheckVisitor() {
       this.functions = new HashMap<String, Function>();
       this.operands = new Stack<Object>();
       this.env = new Stack<HashMap<String, Object>>();
       env.push(new HashMap<String, Object>());
       this.datas = new HashMap<String, Data>();
       this.returnMode = false;
+   }
 
+   public ArrayList<String> getErrors() {
+      return errors;
+   }
+
+   public void AddErrorMessage(Node node, String message) {
+      CustomRuntimeException error = new CustomRuntimeException(message, node);
+      this.errors.add(error.getMessage());
+   }
+
+   public void printErrors() {
+      for (String error : errors) {
+         System.out.println(error);
+      }
    }
 
    public void visit(Prog prog) {
@@ -48,7 +70,7 @@ public class InterpretVisitor implements Visitor {
       }
 
       if (main == null)
-         throw new RuntimeException("The program doesnt have a main function");
+         this.AddErrorMessage(main, "The program doesnt have a main function");
 
       main.accept(this);
    }
@@ -80,25 +102,28 @@ public class InterpretVisitor implements Visitor {
    }
 
    public void visit(Sub sub) {
-      try {
-         sub.getLeft().accept(this);
-         sub.getRight().accept(this);
 
-         Number left, right, res;
+      sub.getLeft().accept(this);
+      sub.getRight().accept(this);
 
-         left = (Number) operands.pop();
-         right = (Number) operands.pop();
+      Number left, right, res;
 
-         if (left instanceof Float || right instanceof Float)
-            res = left.floatValue() - right.floatValue();
-         else
-            res = left.intValue() - right.intValue();
+      this.checkBinOpTypes(sub, '-');
 
-         operands.push(res);
-      } catch (Exception err) {
-         throw new RuntimeException(err.getMessage());
-      }
+      // left = (Number) operands.pop();
+      // right = (Number) operands.pop();
 
+      // if (left instanceof Float || right instanceof Float)
+      // res = left.floatValue() - right.floatValue();
+      // else
+      // res = left.intValue() - right.intValue();
+
+      // operands.push(res);
+
+   }
+
+   private boolean checkBinOpTypes(BinOP operation, char c) {
+      return false;
    }
 
    public void visit(Mod mod) {

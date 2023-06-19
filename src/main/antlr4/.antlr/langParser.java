@@ -734,7 +734,7 @@ public class langParser extends Parser {
 				{
 				setState(138);
 				((BtypeContext)_localctx).INT = match(INT);
-				((BtypeContext)_localctx).basicType =  new BasicType((((BtypeContext)_localctx).INT!=null?((BtypeContext)_localctx).INT.getLine():0), (((BtypeContext)_localctx).INT!=null?((BtypeContext)_localctx).INT.getCharPositionInLine():0), "Int"); 
+				((BtypeContext)_localctx).basicType =  new TypeInt((((BtypeContext)_localctx).INT!=null?((BtypeContext)_localctx).INT.getLine():0), (((BtypeContext)_localctx).INT!=null?((BtypeContext)_localctx).INT.getCharPositionInLine():0)); 
 				}
 				break;
 			case CHAR:
@@ -750,7 +750,7 @@ public class langParser extends Parser {
 				{
 				setState(142);
 				((BtypeContext)_localctx).BOOL = match(BOOL);
-				((BtypeContext)_localctx).basicType =  new BasicType((((BtypeContext)_localctx).BOOL!=null?((BtypeContext)_localctx).BOOL.getLine():0), (((BtypeContext)_localctx).BOOL!=null?((BtypeContext)_localctx).BOOL.getCharPositionInLine():0), "CHAR"); 
+				((BtypeContext)_localctx).basicType =  new TypeBoolean((((BtypeContext)_localctx).BOOL!=null?((BtypeContext)_localctx).BOOL.getLine():0), (((BtypeContext)_localctx).BOOL!=null?((BtypeContext)_localctx).BOOL.getCharPositionInLine():0)); 
 				}
 				break;
 			case FLOAT:
@@ -758,7 +758,7 @@ public class langParser extends Parser {
 				{
 				setState(144);
 				((BtypeContext)_localctx).FLOAT = match(FLOAT);
-				((BtypeContext)_localctx).basicType =  new BasicType((((BtypeContext)_localctx).FLOAT!=null?((BtypeContext)_localctx).FLOAT.getLine():0), (((BtypeContext)_localctx).FLOAT!=null?((BtypeContext)_localctx).FLOAT.getCharPositionInLine():0), "Float"); 
+				((BtypeContext)_localctx).basicType =  new TypeFloat((((BtypeContext)_localctx).FLOAT!=null?((BtypeContext)_localctx).FLOAT.getLine():0), (((BtypeContext)_localctx).FLOAT!=null?((BtypeContext)_localctx).FLOAT.getCharPositionInLine():0)); 
 				}
 				break;
 			case TYPE:
