@@ -1,3 +1,0 @@
-2023-06-04 21:19:19,108 [com.compiler.App.main()] INFO  InterpretVisitor:271 - Executing main function
-2023-06-04 21:19:19,110 [com.compiler.App.main()] INFO  InterpretVisitor:242 - New attribution z = {idade=null, salario=null}
-2023-06-04 21:19:19,110 [com.compiler.App.main()] INFO  InterpretVisitor:425 - Visiting print

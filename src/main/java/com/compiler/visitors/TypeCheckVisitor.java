@@ -19,9 +19,10 @@ import com.compiler.util.Util;
 public class TypeCheckVisitor implements Visitor {
 
    private static final Logger logger = LogManager.getLogger(InterpretVisitor.class);
-   private STyFloat tyfloat = STyFloat.newSTyFloat();
-   private STyBool tybool = STyBool.newSTyBool();
-   private STyErr tyerr = STyErr.newSTyErr();
+   private STyFloat typeFloat = STyFloat.newSTyFloat();
+   private STyBool typeBool = STyBool.newSTyBool();
+   private STyErr typeErr = STyErr.newSTyErr();
+   private STyInt typeInt = STyInt.newSTyInt();
 
    private ArrayList<String> errors;
    private Stack<HashMap<String, Object>> env;
@@ -37,9 +38,11 @@ public class TypeCheckVisitor implements Visitor {
       this.functions = new HashMap<String, Function>();
       this.operands = new Stack<Object>();
       this.env = new Stack<HashMap<String, Object>>();
-      env.push(new HashMap<String, Object>());
       this.datas = new HashMap<String, Data>();
+      this.errors = new ArrayList<String>();
       this.returnMode = false;
+
+      env.push(new HashMap<String, Object>());
    }
 
    public ArrayList<String> getErrors() {
@@ -123,6 +126,20 @@ public class TypeCheckVisitor implements Visitor {
    }
 
    private boolean checkBinOpTypes(BinOP operation, char c) {
+      SType rightType = typeStack.pop();
+      SType leftType = typeStack.pop();
+
+      if (rightType.match(typeInt)) {
+         if (leftType.match(typeInt) || leftType.match(typeFloat)) {
+            this.typeStack.push(leftType);
+         } else {
+            String errMessage = " Operator " + c + " do not apply to the types : " + leftType.toString() + " and "
+                  + rightType.toString();
+
+            AddErrorMessage(operation, errMessage);
+         }
+      }
+
       return false;
    }
 
@@ -427,11 +444,11 @@ public class TypeCheckVisitor implements Visitor {
    }
 
    public void visit(LiteralFloat literal) {
-      this.operands.push(new Float(literal.getValue()));
+      this.typeStack.push(typeFloat);
    }
 
    public void visit(LiteralInt literal) {
-      this.operands.push(new Integer(literal.getValue()));
+      this.typeStack.push(typeInt);
 
    }
 
@@ -440,8 +457,7 @@ public class TypeCheckVisitor implements Visitor {
    }
 
    public void visit(LiteralTrue literal) {
-      this.operands.push(new Boolean(true));
-
+      this.typeStack.push(typeBool);
    }
 
    public void visit(Print print) {

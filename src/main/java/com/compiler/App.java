@@ -8,6 +8,7 @@ package com.compiler;
 import org.antlr.v4.runtime.*;
 import com.compiler.grammar.*;
 import com.compiler.visitors.InterpretVisitor;
+import com.compiler.visitors.TypeCheckVisitor;
 import com.compiler.ast.*;
 
 public class App {
@@ -24,8 +25,18 @@ public class App {
 
         Prog ast = parser.prog().ast;
 
-        InterpretVisitor visitor = new InterpretVisitor();
+        TypeCheckVisitor typeCheckVisitor = new TypeCheckVisitor();
 
-        ast.accept(visitor);
+        ast.accept(typeCheckVisitor);
+
+        if (typeCheckVisitor.getErrors().size() < 0) {
+
+            InterpretVisitor visitor = new InterpretVisitor();
+
+            ast.accept(visitor);
+        } else {
+            typeCheckVisitor.printErrors();
+        }
+
     }
 }
