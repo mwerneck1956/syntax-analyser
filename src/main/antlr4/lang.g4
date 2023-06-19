@@ -297,7 +297,8 @@ TYPE: [A-Z][A-Za-z]*;
 LITERAL_INT: [0-9]+;
 LITERAL_FLOAT: [0-9]* '.' [0-9]+;
 LITERAL_CHAR:
-	'\'' ('\\' | '\\\\' | ~[\r\n\\"] | [a-z] | [A-Z]) '\'';
+	'\'' ('\\' | '\\\\' | ~[\r\n\\"] | [a-z] | [A-Z] |) '\''
+	|;
 
 NEWLINE: '\r'? '\n' -> skip;
 WHITESPACE: [ \t]+ -> skip;

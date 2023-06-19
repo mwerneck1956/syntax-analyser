@@ -8,8 +8,8 @@ f(x :: Int) : Int{
 }
 
 main(v :: Int[], f :: Float){
-  z = new Funcionario;
+  z = new Funcionario;;
 
-  z.salario = 100;
+  z.salario = 100;;
   print z.salario;
 }
