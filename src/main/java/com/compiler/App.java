@@ -7,6 +7,7 @@ package com.compiler;
 
 import org.antlr.v4.runtime.*;
 import com.compiler.grammar.*;
+import com.compiler.util.CustomErrorListener;
 import com.compiler.visitors.InterpretVisitor;
 import com.compiler.visitors.TypeCheckVisitor;
 import com.compiler.ast.*;
@@ -23,20 +24,22 @@ public class App {
 
         parser.setBuildParseTree(false);
 
-        Prog ast = parser.prog().ast;
+        if (parser.getNumberOfSyntaxErrors() > 0) {
+            Prog ast = parser.prog().ast;
 
-        TypeCheckVisitor typeCheckVisitor = new TypeCheckVisitor();
+            TypeCheckVisitor typeCheckVisitor = new TypeCheckVisitor();
+            ast.accept(typeCheckVisitor);
 
-        ast.accept(typeCheckVisitor);
+            if (typeCheckVisitor.getErrors().size() < 0) {
 
-        if (typeCheckVisitor.getErrors().size() < 0) {
+                InterpretVisitor visitor = new InterpretVisitor();
 
-            InterpretVisitor visitor = new InterpretVisitor();
+                ast.accept(visitor);
+            } else {
+                typeCheckVisitor.printErrors();
+                throw new Exception("The program have a sytantical error");
+            }
 
-            ast.accept(visitor);
-        } else {
-            typeCheckVisitor.printErrors();
         }
-
     }
 }
