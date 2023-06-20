@@ -1,15 +1,11 @@
 package com.compiler.parser;
 
 import java.io.*;
-import com.compiler.ast.Node;
-import com.compiler.parser.ParseAdaptor;
-import java.util.List;
-
 // Adaptador para classe de parser. a Função parseFile deve retornar null caso o parser resulte em erro. 
 
 public class TestParser {
     private ParseAdaptor adp;
-    private String okSrcs = "testes/sintaxe/certo/";
+    private String okSrcs = "sintaxe/certo/";
     private File f;
 
     public TestParser(ParseAdaptor adp) {

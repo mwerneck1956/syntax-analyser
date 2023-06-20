@@ -14,8 +14,6 @@ public class ParenthesisExpression extends LValue {
    public ParenthesisExpression(int line, int col, Expr expr) {
       super(line, col);
       this.expr = expr;
-
-      System.out.println("Pexp criada" + this.toString());
    }
 
    public String toString() {

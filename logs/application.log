@@ -1,4 +1,0 @@
-2023-06-20 15:29:23,498 [com.compiler.App.main()] INFO  InterpretVisitor:258 - Executing main function
-2023-06-20 15:29:23,501 [com.compiler.App.main()] INFO  InterpretVisitor:271 - Executing main function
-2023-06-20 15:29:23,501 [com.compiler.App.main()] INFO  InterpretVisitor:182 - Testing if 10 == 15.5
-2023-06-20 15:29:23,501 [com.compiler.App.main()] INFO  InterpretVisitor:242 - New attribution c = false

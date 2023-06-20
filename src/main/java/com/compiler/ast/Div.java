@@ -11,8 +11,6 @@ public class Div extends BinOP {
 
    public Div(int line, int col, Expr l, Expr r) {
       super(line, col, l, r);
-
-      System.out.println("Div criada :" + l.toString() + " / " + r.toString());
    }
 
    public void accept(Visitor visitor) {
