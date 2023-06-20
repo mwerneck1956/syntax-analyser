@@ -12,8 +12,10 @@ import java.util.Scanner;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
 import com.compiler.ast.*;
 import com.compiler.typeCheckUtils.*;
+import com.compiler.util.TypeCheckUtils;
 import com.compiler.util.Util;
 
 public class TypeCheckVisitor implements Visitor {
@@ -119,20 +121,20 @@ public class TypeCheckVisitor implements Visitor {
    }
 
    public void visit(Mod mod) {
-      try {
-         mod.getLeft().accept(this);
-         mod.getRight().accept(this);
 
-         Number left, right, res;
+      mod.getLeft().accept(this);
+      mod.getRight().accept(this);
 
-         right = (Number) operands.pop();
-         left = (Number) operands.pop();
+      SType left, right;
 
-         res = left.intValue() % right.intValue();
+      right = typeStack.pop();
+      left = typeStack.pop();
 
-         operands.push(res);
-      } catch (Exception err) {
-         throw new RuntimeException(err.getMessage());
+      if (left.match(typeInt) && right.match(typeInt))
+         typeStack.push(typeInt);
+      else {
+         addErrorMessage(mod, TypeCheckUtils.createInvalidOperandsErrorMessage("%", left, right));
+         typeStack.push(typeErr);
       }
 
    }
@@ -152,41 +154,39 @@ public class TypeCheckVisitor implements Visitor {
    }
 
    public void visit(Equal equal) {
-      try {
+      equal.getLeft().accept(this);
+      equal.getRight().accept(this);
 
-         equal.getLeft().accept(this);
-         equal.getRight().accept(this);
+      SType left, right;
+      right = typeStack.pop();
+      left = typeStack.pop();
 
-         Object left, right;
-
-         right = operands.pop();
-         left = operands.pop();
-
-         operands.push(left.equals(right));
-
-         logger.info("Testing if " + right.toString() + " == " + left.toString());
-
-      } catch (Exception err) {
-         throw new RuntimeException(err.getMessage());
+      if (TypeCheckUtils.isInstanceOfNumber(left) && TypeCheckUtils.isInstanceOfNumber(right))
+         typeStack.push(typeBool);
+      else if (left.match(typeChar) && right.match(typeChar))
+         typeStack.push(typeBool);
+      else {
+         addErrorMessage(equal, TypeCheckUtils.createEqualErrorMessage(left, right));
+         typeStack.push(typeErr);
       }
 
    }
 
    public void visit(Diff diff) {
-      try {
+      diff.getLeft().accept(this);
+      diff.getRight().accept(this);
 
-         diff.getLeft().accept(this);
-         diff.getRight().accept(this);
+      SType left, right;
+      right = typeStack.pop();
+      left = typeStack.pop();
 
-         Object left, right;
-
-         right = operands.pop();
-         left = operands.pop();
-
-         operands.push(!left.equals(right));
-
-      } catch (Exception err) {
-         throw new RuntimeException(err.getMessage());
+      if (TypeCheckUtils.isInstanceOfNumber(left) && TypeCheckUtils.isInstanceOfNumber(right))
+         typeStack.push(typeBool);
+      else if (left.match(typeChar) && right.match(typeChar))
+         typeStack.push(typeBool);
+      else {
+         addErrorMessage(diff, TypeCheckUtils.createEqualErrorMessage(left, right));
+         typeStack.push(typeErr);
       }
 
    }
@@ -432,16 +432,16 @@ public class TypeCheckVisitor implements Visitor {
          lessThan.getLeft().accept(this);
          lessThan.getRight().accept(this);
 
-         Number left, right;
+         SType left, right;
 
-         right = (Number) operands.pop();
-         left = (Number) operands.pop();
+         right = typeStack.pop();
+         left = typeStack.pop();
 
-         Boolean res = new Boolean((Integer) left < (Integer) right);
+         // Boolean res = new Boolean((Integer) left < (Integer) right);
 
-         operands.push(res);
+         // operands.push(res);
 
-         logger.info("Less than added " + res + " To te stack");
+         // logger.info("Less than added " + res + " To te stack");
       } catch (Exception err) {
 
       }

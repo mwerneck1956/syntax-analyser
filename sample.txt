@@ -8,9 +8,5 @@ f(x :: Int) : Int{
 }
 
 main(v :: Int[], f :: Float){
-  a = b + c;
-
-  if('c'){
-    print a;
-  }
+  c = 15.5 == 10;
 }

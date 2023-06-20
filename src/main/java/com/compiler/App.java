@@ -34,7 +34,7 @@ public class App {
                 ast.accept(visitor);
             } else {
                 typeCheckVisitor.printErrors();
-                throw new Exception("The program have a sytantical error");
+                throw new Exception("The program has semantical errors");
             }
 
         }
