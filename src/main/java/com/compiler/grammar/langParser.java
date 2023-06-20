@@ -668,7 +668,7 @@ public class langParser extends Parser {
 	}
 
 	public static class TypeContext extends ParserRuleContext {
-		public BasicType basicType;
+		public Type basicType;
 		public BtypeContext btype;
 		public BtypeContext btype() {
 			return getRuleContext(BtypeContext.class,0);
@@ -750,7 +750,7 @@ public class langParser extends Parser {
 	}
 
 	public static class BtypeContext extends ParserRuleContext {
-		public BasicType basicType;
+		public Type basicType;
 		public Token INT;
 		public Token CHAR;
 		public Token BOOL;
@@ -792,7 +792,7 @@ public class langParser extends Parser {
 				{
 				setState(140);
 				((BtypeContext)_localctx).CHAR = match(CHAR);
-				((BtypeContext)_localctx).basicType =  new BasicType((((BtypeContext)_localctx).CHAR!=null?((BtypeContext)_localctx).CHAR.getLine():0), (((BtypeContext)_localctx).CHAR!=null?((BtypeContext)_localctx).CHAR.getCharPositionInLine():0), "CHAR"); 
+				((BtypeContext)_localctx).basicType =  new TypeChar((((BtypeContext)_localctx).CHAR!=null?((BtypeContext)_localctx).CHAR.getLine():0), (((BtypeContext)_localctx).CHAR!=null?((BtypeContext)_localctx).CHAR.getCharPositionInLine():0)); 
 				}
 				break;
 			case BOOL:
@@ -800,7 +800,7 @@ public class langParser extends Parser {
 				{
 				setState(142);
 				((BtypeContext)_localctx).BOOL = match(BOOL);
-				((BtypeContext)_localctx).basicType =  new TypeBoolean((((BtypeContext)_localctx).BOOL!=null?((BtypeContext)_localctx).BOOL.getLine():0), (((BtypeContext)_localctx).BOOL!=null?((BtypeContext)_localctx).BOOL.getCharPositionInLine():0)); 
+				((BtypeContext)_localctx).basicType =  new TypeBool((((BtypeContext)_localctx).BOOL!=null?((BtypeContext)_localctx).BOOL.getLine():0), (((BtypeContext)_localctx).BOOL!=null?((BtypeContext)_localctx).BOOL.getCharPositionInLine():0)); 
 				}
 				break;
 			case FLOAT:
@@ -816,7 +816,7 @@ public class langParser extends Parser {
 				{
 				setState(146);
 				((BtypeContext)_localctx).TYPE = match(TYPE);
-				((BtypeContext)_localctx).basicType =  new BasicType((((BtypeContext)_localctx).TYPE!=null?((BtypeContext)_localctx).TYPE.getLine():0), (((BtypeContext)_localctx).TYPE!=null?((BtypeContext)_localctx).TYPE.getCharPositionInLine():0), (((BtypeContext)_localctx).TYPE!=null?((BtypeContext)_localctx).TYPE.getText():null)); 
+				((BtypeContext)_localctx).basicType =  new TypeCustom((((BtypeContext)_localctx).TYPE!=null?((BtypeContext)_localctx).TYPE.getLine():0), (((BtypeContext)_localctx).TYPE!=null?((BtypeContext)_localctx).TYPE.getCharPositionInLine():0)); 
 				}
 				break;
 			default:

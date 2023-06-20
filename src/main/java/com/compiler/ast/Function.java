@@ -13,14 +13,14 @@ public class Function extends Cmd {
    private ID id;
    private CmdList body;
    private ArrayList<Param> paramlist;
-   private ArrayList<BasicType> returns;
+   private ArrayList<Type> returns;
 
    public Function(ID id) {
       super(id.getLine(), id.getCol());
       this.body = null;
       this.paramlist = new ArrayList<Param>();
       this.id = id;
-      this.returns = new ArrayList<BasicType>();
+      this.returns = new ArrayList<Type>();
    }
 
    public String getName() {
@@ -47,7 +47,7 @@ public class Function extends Cmd {
       return paramlist;
    }
 
-   public void addReturn(BasicType type) {
+   public void addReturn(Type type) {
       this.returns.add(type);
 
    }
@@ -60,7 +60,7 @@ public class Function extends Cmd {
       return body;
    }
 
-   public ArrayList<BasicType> getReturns() {
+   public ArrayList<Type> getReturns() {
       return returns;
    }
 

@@ -5,19 +5,13 @@
 
 package com.compiler.util;
 
-public class Util {
+import com.compiler.ast.BinOP;
+import com.compiler.typeCheckUtils.SType;
+
+public class TypeCheckUtils {
    public static boolean isInteger(String input) {
       try {
          Integer.parseInt(input);
-         return true;
-      } catch (NumberFormatException e) {
-         return false;
-      }
-   }
-
-   public static boolean isDouble(String input) {
-      try {
-         Double.parseDouble(input);
          return true;
       } catch (NumberFormatException e) {
          return false;

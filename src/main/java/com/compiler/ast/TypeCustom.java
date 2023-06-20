@@ -7,9 +7,9 @@ package com.compiler.ast;
 
 import com.compiler.visitors.Visitor;
 
-public class TypeFloat extends Type {
+public class TypeCustom extends Type {
 
-   public TypeFloat(int line, int col) {
+   public TypeCustom(int line, int col) {
       super(line, col);
    }
 

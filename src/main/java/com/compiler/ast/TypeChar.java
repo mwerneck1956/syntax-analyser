@@ -7,19 +7,19 @@ package com.compiler.ast;
 
 import com.compiler.visitors.Visitor;
 
-public class TypeFloat extends Type {
+public class TypeChar extends Type {
 
-   public TypeFloat(int line, int col) {
+   public TypeChar(int line, int col) {
       super(line, col);
    }
 
    @Override
    public String toString() {
-      return "Float";
+      return "Char";
    }
 
    public boolean match(Type t) {
-      return t instanceof TypeFloat;
+      return t instanceof TypeChar;
    }
 
    public void accept(Visitor visitor) {

@@ -2,12 +2,10 @@
     Matheus Gomes Luz Werneck (201835037) 
     Pedro Henrique Almeida Cardoso Reis (201835039)
 */
-
 package com.compiler;
 
 import org.antlr.v4.runtime.*;
 import com.compiler.grammar.*;
-import com.compiler.util.CustomErrorListener;
 import com.compiler.visitors.InterpretVisitor;
 import com.compiler.visitors.TypeCheckVisitor;
 import com.compiler.ast.*;
@@ -24,14 +22,13 @@ public class App {
 
         parser.setBuildParseTree(false);
 
-        if (parser.getNumberOfSyntaxErrors() > 0) {
+        if (parser.getNumberOfSyntaxErrors() == 0) {
             Prog ast = parser.prog().ast;
 
             TypeCheckVisitor typeCheckVisitor = new TypeCheckVisitor();
             ast.accept(typeCheckVisitor);
 
-            if (typeCheckVisitor.getErrors().size() < 0) {
-
+            if (typeCheckVisitor.getErrors().size() == 0) {
                 InterpretVisitor visitor = new InterpretVisitor();
 
                 ast.accept(visitor);

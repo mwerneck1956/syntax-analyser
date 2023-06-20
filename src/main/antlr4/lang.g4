@@ -105,19 +105,19 @@ params
 	)*;
 
 type
-	returns[BasicType basicType]:
+	returns[Type basicType]:
 	type OPEN_SQUAREBRACKET CLOSE_SQUAREBRACKET
 	| btype { 
 		$basicType = $btype.basicType;
 	};
 
 btype
-	returns[BasicType basicType]:
+	returns[Type basicType]:
 	INT {$basicType  = new TypeInt($INT.line, $INT.pos); }
-	| CHAR {$basicType  = new BasicType($CHAR.line, $CHAR.pos, "CHAR"); }
-	| BOOL {$basicType  = new TypeBoolean($BOOL.line, $BOOL.pos); }
+	| CHAR {$basicType  = new TypeChar($CHAR.line, $CHAR.pos); }
+	| BOOL {$basicType  = new TypeBool($BOOL.line, $BOOL.pos); }
 	| FLOAT {$basicType  = new TypeFloat($FLOAT.line, $FLOAT.pos); }
-	| TYPE {$basicType  = new BasicType($TYPE.line, $TYPE.pos, $TYPE.text); };
+	| TYPE {$basicType  = new TypeCustom($TYPE.line, $TYPE.pos); };
 
 cmdList
 	returns[CmdList commands]:

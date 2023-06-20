@@ -86,4 +86,8 @@ public interface Visitor {
 
     public abstract void visit(TypeBool typeBool);
 
+    public abstract void visit(TypeChar typeChar);
+
+    public abstract void visit(TypeCustom customType);
+
 }

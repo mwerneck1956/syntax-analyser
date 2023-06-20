@@ -7,7 +7,7 @@ package com.compiler.ast;
 
 import com.compiler.visitors.Visitor;
 
-public class TypeBool extends Node {
+public class TypeBool extends Type {
 
    public TypeBool(int line, int col) {
       super(line, col);
@@ -16,6 +16,10 @@ public class TypeBool extends Node {
    @Override
    public String toString() {
       return "Boolean";
+   }
+
+   public boolean match(Type t) {
+      return t instanceof TypeBool;
    }
 
    public void accept(Visitor visitor) {

@@ -9,10 +9,10 @@ import com.compiler.visitors.Visitor;
 
 public class NewData extends LValue {
 
-   BasicType type;
+   Type type;
    Expr expr;
 
-   public NewData(int line, int col, BasicType type) {
+   public NewData(int line, int col, Type type) {
       super(line, col);
       this.type = type;
       this.expr = null;
@@ -27,12 +27,12 @@ public class NewData extends LValue {
       return expr;
    }
 
-   public BasicType getType() {
+   public Type getType() {
       return type;
    }
 
    public String getTypeName() {
-      return type.getType();
+      return type.toString();
    }
 
    public void setExpr(Expr expr) {

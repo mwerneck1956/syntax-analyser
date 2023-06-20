@@ -23,9 +23,10 @@ public class TypeCheckVisitor implements Visitor {
    private STyBool typeBool = STyBool.newSTyBool();
    private STyErr typeErr = STyErr.newSTyErr();
    private STyInt typeInt = STyInt.newSTyInt();
+   private STyChar typeChar = STyChar.newSTyChar();
 
    private ArrayList<String> errors;
-   private Stack<HashMap<String, Object>> env;
+   private Stack<HashMap<String, SType>> env;
    private HashMap<String, Function> functions;
    private HashMap<String, Data> datas;
 
@@ -37,21 +38,25 @@ public class TypeCheckVisitor implements Visitor {
    public TypeCheckVisitor() {
       this.functions = new HashMap<String, Function>();
       this.operands = new Stack<Object>();
-      this.env = new Stack<HashMap<String, Object>>();
+      this.env = new Stack<HashMap<String, SType>>();
       this.datas = new HashMap<String, Data>();
       this.errors = new ArrayList<String>();
       this.returnMode = false;
+      this.typeStack = new Stack<SType>();
 
-      env.push(new HashMap<String, Object>());
+      env.push(new HashMap<String, SType>());
    }
 
    public ArrayList<String> getErrors() {
       return errors;
    }
 
-   public void AddErrorMessage(Node node, String message) {
+   public void addErrorMessage(Node node, String message) {
+      ;
+
       CustomRuntimeException error = new CustomRuntimeException(message, node);
       this.errors.add(error.getMessage());
+      logger.info(error.getMessage());
    }
 
    public void printErrors() {
@@ -61,6 +66,7 @@ public class TypeCheckVisitor implements Visitor {
    }
 
    public void visit(Prog prog) {
+
       Node main = null;
 
       this.functions = prog.getFunctions();
@@ -73,35 +79,16 @@ public class TypeCheckVisitor implements Visitor {
       }
 
       if (main == null)
-         this.AddErrorMessage(main, "The program doesnt have a main function");
+         this.addErrorMessage(main, "The program doesnt have a main function");
 
       main.accept(this);
    }
 
    public void visit(Add add) {
-      try {
+      add.getLeft().accept(this);
+      add.getRight().accept(this);
 
-         logger.info("Visiting add with " + add.toString());
-
-         add.getLeft().accept(this);
-         add.getRight().accept(this);
-
-         Number left, right, res;
-
-         right = (Number) operands.pop();
-         left = (Number) operands.pop();
-
-         if (left instanceof Float || right instanceof Float)
-            res = left.floatValue() + right.floatValue();
-         else
-            res = left.intValue() + right.intValue();
-
-         operands.push(res);
-         logger.info("Add finished storing " + res + " to the operands");
-      } catch (Exception err) {
-         throw new CustomRuntimeException(err.getMessage(), add);
-      }
-
+      this.checkBinOpTypes(add, '+');
    }
 
    public void visit(Sub sub) {
@@ -109,38 +96,26 @@ public class TypeCheckVisitor implements Visitor {
       sub.getLeft().accept(this);
       sub.getRight().accept(this);
 
-      Number left, right, res;
-
       this.checkBinOpTypes(sub, '-');
-
-      // left = (Number) operands.pop();
-      // right = (Number) operands.pop();
-
-      // if (left instanceof Float || right instanceof Float)
-      // res = left.floatValue() - right.floatValue();
-      // else
-      // res = left.intValue() - right.intValue();
-
-      // operands.push(res);
-
    }
 
-   private boolean checkBinOpTypes(BinOP operation, char c) {
+   private void checkBinOpTypes(BinOP operation, char c) {
+
       SType rightType = typeStack.pop();
       SType leftType = typeStack.pop();
 
-      if (rightType.match(typeInt)) {
+      String errMessage = " Operator " + c + " do not apply to the types : " + leftType.toString() + " and "
+            + rightType.toString();
+
+      if (rightType.match(typeInt) || rightType.match(typeFloat)) {
          if (leftType.match(typeInt) || leftType.match(typeFloat)) {
             this.typeStack.push(leftType);
-         } else {
-            String errMessage = " Operator " + c + " do not apply to the types : " + leftType.toString() + " and "
-                  + rightType.toString();
-
-            AddErrorMessage(operation, errMessage);
+            return;
          }
       }
 
-      return false;
+      this.typeStack.push(typeErr);
+      addErrorMessage(operation, errMessage);
    }
 
    public void visit(Mod mod) {
@@ -163,49 +138,17 @@ public class TypeCheckVisitor implements Visitor {
    }
 
    public void visit(Mult mult) {
-      try {
-         logger.info("Visiting mult");
+      mult.getLeft().accept(this);
+      mult.getRight().accept(this);
 
-         mult.getLeft().accept(this);
-         mult.getRight().accept(this);
-
-         Number left, right, res;
-
-         left = (Number) operands.pop();
-         right = (Number) operands.pop();
-
-         if (left instanceof Float || right instanceof Float)
-            res = left.floatValue() * right.floatValue();
-         else
-            res = left.intValue() * right.intValue();
-
-         operands.push(res);
-      } catch (Exception err) {
-         throw new RuntimeException(err.getMessage());
-      }
-
+      this.checkBinOpTypes(mult, '*');
    }
 
    public void visit(Div div) {
-      try {
-         div.getLeft().accept(this);
-         div.getRight().accept(this);
+      div.getLeft().accept(this);
+      div.getRight().accept(this);
 
-         Number left, right, res;
-
-         left = (Number) operands.pop();
-         right = (Number) operands.pop();
-
-         if (left instanceof Float || right instanceof Float)
-            res = left.floatValue() / right.floatValue();
-         else
-            res = left.intValue() / right.intValue();
-
-         operands.push(res);
-      } catch (Exception err) {
-         throw new RuntimeException(err.getMessage());
-      }
-
+      this.checkBinOpTypes(div, '*');
    }
 
    public void visit(Equal equal) {
@@ -257,31 +200,33 @@ public class TypeCheckVisitor implements Visitor {
 
       if (id instanceof AttributeAccess) {
 
-         AttributeAccess access = (AttributeAccess) id;
+         // AttributeAccess access = (AttributeAccess) id;
 
-         LValue leftSideId = access.getLeftValue();
+         // LValue leftSideId = access.getLeftValue();
 
-         if (this.env.peek().containsKey(leftSideId.getId())) {
+         // if (this.env.peek().containsKey(leftSideId.getId())) {
 
-            HashMap<String, Object> var = (HashMap<String, Object>) this.env.peek().get(leftSideId.getId());
+         // HashMap<String, SType> var = (HashMap<String, SType>)
+         // this.env.peek().get(leftSideId.getId());
 
-            attr.getExp().accept(this);
-            Object val = operands.pop();
+         // attr.getExp().accept(this);
+         // SType val = typeStack.pop();
 
-            var.put(access.getAcessId().getName(), val);
-            env.peek().put(id.getId(), val);
+         // var.put(access.getAcessId().getName(), val);
+         // env.peek().put(id.getId(), val);
 
-         } else {
-            throw new CustomRuntimeException("Var " + leftSideId.getId() + " not  declared", leftSideId);
-         }
+         // } else {
+         // throw new CustomRuntimeException("Var " + leftSideId.getId() + " not
+         // declared", leftSideId);
+         // }
 
       } else {
          attr.getExp().accept(this);
-         Object val = operands.pop();
 
-         env.peek().put(id.getId(), val);
+         SType val = typeStack.pop();
 
-         logger.info("New attribution " + id.getId() + " = " + val);
+         if (!val.match(typeErr))
+            env.peek().put(id.getId(), val);
       }
 
    }
@@ -315,7 +260,7 @@ public class TypeCheckVisitor implements Visitor {
       } else {
          logger.info("Executing " + function.getName() + " function");
 
-         HashMap<String, Object> localEnv = new HashMap<String, Object>();
+         HashMap<String, SType> localEnv = new HashMap<String, SType>();
          this.env.push(localEnv);
 
          ArrayList<Param> functionParams = function.getParamlist();
@@ -358,7 +303,7 @@ public class TypeCheckVisitor implements Visitor {
                   for (LValue returnId : functionCall.getReturnsId()) {
                      String returnVariableName = returnId.getId();
 
-                     Object value = operands.pop();
+                     SType value = typeStack.pop();
                      this.env.peek().put(returnVariableName, value);
 
                      logger.info("Putting return variable " + returnVariableName + " with value : " + value);
@@ -384,19 +329,17 @@ public class TypeCheckVisitor implements Visitor {
 
    @Override
    public void visit(ID id) {
-      try {
-         logger.info("Visiting id : \"" + id.getName() + "\"");
 
-         if (env.peek().containsKey(id.getName())) {
-            Object idValue = env.peek().get(id.getName());
-            operands.push(idValue);
+      logger.info("Visiting id : \"" + id.getName() + "\"");
 
-            logger.info("Adding value " + idValue + " to the operands");
-         } else
-            throw new RuntimeException("Variable " + id.getName() + " Not declared");
+      if (env.peek().containsKey(id.getName())) {
+         SType idValue = env.peek().get(id.getName());
+         typeStack.push(idValue);
 
-      } catch (Exception e) {
-         throw new RuntimeException(e.getMessage());
+         logger.info("Adding value " + idValue + " to the operands");
+      } else {
+         addErrorMessage(id, "Variable " + id.getName() + " not declared");
+         typeStack.push(typeErr);
       }
 
    }
@@ -407,40 +350,38 @@ public class TypeCheckVisitor implements Visitor {
 
       ifExpr.getCondition().accept(this);
 
-      if ((Boolean) operands.pop()) {
+      if (typeStack.pop().match(typeBool)) {
          ifExpr.getThen().accept(this);
 
-      } else if (ifExpr.getOnElse() != null) {
-         ifExpr.getOnElse().accept(this);
-
+         if (ifExpr.getOnElse() != null)
+            ifExpr.getOnElse().accept(this);
+      } else {
+         addErrorMessage(ifExpr, " If test expression must have type Bool");
       }
    }
 
    @Override
    public void visit(Iterate iterate) {
-      try {
 
+      iterate.getCondition().accept(this);
+
+      if (typeStack.pop().match(typeBool)) {
+         iterate.getBody().accept(this);
          iterate.getCondition().accept(this);
-
-         while ((Boolean) operands.pop()) {
-            iterate.getBody().accept(this);
-            iterate.getCondition().accept(this);
-         }
-
-      } catch (Exception err) {
-         throw new CustomRuntimeException(err.getMessage(), iterate);
+      } else {
+         addErrorMessage(iterate, " If test expression must have type Bool");
       }
 
    }
 
    @Override
    public void visit(LiteralChar literal) {
-      this.operands.push(new String(literal.getValue()));
+      this.typeStack.push(typeChar);
 
    }
 
    public void visit(LiteralFalse literal) {
-      this.operands.push(new Boolean(false));
+      this.operands.push(typeBool);
    }
 
    public void visit(LiteralFloat literal) {
@@ -449,7 +390,6 @@ public class TypeCheckVisitor implements Visitor {
 
    public void visit(LiteralInt literal) {
       this.typeStack.push(typeInt);
-
    }
 
    public void visit(LiteralNull literal) {
@@ -475,11 +415,11 @@ public class TypeCheckVisitor implements Visitor {
       scanner.close();
 
       if (Util.isInteger(value)) {
-         this.env.peek().put(read.getLvalue().getId(), Integer.parseInt(value));
+         this.env.peek().put(read.getLvalue().getId(), typeInt);
       } else if (Util.isDouble(value)) {
-         this.env.peek().put(read.getLvalue().getId(), Double.parseDouble(value));
+         this.env.peek().put(read.getLvalue().getId(), typeFloat);
       } else {
-         this.env.peek().put(read.getLvalue().getId(), value);
+         this.env.peek().put(read.getLvalue().getId(), typeChar);
       }
 
       // Attribution attr = new Attribution(read.getLine(), read.getCol(),
@@ -552,7 +492,7 @@ public class TypeCheckVisitor implements Visitor {
    }
 
    public void visit(Param param) {
-      Object paramValue = operands.pop();
+      SType paramValue = typeStack.pop();
 
       env.peek().put(param.getId().getId(), paramValue);
    }
@@ -592,10 +532,11 @@ public class TypeCheckVisitor implements Visitor {
          LValue leftSideId = attributeAccess.getLeftValue();
 
          if (this.env.peek().containsKey(leftSideId.getId())) {
-            HashMap<String, Object> var = (HashMap<String, Object>) this.env.peek().get(leftSideId.getId());
+            // HashMap<String, SType> var = (HashMap<String, SType>)
+            // this.env.peek().get(leftSideId.getId());
 
-            Object idValue = var.get(attributeAccess.getAcessId().getId());
-            operands.push(idValue);
+            // Object idValue = var.get(attributeAccess.getAcessId().getId());
+            // operands.push(idValue);
 
          } else {
             throw new CustomRuntimeException("Var " + leftSideId.getId() + " not  declared", leftSideId);
@@ -641,4 +582,13 @@ public class TypeCheckVisitor implements Visitor {
    public void visit(TypeBool typeBool) {
 
    }
+
+   public void visit(TypeChar typeChar) {
+
+   }
+
+   public void visit(TypeCustom customType) {
+
+   }
+
 }

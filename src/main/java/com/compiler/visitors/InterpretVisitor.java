@@ -600,4 +600,12 @@ public class InterpretVisitor implements Visitor {
    public void visit(TypeBool typeBool) {
 
    }
+
+   public void visit(TypeChar typeChar) {
+
+   }
+
+   public void visit(TypeCustom customType) {
+
+   }
 }

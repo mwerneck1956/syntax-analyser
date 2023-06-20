@@ -10,9 +10,9 @@ import com.compiler.visitors.Visitor;
 public class Param extends Node {
 
    private ID id;
-   private BasicType type;
+   private Type type;
 
-   public Param(ID id, BasicType type) {
+   public Param(ID id, Type type) {
       super(id.getLine(), id.getCol());
       this.id = id;
       this.type = type;
@@ -22,7 +22,7 @@ public class Param extends Node {
       return id;
    }
 
-   public BasicType getType() {
+   public Type getType() {
       return type;
    }
 
