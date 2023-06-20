@@ -6,6 +6,7 @@ package com.compiler;
 
 import org.antlr.v4.runtime.*;
 import com.compiler.grammar.*;
+import com.compiler.parser.SemanticalParser;
 import com.compiler.parser.SyntaxParser;
 import com.compiler.parser.TestParser;
 import com.compiler.visitors.InterpretVisitor;
@@ -20,10 +21,17 @@ public class App {
             Util.printMenu();
 
         SyntaxParser syntaxParser = new SyntaxParser();
+        SemanticalParser semanticalParser = new SemanticalParser();
 
         if (args[0].equals("-bs")) {
             System.out.println("Executando bateria de testes sintáticos:");
-            TestParser tp = new TestParser(syntaxParser);
+            TestParser tp = new TestParser(syntaxParser, null);
+            return;
+        }
+
+        if (args[0].equals("-byt")) {
+            System.out.println("Executando bateria de testes semânticos:");
+            TestParser tp = new TestParser(semanticalParser, "semantica/certo");
             return;
         }
 

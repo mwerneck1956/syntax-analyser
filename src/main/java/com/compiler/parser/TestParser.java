@@ -8,8 +8,12 @@ public class TestParser {
     private String okSrcs = "sintaxe/certo/";
     private File f;
 
-    public TestParser(ParseAdaptor adp) {
+    public TestParser(ParseAdaptor adp, String okSrc) {
         this.adp = adp;
+
+        if (okSrc != null)
+            this.okSrcs = okSrc;
+
         f = new File(okSrcs);
         runOkTests();
     }
