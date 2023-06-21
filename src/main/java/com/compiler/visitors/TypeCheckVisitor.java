@@ -33,6 +33,8 @@ public class TypeCheckVisitor implements Visitor {
    private HashMap<String, Data> datas;
 
    private Stack<SType> typeStack;
+   private Stack<SType> paramStack;
+   private Stack<SType> returnsStack;
    private Stack<Object> operands;
 
    private Boolean returnMode;
@@ -44,7 +46,11 @@ public class TypeCheckVisitor implements Visitor {
       this.datas = new HashMap<String, Data>();
       this.errors = new ArrayList<String>();
       this.returnMode = false;
+
+      this.returnsStack = new Stack<SType>();
+
       this.typeStack = new Stack<SType>();
+      this.paramStack = new Stack<SType>();
 
       env.push(new HashMap<String, SType>());
    }
@@ -54,8 +60,6 @@ public class TypeCheckVisitor implements Visitor {
    }
 
    public void addErrorMessage(Node node, String message) {
-      ;
-
       CustomRuntimeException error = new CustomRuntimeException(message, node);
       this.errors.add(error.getMessage());
       logger.info(error.getMessage());
@@ -224,9 +228,7 @@ public class TypeCheckVisitor implements Visitor {
          attr.getExp().accept(this);
 
          SType val = typeStack.pop();
-
-         if (!val.match(typeErr))
-            env.peek().put(id.getId(), val);
+         env.peek().put(id.getId(), val);
       }
 
    }
@@ -255,11 +257,8 @@ public class TypeCheckVisitor implements Visitor {
       boolean isMainFunction = function.getName().equals("main");
 
       if (isMainFunction) {
-         logger.info("Executing main function");
          function.getBody().accept(this);
       } else {
-         logger.info("Executing " + function.getName() + " function");
-
          HashMap<String, SType> localEnv = new HashMap<String, SType>();
          this.env.push(localEnv);
 
@@ -270,10 +269,19 @@ public class TypeCheckVisitor implements Visitor {
             for (int i = functionParams.size() - 1; i >= 0; i--) {
                Param p = functionParams.get(i);
 
+               p.getType().accept(this);
                p.accept(this);
             }
 
-            logger.info("Params in the stack : " + this.env.peek().toString());
+         }
+
+         if (function.getReturns().size() > 0) {
+            for (int i = function.getReturns().size() - 1; i >= 0; i--) {
+               Type returnType = function.getReturns().get(i);
+
+               returnType.accept(this);
+            }
+
          }
 
          function.getBody().accept(this);
@@ -284,8 +292,6 @@ public class TypeCheckVisitor implements Visitor {
 
    public void visit(FunctionCall functionCall) {
       try {
-
-         logger.info("Calling function:  " + functionCall.getFunctionName());
 
          Function func = functions.get(functionCall.getFunctionName());
 
@@ -301,25 +307,36 @@ public class TypeCheckVisitor implements Visitor {
                if (functionCall.getReturnsId().size() > 0 && returnMode) {
 
                   for (LValue returnId : functionCall.getReturnsId()) {
+                     // Conferir se tipo da variavel é igual ao tipo retornado
                      String returnVariableName = returnId.getId();
 
-                     SType value = typeStack.pop();
-                     this.env.peek().put(returnVariableName, value);
+                     SType receivedType = typeStack.pop();
+                     SType expectedType = paramStack.pop();
 
-                     logger.info("Putting return variable " + returnVariableName + " with value : " + value);
+                     if (expectedType.match(receivedType)) {
+                        this.env.peek().put(returnVariableName, receivedType);
+                     } else {
+                        addErrorMessage(func,
+                              TypeCheckUtils.createWrongFunctionReturnMessage(expectedType, receivedType,
+                                    func.getName()));
+
+                        this.env.peek().put(returnVariableName, typeErr);
+                     }
+
                   }
 
                   returnMode = false;
                }
             }
 
-            else
-               throw new CustomRuntimeException("Function " + functionCall.getFunctionName() + " expected "
-                     + func.getParamlist().size() + " params", functionCall);
+            else {
+               addErrorMessage(func, "Function " + functionCall.getFunctionName() + " expected "
+                     + func.getParamlist().size() + " params");
+            }
 
          } else {
             String errMessage = "Function: " + functionCall.getFunctionName() + " Not declared";
-            throw new CustomRuntimeException(errMessage, functionCall);
+            addErrorMessage(func, errMessage);
          }
 
       } catch (Exception err) {
@@ -488,18 +505,22 @@ public class TypeCheckVisitor implements Visitor {
 
       operands.push(res);
 
-      logger.info("Bigger than added " + res + " To te stack");
    }
 
    public void visit(Param param) {
-      SType paramValue = typeStack.pop();
+      SType receivedType = typeStack.pop();
+      SType expectedType = paramStack.pop();
 
-      env.peek().put(param.getId().getId(), paramValue);
+      if (receivedType.match(expectedType)) {
+         env.peek().put(param.getId().getId(), receivedType);
+      } else {
+         addErrorMessage(param, TypeCheckUtils.createWrongTypeMessage(expectedType, receivedType));
+         env.peek().put(param.getId().getId(), typeErr);
+      }
+
    }
 
    public void visit(Return ret) {
-      logger.info("Visiting a return");
-
       returnMode = true;
 
       for (int i = ret.getReturnedExprs().size() - 1; i >= 0; i--) {
@@ -571,23 +592,23 @@ public class TypeCheckVisitor implements Visitor {
 
    }
 
-   public void visit(TypeInt typeInt) {
-
+   public void visit(TypeInt type) {
+      this.paramStack.push(typeInt);
    }
 
-   public void visit(TypeFloat typeFloat) {
-
+   public void visit(TypeFloat type) {
+      this.paramStack.push(typeFloat);
    }
 
-   public void visit(TypeBool typeBool) {
-
+   public void visit(TypeBool type) {
+      this.paramStack.push(typeBool);
    }
 
-   public void visit(TypeChar typeChar) {
-
+   public void visit(TypeChar type) {
+      this.paramStack.push(typeChar);
    }
 
-   public void visit(TypeCustom customType) {
+   public void visit(TypeCustom type) {
 
    }
 

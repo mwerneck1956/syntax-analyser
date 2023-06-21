@@ -1,12 +1,10 @@
-data Funcionario {
-  salario :: Float;
-  idade :: Int;
-}
-f(x :: Int) : Int{
-   y = 2*x  + 1;
-   return y;
+teste(a :: Int) : Int, Float{
+  a = a + 10;
+
+  return 'c' , 10;
 }
 
-main(v :: Int[], f :: Float){
-  c = 15.5 == 10;
+main(){
+  a = 1 + 2;
+  teste(10)<a,b>;
 }
