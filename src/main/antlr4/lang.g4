@@ -117,7 +117,7 @@ btype
 	| CHAR {$basicType  = new TypeChar($CHAR.line, $CHAR.pos); }
 	| BOOL {$basicType  = new TypeBool($BOOL.line, $BOOL.pos); }
 	| FLOAT {$basicType  = new TypeFloat($FLOAT.line, $FLOAT.pos); }
-	| TYPE {$basicType  = new TypeCustom($TYPE.line, $TYPE.pos); };
+	| TYPE {$basicType  = new TypeCustom($TYPE.line, $TYPE.pos, $TYPE.text); };
 
 cmdList
 	returns[CmdList commands]:

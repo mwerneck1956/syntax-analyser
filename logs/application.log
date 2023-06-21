@@ -1,4 +1,3 @@
-2023-06-21 11:29:50,795 [com.compiler.App.main()] INFO  InterpretVisitor:350 - Visiting id : "a"
-2023-06-21 11:29:50,798 [com.compiler.App.main()] INFO  InterpretVisitor:356 - Adding value Int to the operands
-2023-06-21 11:29:50,798 [com.compiler.App.main()] INFO  InterpretVisitor:65 - Error ocurred at line  1 and column 0 : Function teste must return Int and returned Char
-2023-06-21 11:29:50,798 [com.compiler.App.main()] INFO  InterpretVisitor:65 - Error ocurred at line  1 and column 0 : Function teste must return Float and returned Int
+2023-06-21 15:14:46,430 [com.compiler.App.main()] INFO  InterpretVisitor:374 - Visiting id : "a"
+2023-06-21 15:14:46,434 [com.compiler.App.main()] INFO  InterpretVisitor:380 - Adding value Ponto to the operands
+2023-06-21 15:14:46,435 [com.compiler.App.main()] INFO  InterpretVisitor:61 - Error ocurred at line  14 and column 2 : Object a dont have attribute buceta

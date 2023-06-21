@@ -9,13 +9,17 @@ import com.compiler.visitors.Visitor;
 
 public class TypeCustom extends Type {
 
-   public TypeCustom(int line, int col) {
+   private String typeName;
+
+   public TypeCustom(int line, int col, String typeName) {
       super(line, col);
+
+      this.typeName = typeName;
    }
 
    @Override
    public String toString() {
-      return "Float";
+      return this.typeName;
    }
 
    public boolean match(Type t) {
@@ -24,6 +28,10 @@ public class TypeCustom extends Type {
 
    public void accept(Visitor visitor) {
       visitor.visit(this);
+   }
+
+   public String getTypeName() {
+      return typeName;
    }
 
 }

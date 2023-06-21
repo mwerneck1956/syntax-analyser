@@ -41,6 +41,22 @@ public class TypeCheckUtils {
       return errMessage;
    }
 
+   public static String createVariableRedeclarationMessage(SType expectedType, SType receivedType,
+         String variableName) {
+      String errMessage = "Cannot redeclare variable : " + variableName + " from " + expectedType.toString() + " to "
+            + receivedType.toString();
+
+      return errMessage;
+   }
+
+   public static String createTypeNotDeclaredMessage(String typeName) {
+      return "Type " + typeName + " not declared";
+   }
+
+   public static String createObjectInvalidAttributeMessage(String attribute, String objName) {
+      return "Object " + objName + " dont have attribute " + attribute;
+   }
+
    public static boolean isInstanceOfNumber(SType type) {
       STyInt typeInt = STyInt.newSTyInt();
       STyFloat typeFloat = STyFloat.newSTyFloat();

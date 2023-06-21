@@ -816,7 +816,7 @@ public class langParser extends Parser {
 				{
 				setState(146);
 				((BtypeContext)_localctx).TYPE = match(TYPE);
-				((BtypeContext)_localctx).basicType =  new TypeCustom((((BtypeContext)_localctx).TYPE!=null?((BtypeContext)_localctx).TYPE.getLine():0), (((BtypeContext)_localctx).TYPE!=null?((BtypeContext)_localctx).TYPE.getCharPositionInLine():0)); 
+				((BtypeContext)_localctx).basicType =  new TypeCustom((((BtypeContext)_localctx).TYPE!=null?((BtypeContext)_localctx).TYPE.getLine():0), (((BtypeContext)_localctx).TYPE!=null?((BtypeContext)_localctx).TYPE.getCharPositionInLine():0), (((BtypeContext)_localctx).TYPE!=null?((BtypeContext)_localctx).TYPE.getText():null)); 
 				}
 				break;
 			default:

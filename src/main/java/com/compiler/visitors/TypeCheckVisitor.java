@@ -30,24 +30,20 @@ public class TypeCheckVisitor implements Visitor {
    private ArrayList<String> errors;
    private Stack<HashMap<String, SType>> env;
    private HashMap<String, Function> functions;
-   private HashMap<String, Data> datas;
 
    private Stack<SType> typeStack;
    private Stack<SType> paramStack;
-   private Stack<SType> returnsStack;
    private Stack<Object> operands;
-
+   private HashMap<String, STyData> datas;
    private Boolean returnMode;
 
    public TypeCheckVisitor() {
       this.functions = new HashMap<String, Function>();
       this.operands = new Stack<Object>();
       this.env = new Stack<HashMap<String, SType>>();
-      this.datas = new HashMap<String, Data>();
+      this.datas = new HashMap<String, STyData>();
       this.errors = new ArrayList<String>();
       this.returnMode = false;
-
-      this.returnsStack = new Stack<SType>();
 
       this.typeStack = new Stack<SType>();
       this.paramStack = new Stack<SType>();
@@ -76,7 +72,20 @@ public class TypeCheckVisitor implements Visitor {
       Node main = null;
 
       this.functions = prog.getFunctions();
-      this.datas = prog.getDataList();
+
+      for (String dataName : prog.getDataList().keySet()) {
+         Data data = prog.getDataList().get(dataName);
+
+         STyData newData = new STyData(dataName);
+         for (Declaration decl : data.getDeclarations()) {
+            decl.getType().accept(this);
+
+            SType type = paramStack.pop();
+            newData.add(decl.getIdName(), type);
+         }
+
+         this.datas.put(dataName, newData);
+      }
 
       for (Function f : this.functions.values()) {
 
@@ -202,32 +211,47 @@ public class TypeCheckVisitor implements Visitor {
    public void visit(Attribution attr) {
       LValue id = attr.getID();
 
+      // x.z = 10
       if (id instanceof AttributeAccess) {
 
-         // AttributeAccess access = (AttributeAccess) id;
+         AttributeAccess access = (AttributeAccess) id;
+         LValue leftSideId = access.getLeftValue();
+         String rightSideId = access.getAcessId().getId();
 
-         // LValue leftSideId = access.getLeftValue();
+         leftSideId.accept(this);
 
-         // if (this.env.peek().containsKey(leftSideId.getId())) {
+         if (this.env.peek().containsKey(leftSideId.getId())) {
+            STyData var = (STyData) this.env.peek().get(leftSideId.getId());
 
-         // HashMap<String, SType> var = (HashMap<String, SType>)
-         // this.env.peek().get(leftSideId.getId());
+            STyData data = datas.get(var.getId());
 
-         // attr.getExp().accept(this);
-         // SType val = typeStack.pop();
+            System.out.println("Vars : " + data.getVars());
 
-         // var.put(access.getAcessId().getName(), val);
-         // env.peek().put(id.getId(), val);
+            if (data.getVars().containsKey(rightSideId)) {
+               attr.getExp().accept(this);
+               SType val = typeStack.pop();
 
-         // } else {
-         // throw new CustomRuntimeException("Var " + leftSideId.getId() + " not
-         // declared", leftSideId);
-         // }
-
+               var.add(access.getAcessId().getName(), val);
+               env.peek().put(id.getId(), val);
+            } else {
+               addErrorMessage(leftSideId,
+                     TypeCheckUtils.createObjectInvalidAttributeMessage(rightSideId, leftSideId.getId()));
+            }
+         }
       } else {
          attr.getExp().accept(this);
 
          SType val = typeStack.pop();
+
+         if (this.env.peek().containsKey(id.getId())) {
+            SType currentType = this.env.peek().get(id.getId());
+
+            if (!currentType.match(val)) {
+               addErrorMessage(id, TypeCheckUtils.createVariableRedeclarationMessage(currentType, val, id.getId()));
+               val = typeErr;
+            }
+         }
+
          env.peek().put(id.getId(), val);
       }
 
@@ -439,9 +463,6 @@ public class TypeCheckVisitor implements Visitor {
          this.env.peek().put(read.getLvalue().getId(), typeChar);
       }
 
-      // Attribution attr = new Attribution(read.getLine(), read.getCol(),
-      // read.getLvalue());
-
    }
 
    public void visit(LessThan lessThan) {
@@ -569,23 +590,7 @@ public class TypeCheckVisitor implements Visitor {
    }
 
    public void visit(NewData data) {
-      try {
-
-         Data dataObj = datas.get(data.getTypeName());
-
-         if (dataObj == null)
-            throw new CustomRuntimeException("Data : " + data.getTypeName() + " is not declared", data);
-
-         HashMap<String, Object> localEnv = new HashMap<String, Object>();
-
-         for (Declaration decl : dataObj.getDeclarations())
-            localEnv.put(decl.getIdName(), null);
-
-         operands.push(localEnv);
-
-      } catch (Exception err) {
-         throw new CustomRuntimeException(err.getMessage(), data);
-      }
+      data.getType().accept(this);
    }
 
    public void visit(ArrayPositionAccess arrayPositionAccess) {
@@ -609,7 +614,14 @@ public class TypeCheckVisitor implements Visitor {
    }
 
    public void visit(TypeCustom type) {
+      System.out.println("Datas : " + datas.get("Ponto").getVars());
 
+      if (datas.containsKey(type.getTypeName())) {
+         typeStack.push(new STyData(type.getTypeName()));
+      } else {
+         addErrorMessage(type, TypeCheckUtils.createTypeNotDeclaredMessage(type.getTypeName()));
+         typeStack.push(typeErr);
+      }
    }
 
 }

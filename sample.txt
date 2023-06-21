@@ -1,10 +1,15 @@
-teste(a :: Int) : Int, Float{
+data Ponto{
+   x :: Float;
+   y :: Float;
+}
+
+teste(a :: Int) : Char{
   a = a + 10;
 
-  return 'c' , 10;
+  return 'c';
 }
 
 main(){
-  a = 1 + 2;
-  teste(10)<a,b>;
+  a = new Ponto;
+  a.teste = 10;
 }
