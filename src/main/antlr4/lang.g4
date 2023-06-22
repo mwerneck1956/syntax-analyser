@@ -248,6 +248,7 @@ pexp
 		$value =  newData;
 	}
 	| NEW type OPEN_SQUAREBRACKET exp CLOSE_SQUAREBRACKET { 
+		System.out.println("Passou here");
 		$value = new NewArray($NEW.line, $NEW.pos, $type.basicType, $exp.expInstance);
 	}
 	| ID { 
@@ -261,7 +262,10 @@ pexp
 	};
 lvalue
 	returns[LValue node]:
-	ID { $node = new ID($ID.line,$ID.pos, $ID.text); }
+	ID { 
+		System.out.println("Pasando aqui");
+		$node = new ID($ID.line,$ID.pos, $ID.text);	
+	}
 	| l = lvalue OPEN_SQUAREBRACKET exp CLOSE_SQUAREBRACKET {
 		$node = new ArrayPositionAccess($OPEN_SQUAREBRACKET.line,$OPEN_SQUAREBRACKET.pos, $l.node, $exp.expInstance);
 	 }
@@ -297,12 +301,12 @@ LITERAL_TRUE: 'true';
 LITERAL_FALSE: 'false';
 LITERAL_NULL: 'null';
 
-ID: [a-z]+ [A-za-z_]*;
-TYPE: [A-Z][A-Za-z]*;
-
 LITERAL_INT: [0-9]+;
 LITERAL_FLOAT: [0-9]* '.' [0-9]+;
 LITERAL_CHAR: '\'' ( '\\' [btnr"'\\] | ~[\r\n\\"]) '\'';
+
+ID: [a-z]+ ('_' | [0-9] | [a-zA-Z])*;
+TYPE: [A-Z][A-Za-z]*;
 
 NEWLINE: '\r'? '\n' -> skip;
 WHITESPACE: [ \t]+ -> skip;

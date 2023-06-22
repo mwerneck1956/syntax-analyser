@@ -1,0 +1,2 @@
+2023-06-22 12:35:27,319 [com.compiler.App.main()] INFO  InterpretVisitor:272 - Executing main function
+2023-06-22 12:35:27,321 [com.compiler.App.main()] INFO  InterpretVisitor:243 - New attribution banana = 5

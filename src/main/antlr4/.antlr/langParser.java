@@ -28,7 +28,7 @@ public class langParser extends Parser {
 	public static final int
 		DATA=1, NEW=2, INT=3, FLOAT=4, BOOL=5, CHAR=6, PRINT=7, RETURN=8, READ=9, 
 		ITERATE=10, IF=11, ELSE=12, LITERAL_TRUE=13, LITERAL_FALSE=14, LITERAL_NULL=15, 
-		ID=16, TYPE=17, LITERAL_INT=18, LITERAL_FLOAT=19, LITERAL_CHAR=20, NEWLINE=21, 
+		LITERAL_INT=16, LITERAL_FLOAT=17, LITERAL_CHAR=18, ID=19, TYPE=20, NEWLINE=21, 
 		WHITESPACE=22, LINE_COMMENT=23, COMMENT=24, OPEN_BRACKET=25, CLOSE_BRACKET=26, 
 		OPEN_PARENTHESIS=27, CLOSE_PARENTHESIS=28, OPEN_SQUAREBRACKET=29, CLOSE_SQUAREBRACKET=30, 
 		SEMI=31, DOT=32, COMMA=33, EQ=34, RELACIONAL=35, GREATER_THAN=36, EQEQ=37, 
@@ -63,7 +63,7 @@ public class langParser extends Parser {
 		return new String[] {
 			null, "DATA", "NEW", "INT", "FLOAT", "BOOL", "CHAR", "PRINT", "RETURN", 
 			"READ", "ITERATE", "IF", "ELSE", "LITERAL_TRUE", "LITERAL_FALSE", "LITERAL_NULL", 
-			"ID", "TYPE", "LITERAL_INT", "LITERAL_FLOAT", "LITERAL_CHAR", "NEWLINE", 
+			"LITERAL_INT", "LITERAL_FLOAT", "LITERAL_CHAR", "ID", "TYPE", "NEWLINE", 
 			"WHITESPACE", "LINE_COMMENT", "COMMENT", "OPEN_BRACKET", "CLOSE_BRACKET", 
 			"OPEN_PARENTHESIS", "CLOSE_PARENTHESIS", "OPEN_SQUAREBRACKET", "CLOSE_SQUAREBRACKET", 
 			"SEMI", "DOT", "COMMA", "EQ", "RELACIONAL", "GREATER_THAN", "EQEQ", "DIFF", 
@@ -1139,7 +1139,7 @@ public class langParser extends Parser {
 				setState(246);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
-				if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << NEW) | (1L << LITERAL_TRUE) | (1L << LITERAL_FALSE) | (1L << LITERAL_NULL) | (1L << ID) | (1L << LITERAL_INT) | (1L << LITERAL_FLOAT) | (1L << LITERAL_CHAR) | (1L << OPEN_PARENTHESIS) | (1L << LOGICALNEGATION))) != 0)) {
+				if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << NEW) | (1L << LITERAL_TRUE) | (1L << LITERAL_FALSE) | (1L << LITERAL_NULL) | (1L << LITERAL_INT) | (1L << LITERAL_FLOAT) | (1L << LITERAL_CHAR) | (1L << ID) | (1L << OPEN_PARENTHESIS) | (1L << LOGICALNEGATION))) != 0)) {
 					{
 					setState(243);
 					((CmdContext)_localctx).exps = exps();
@@ -1875,6 +1875,7 @@ public class langParser extends Parser {
 				setState(393);
 				match(CLOSE_SQUAREBRACKET);
 				 
+						System.out.println("Passou here");
 						((PexpContext)_localctx).value =  new NewArray((((PexpContext)_localctx).NEW!=null?((PexpContext)_localctx).NEW.getLine():0), (((PexpContext)_localctx).NEW!=null?((PexpContext)_localctx).NEW.getCharPositionInLine():0), ((PexpContext)_localctx).type.basicType, ((PexpContext)_localctx).exp.expInstance);
 					
 				}
@@ -1892,7 +1893,7 @@ public class langParser extends Parser {
 				setState(402);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
-				if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << NEW) | (1L << LITERAL_TRUE) | (1L << LITERAL_FALSE) | (1L << LITERAL_NULL) | (1L << ID) | (1L << LITERAL_INT) | (1L << LITERAL_FLOAT) | (1L << LITERAL_CHAR) | (1L << OPEN_PARENTHESIS) | (1L << LOGICALNEGATION))) != 0)) {
+				if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << NEW) | (1L << LITERAL_TRUE) | (1L << LITERAL_FALSE) | (1L << LITERAL_NULL) | (1L << LITERAL_INT) | (1L << LITERAL_FLOAT) | (1L << LITERAL_CHAR) | (1L << ID) | (1L << OPEN_PARENTHESIS) | (1L << LOGICALNEGATION))) != 0)) {
 					{
 					setState(399);
 					((PexpContext)_localctx).exps = exps();
@@ -1969,7 +1970,10 @@ public class langParser extends Parser {
 			{
 			setState(413);
 			((LvalueContext)_localctx).ID = match(ID);
-			 ((LvalueContext)_localctx).node =  new ID((((LvalueContext)_localctx).ID!=null?((LvalueContext)_localctx).ID.getLine():0),(((LvalueContext)_localctx).ID!=null?((LvalueContext)_localctx).ID.getCharPositionInLine():0), (((LvalueContext)_localctx).ID!=null?((LvalueContext)_localctx).ID.getText():null)); 
+			 
+					System.out.println("Pasando aqui");
+					((LvalueContext)_localctx).node =  new ID((((LvalueContext)_localctx).ID!=null?((LvalueContext)_localctx).ID.getLine():0),(((LvalueContext)_localctx).ID!=null?((LvalueContext)_localctx).ID.getCharPositionInLine():0), (((LvalueContext)_localctx).ID!=null?((LvalueContext)_localctx).ID.getText():null));	
+				
 			}
 			_ctx.stop = _input.LT(-1);
 			setState(428);
@@ -2219,17 +2223,17 @@ public class langParser extends Parser {
 		"\3\2\2\2&\u019e\3\2\2\2(\u01b1\3\2\2\2*+\5\4\3\2+,\5\f\7\2,-\b\2\1\2-"+
 		"\3\3\2\2\2.\64\b\3\1\2/\60\5\6\4\2\60\61\b\3\1\2\61\63\3\2\2\2\62/\3\2"+
 		"\2\2\63\66\3\2\2\2\64\62\3\2\2\2\64\65\3\2\2\2\65\5\3\2\2\2\66\64\3\2"+
-		"\2\2\678\7\3\2\289\7\23\2\29:\7\33\2\2:;\5\b\5\2;<\7\34\2\2<=\b\4\1\2"+
+		"\2\2\678\7\3\2\289\7\26\2\29:\7\33\2\2:;\5\b\5\2;<\7\34\2\2<=\b\4\1\2"+
 		"=\7\3\2\2\2>D\b\5\1\2?@\5\n\6\2@A\b\5\1\2AC\3\2\2\2B?\3\2\2\2CF\3\2\2"+
-		"\2DB\3\2\2\2DE\3\2\2\2E\t\3\2\2\2FD\3\2\2\2GH\7\22\2\2HI\7\61\2\2IJ\5"+
+		"\2DB\3\2\2\2DE\3\2\2\2E\t\3\2\2\2FD\3\2\2\2GH\7\25\2\2HI\7\61\2\2IJ\5"+
 		"\22\n\2JK\7!\2\2KL\b\6\1\2L\13\3\2\2\2MS\b\7\1\2NO\5\16\b\2OP\b\7\1\2"+
 		"PR\3\2\2\2QN\3\2\2\2RU\3\2\2\2SQ\3\2\2\2ST\3\2\2\2T\r\3\2\2\2US\3\2\2"+
-		"\2VW\7\22\2\2WX\b\b\1\2X\\\7\35\2\2YZ\5\20\t\2Z[\b\b\1\2[]\3\2\2\2\\Y"+
+		"\2VW\7\25\2\2WX\b\b\1\2X\\\7\35\2\2YZ\5\20\t\2Z[\b\b\1\2[]\3\2\2\2\\Y"+
 		"\3\2\2\2\\]\3\2\2\2]^\3\2\2\2^k\7\36\2\2_`\7\60\2\2`a\5\22\n\2ah\b\b\1"+
 		"\2bc\7#\2\2cd\5\22\n\2de\b\b\1\2eg\3\2\2\2fb\3\2\2\2gj\3\2\2\2hf\3\2\2"+
 		"\2hi\3\2\2\2il\3\2\2\2jh\3\2\2\2k_\3\2\2\2kl\3\2\2\2lm\3\2\2\2mn\5\26"+
-		"\f\2no\b\b\1\2o\17\3\2\2\2pq\b\t\1\2qr\7\22\2\2rs\7\61\2\2st\5\22\n\2"+
-		"t}\b\t\1\2uv\7#\2\2vw\7\22\2\2wx\7\61\2\2xy\5\22\n\2yz\b\t\1\2z|\3\2\2"+
+		"\f\2no\b\b\1\2o\17\3\2\2\2pq\b\t\1\2qr\7\25\2\2rs\7\61\2\2st\5\22\n\2"+
+		"t}\b\t\1\2uv\7#\2\2vw\7\25\2\2wx\7\61\2\2xy\5\22\n\2yz\b\t\1\2z|\3\2\2"+
 		"\2{u\3\2\2\2|\177\3\2\2\2}{\3\2\2\2}~\3\2\2\2~\21\3\2\2\2\177}\3\2\2\2"+
 		"\u0080\u0081\b\n\1\2\u0081\u0082\5\24\13\2\u0082\u0083\b\n\1\2\u0083\u0089"+
 		"\3\2\2\2\u0084\u0085\f\4\2\2\u0085\u0086\7\37\2\2\u0086\u0088\7 \2\2\u0087"+
@@ -2237,7 +2241,7 @@ public class langParser extends Parser {
 		"\2\2\u008a\23\3\2\2\2\u008b\u0089\3\2\2\2\u008c\u008d\7\5\2\2\u008d\u0097"+
 		"\b\13\1\2\u008e\u008f\7\b\2\2\u008f\u0097\b\13\1\2\u0090\u0091\7\7\2\2"+
 		"\u0091\u0097\b\13\1\2\u0092\u0093\7\6\2\2\u0093\u0097\b\13\1\2\u0094\u0095"+
-		"\7\23\2\2\u0095\u0097\b\13\1\2\u0096\u008c\3\2\2\2\u0096\u008e\3\2\2\2"+
+		"\7\26\2\2\u0095\u0097\b\13\1\2\u0096\u008c\3\2\2\2\u0096\u008e\3\2\2\2"+
 		"\u0096\u0090\3\2\2\2\u0096\u0092\3\2\2\2\u0096\u0094\3\2\2\2\u0097\25"+
 		"\3\2\2\2\u0098\u0099\b\f\1\2\u0099\u009f\7\33\2\2\u009a\u009b\5\30\r\2"+
 		"\u009b\u009c\b\f\1\2\u009c\u009e\3\2\2\2\u009d\u009a\3\2\2\2\u009e\u00a1"+
@@ -2265,7 +2269,7 @@ public class langParser extends Parser {
 		"\u00e4\3\2\2\2\u00e6\u00e7\3\2\2\2\u00e7\u00e9\3\2\2\2\u00e8\u00e6\3\2"+
 		"\2\2\u00e9\u00ea\7!\2\2\u00ea\u00eb\b\r\1\2\u00eb\u010e\3\2\2\2\u00ec"+
 		"\u00ed\5&\24\2\u00ed\u00ee\7$\2\2\u00ee\u00ef\5\32\16\2\u00ef\u00f0\7"+
-		"!\2\2\u00f0\u00f1\b\r\1\2\u00f1\u010e\3\2\2\2\u00f2\u00f3\7\22\2\2\u00f3"+
+		"!\2\2\u00f0\u00f1\b\r\1\2\u00f1\u010e\3\2\2\2\u00f2\u00f3\7\25\2\2\u00f3"+
 		"\u00f4\b\r\1\2\u00f4\u00f8\7\35\2\2\u00f5\u00f6\5(\25\2\u00f6\u00f7\b"+
 		"\r\1\2\u00f7\u00f9\3\2\2\2\u00f8\u00f5\3\2\2\2\u00f8\u00f9\3\2\2\2\u00f9"+
 		"\u00fa\3\2\2\2\u00fa\u0109\7\36\2\2\u00fb\u00fc\7%\2\2\u00fc\u00fd\5&"+
@@ -2308,8 +2312,8 @@ public class langParser extends Parser {
 		"\u0165\u0166\7.\2\2\u0166\u0167\5\"\22\2\u0167\u0168\b\22\1\2\u0168\u0179"+
 		"\3\2\2\2\u0169\u016a\7\17\2\2\u016a\u0179\b\22\1\2\u016b\u016c\7\20\2"+
 		"\2\u016c\u0179\b\22\1\2\u016d\u016e\7\21\2\2\u016e\u0179\b\22\1\2\u016f"+
-		"\u0170\7\24\2\2\u0170\u0179\b\22\1\2\u0171\u0172\7\25\2\2\u0172\u0179"+
-		"\b\22\1\2\u0173\u0174\7\26\2\2\u0174\u0179\b\22\1\2\u0175\u0176\5$\23"+
+		"\u0170\7\22\2\2\u0170\u0179\b\22\1\2\u0171\u0172\7\23\2\2\u0172\u0179"+
+		"\b\22\1\2\u0173\u0174\7\24\2\2\u0174\u0179\b\22\1\2\u0175\u0176\5$\23"+
 		"\2\u0176\u0177\b\22\1\2\u0177\u0179\3\2\2\2\u0178\u0165\3\2\2\2\u0178"+
 		"\u0169\3\2\2\2\u0178\u016b\3\2\2\2\u0178\u016d\3\2\2\2\u0178\u016f\3\2"+
 		"\2\2\u0178\u0171\3\2\2\2\u0178\u0173\3\2\2\2\u0178\u0175\3\2\2\2\u0179"+
@@ -2319,16 +2323,16 @@ public class langParser extends Parser {
 		"\22\n\2\u0184\u0185\b\23\1\2\u0185\u0186\b\23\1\2\u0186\u019d\3\2\2\2"+
 		"\u0187\u0188\7\4\2\2\u0188\u0189\5\22\n\2\u0189\u018a\7\37\2\2\u018a\u018b"+
 		"\5\32\16\2\u018b\u018c\7 \2\2\u018c\u018d\b\23\1\2\u018d\u019d\3\2\2\2"+
-		"\u018e\u018f\7\22\2\2\u018f\u0190\b\23\1\2\u0190\u0194\7\35\2\2\u0191"+
+		"\u018e\u018f\7\25\2\2\u018f\u0190\b\23\1\2\u0190\u0194\7\35\2\2\u0191"+
 		"\u0192\5(\25\2\u0192\u0193\b\23\1\2\u0193\u0195\3\2\2\2\u0194\u0191\3"+
 		"\2\2\2\u0194\u0195\3\2\2\2\u0195\u0196\3\2\2\2\u0196\u0197\7\36\2\2\u0197"+
 		"\u0198\7\37\2\2\u0198\u0199\5\32\16\2\u0199\u019a\7 \2\2\u019a\u019b\b"+
 		"\23\1\2\u019b\u019d\3\2\2\2\u019c\u017a\3\2\2\2\u019c\u017d\3\2\2\2\u019c"+
 		"\u0182\3\2\2\2\u019c\u0187\3\2\2\2\u019c\u018e\3\2\2\2\u019d%\3\2\2\2"+
-		"\u019e\u019f\b\24\1\2\u019f\u01a0\7\22\2\2\u01a0\u01a1\b\24\1\2\u01a1"+
+		"\u019e\u019f\b\24\1\2\u019f\u01a0\7\25\2\2\u01a0\u01a1\b\24\1\2\u01a1"+
 		"\u01ae\3\2\2\2\u01a2\u01a3\f\4\2\2\u01a3\u01a4\7\37\2\2\u01a4\u01a5\5"+
 		"\32\16\2\u01a5\u01a6\7 \2\2\u01a6\u01a7\b\24\1\2\u01a7\u01ad\3\2\2\2\u01a8"+
-		"\u01a9\f\3\2\2\u01a9\u01aa\7\"\2\2\u01aa\u01ab\7\22\2\2\u01ab\u01ad\b"+
+		"\u01a9\f\3\2\2\u01a9\u01aa\7\"\2\2\u01aa\u01ab\7\25\2\2\u01ab\u01ad\b"+
 		"\24\1\2\u01ac\u01a2\3\2\2\2\u01ac\u01a8\3\2\2\2\u01ad\u01b0\3\2\2\2\u01ae"+
 		"\u01ac\3\2\2\2\u01ae\u01af\3\2\2\2\u01af\'\3\2\2\2\u01b0\u01ae\3\2\2\2"+
 		"\u01b1\u01b2\b\25\1\2\u01b2\u01b3\5\32\16\2\u01b3\u01ba\b\25\1\2\u01b4"+
