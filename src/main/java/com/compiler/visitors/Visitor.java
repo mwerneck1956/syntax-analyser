@@ -34,6 +34,8 @@ public interface Visitor {
 
     public abstract void visit(FunctionCall functionCall);
 
+    public abstract void visit(FunctionCallArray functionCall);
+
     public abstract void visit(ID id);
 
     public abstract void visit(If ifExpr);
@@ -77,6 +79,8 @@ public interface Visitor {
     public abstract void visit(AttributeAccess attributeAccess);
 
     public abstract void visit(NewData newData);
+
+    public abstract void visit(NewArray newArray);
 
     public abstract void visit(ArrayPositionAccess arrayPositionAccess);
 

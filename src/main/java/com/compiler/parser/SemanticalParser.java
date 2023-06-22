@@ -21,11 +21,10 @@ public class SemanticalParser implements ParseAdaptor {
          langParser parser = new langParser(tokens);
 
          parser.setBuildParseTree(false);
-         parser.prog();
+         Prog ast = parser.prog().ast;
 
          if (parser.getNumberOfSyntaxErrors() == 0) {
             TypeCheckVisitor typeCheckVisitor = new TypeCheckVisitor();
-            Prog ast = parser.prog().ast;
 
             ast.accept(typeCheckVisitor);
 

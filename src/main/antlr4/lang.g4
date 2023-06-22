@@ -170,7 +170,6 @@ cmd
 		$command = new Attribution($EQ.line, $EQ.pos, $l.node, $e.expInstance );
 	}
 	| ID { 
-
 		FunctionCall functionCall = new FunctionCall($ID.line, $ID.pos, $ID.text);
 	} OPEN_PARENTHESIS (
 		exps {  functionCall.addParams($exps.expressions); }
@@ -245,18 +244,25 @@ pexp
 	}
 	| NEW type { 
 		NewData newData = new NewData($NEW.line, $NEW.pos, $type.basicType);
-	} (
-		OPEN_SQUAREBRACKET exp { 
-		newData.setExpr($exp.expInstance);
-	} CLOSE_SQUAREBRACKET
-	)? { 
+	} { 
 		$value =  newData;
 	}
-	| ID OPEN_PARENTHESIS (exps)? CLOSE_PARENTHESIS OPEN_SQUAREBRACKET exp CLOSE_SQUAREBRACKET;
+	| NEW type OPEN_SQUAREBRACKET exp CLOSE_SQUAREBRACKET { 
+		$value = new NewArray($NEW.line, $NEW.pos, $type.basicType, $exp.expInstance);
+	}
+	| ID { 
+		FunctionCallArray functionCall = new FunctionCallArray($ID.line, $ID.pos, $ID.text);
+	} OPEN_PARENTHESIS (
+		exps {
+		functionCall.addParams($exps.expressions);
+	 }
+	)? CLOSE_PARENTHESIS OPEN_SQUAREBRACKET exp CLOSE_SQUAREBRACKET { 
+		$value = functionCall;
+	};
 lvalue
 	returns[LValue node]:
 	ID { $node = new ID($ID.line,$ID.pos, $ID.text); }
-	| l = lvalue OPEN_SQUAREBRACKET exp {
+	| l = lvalue OPEN_SQUAREBRACKET exp CLOSE_SQUAREBRACKET {
 		$node = new ArrayPositionAccess($OPEN_SQUAREBRACKET.line,$OPEN_SQUAREBRACKET.pos, $l.node, $exp.expInstance);
 	 }
 	| l = lvalue DOT ID { 

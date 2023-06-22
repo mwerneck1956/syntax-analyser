@@ -25,13 +25,13 @@ public class App {
 
         if (args[0].equals("-bs")) {
             System.out.println("Executando bateria de testes sintáticos:");
-            TestParser tp = new TestParser(syntaxParser, null);
+            new TestParser(syntaxParser, null);
             return;
         }
 
         if (args[0].equals("-byt")) {
             System.out.println("Executando bateria de testes semânticos:");
-            TestParser tp = new TestParser(semanticalParser, "semantica/certo");
+            new TestParser(semanticalParser, "semantica/certo");
             return;
         } else {
             CharStream stream = CharStreams.fromFileName(args[0]);
@@ -42,22 +42,22 @@ public class App {
             langParser parser = new langParser(tokens);
 
             parser.setBuildParseTree(false);
-            // parser.prog();
+            Prog ast = parser.prog().ast;
 
             if (parser.getNumberOfSyntaxErrors() == 0) {
-                Prog ast = parser.prog().ast;
+                // TypeCheckVisitor typeCheckVisitor = new TypeCheckVisitor();
+                // ast.accept(typeCheckVisitor);
 
-                TypeCheckVisitor typeCheckVisitor = new TypeCheckVisitor();
-                ast.accept(typeCheckVisitor);
+                // if (typeCheckVisitor.getErrors().size() == 0) {
+                // InterpretVisitor visitor = new InterpretVisitor();
+                // ast.accept(visitor);
+                // } else {
+                // typeCheckVisitor.printErrors();
+                // throw new Exception("The program has semantical errors");
+                // }
 
-                if (typeCheckVisitor.getErrors().size() == 0) {
-                    InterpretVisitor visitor = new InterpretVisitor();
-                    ast.accept(visitor);
-                } else {
-                    typeCheckVisitor.printErrors();
-                    throw new Exception("The program has semantical errors");
-                }
-
+                InterpretVisitor visitor = new InterpretVisitor();
+                ast.accept(visitor);
             }
         }
 

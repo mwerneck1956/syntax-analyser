@@ -43,4 +43,8 @@ public class Util {
             " -gvz: Create a dot file. (Feed it to graphviz dot tool to generate graphical representation of the AST)");
    }
 
+   public static boolean isBasicDataType(String type) {
+      return type == "Int" || type == "Float" || type == "Bool";
+   }
+
 }

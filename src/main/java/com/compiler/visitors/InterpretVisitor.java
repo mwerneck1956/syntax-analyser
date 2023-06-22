@@ -234,6 +234,7 @@ public class InterpretVisitor implements Visitor {
          }
 
       } else {
+
          attr.getExp().accept(this);
          Object val = operands.pop();
 
@@ -441,9 +442,6 @@ public class InterpretVisitor implements Visitor {
          this.env.peek().put(read.getLvalue().getId(), value);
       }
 
-      // Attribution attr = new Attribution(read.getLine(), read.getCol(),
-      // read.getLvalue());
-
    }
 
    public void visit(LessThan lessThan) {
@@ -566,23 +564,14 @@ public class InterpretVisitor implements Visitor {
    }
 
    public void visit(NewData data) {
-      try {
+      Data dataObj = datas.get(data.getTypeName());
 
-         Data dataObj = datas.get(data.getTypeName());
+      HashMap<String, Object> localEnv = new HashMap<String, Object>();
 
-         if (dataObj == null)
-            throw new CustomRuntimeException("Data : " + data.getTypeName() + " is not declared", data);
+      for (Declaration decl : dataObj.getDeclarations())
+         localEnv.put(decl.getIdName(), null);
 
-         HashMap<String, Object> localEnv = new HashMap<String, Object>();
-
-         for (Declaration decl : dataObj.getDeclarations())
-            localEnv.put(decl.getIdName(), null);
-
-         operands.push(localEnv);
-
-      } catch (Exception err) {
-         throw new CustomRuntimeException(err.getMessage(), data);
-      }
+      operands.push(localEnv);
    }
 
    public void visit(ArrayPositionAccess arrayPositionAccess) {
@@ -607,5 +596,22 @@ public class InterpretVisitor implements Visitor {
 
    public void visit(TypeCustom customType) {
 
+   }
+
+   public void visit(FunctionCallArray functionCall) {
+
+   }
+
+   public void visit(NewArray newArray) {
+
+      newArray.getExpr().accept(this);
+
+      Number arraySize = (Number) operands.pop();
+
+      if (Util.isBasicDataType(newArray.getTypeName())) {
+         Object[] array = new Object[arraySize.intValue()];
+
+         operands.push(array);
+      }
    }
 }

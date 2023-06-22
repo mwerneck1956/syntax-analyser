@@ -225,8 +225,6 @@ public class TypeCheckVisitor implements Visitor {
 
             STyData data = datas.get(var.getId());
 
-            System.out.println("Vars : " + data.getVars());
-
             if (data.getVars().containsKey(rightSideId)) {
                attr.getExp().accept(this);
                SType val = typeStack.pop();
@@ -444,9 +442,7 @@ public class TypeCheckVisitor implements Visitor {
    public void visit(Print print) {
       print.getExpr().accept(this);
 
-      logger.info("Visiting print");
-
-      System.out.println(operands.pop());
+      typeStack.pop();
    }
 
    public void visit(Read read) {
@@ -614,7 +610,6 @@ public class TypeCheckVisitor implements Visitor {
    }
 
    public void visit(TypeCustom type) {
-      System.out.println("Datas : " + datas.get("Ponto").getVars());
 
       if (datas.containsKey(type.getTypeName())) {
          typeStack.push(new STyData(type.getTypeName()));
@@ -622,6 +617,14 @@ public class TypeCheckVisitor implements Visitor {
          addErrorMessage(type, TypeCheckUtils.createTypeNotDeclaredMessage(type.getTypeName()));
          typeStack.push(typeErr);
       }
+   }
+
+   public void visit(FunctionCallArray functionCall) {
+
+   }
+
+   public void visit(NewArray newArray) {
+
    }
 
 }

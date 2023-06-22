@@ -6,15 +6,15 @@ package com.compiler.ast;
 
 import com.compiler.visitors.Visitor;
 
-public class NewData extends LValue {
+public class NewArray extends LValue {
 
    Type type;
    Expr arrayIndexExpr;
 
-   public NewData(int line, int col, Type type) {
+   public NewArray(int line, int col, Type type, Expr expr) {
       super(line, col);
       this.type = type;
-      this.arrayIndexExpr = null;
+      this.arrayIndexExpr = expr;
    }
 
    public String toString() {
