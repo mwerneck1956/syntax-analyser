@@ -4,11 +4,11 @@ data Ponto{
 }
 
 
-funcao() : Int{
-  return 5;
+soma(a :: Ponto, b ::Int) : Float{
+  return a.lado + b;
 }
 
 main(){
-  l = 20.5;
-  funcao()<l>;
+  a = new Ponto;
+  soma(a,10)<c>;
 }

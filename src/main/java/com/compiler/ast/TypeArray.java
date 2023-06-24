@@ -18,7 +18,7 @@ public class TypeArray extends Type {
 
    @Override
    public String toString() {
-      return "Int";
+      return this.type + "[]";
    }
 
    public boolean match(Type t) {
@@ -27,6 +27,10 @@ public class TypeArray extends Type {
 
    public void accept(Visitor visitor) {
       visitor.visit(this);
+   }
+
+   public Type getType() {
+      return type;
    }
 
 }

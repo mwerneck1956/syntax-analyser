@@ -279,7 +279,7 @@ public class TypeCheckVisitor implements Visitor {
 
          leftSideId.accept(this);
 
-         SType varType = typeStack.pop();
+         SType varType = paramStack.pop();
 
          STyData var = (STyData) varType;
          STyData data = datas.get(var.getId());
@@ -297,7 +297,7 @@ public class TypeCheckVisitor implements Visitor {
 
       } else {
          attr.getExp().accept(this);
-         SType val = typeStack.pop();
+         SType val = paramStack.pop();
 
          if (this.env.peek().containsKey(id.getId())) {
             id.accept(this);
@@ -599,8 +599,6 @@ public class TypeCheckVisitor implements Visitor {
    }
 
    public void visit(ParenthesisExpression parenthesisExpression) {
-      logger.info("Visiting expr " + parenthesisExpression.toString());
-
       parenthesisExpression.getExpr().accept(this);
    }
 
@@ -702,15 +700,18 @@ public class TypeCheckVisitor implements Visitor {
    public void visit(TypeCustom type) {
 
       if (datas.containsKey(type.getTypeName())) {
-         typeStack.push(new STyData(type.getTypeName()));
+         paramStack.push(new STyData(type.getTypeName()));
       } else {
          addErrorMessage(type, TypeCheckUtils.createTypeNotDeclaredMessage(type.getTypeName()));
-         typeStack.push(typeErr);
+         paramStack.push(typeErr);
       }
    }
 
    public void visit(TypeArray typeArray) {
+      typeArray.getType().accept(this);
 
+      SType returnedType = this.paramStack.pop();
+      this.paramStack.push(new STyArray(returnedType));
    }
 
    // public void visit(FunctionCallArray functionCall) {
