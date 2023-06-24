@@ -5,6 +5,5 @@ data Ponto{
 
 
 main(){
-  circulo = new Ponto;
-  read circulo.lado;
+  circulo = new Int[10];
 }

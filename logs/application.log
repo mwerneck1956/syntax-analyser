@@ -1,1 +1,0 @@
-2023-06-23 21:45:24,570 [com.compiler.App.main()] INFO  InterpretVisitor:114 - Error ocurred at line  9 and column 2 :  Read returns a Int and variable lado is : Float

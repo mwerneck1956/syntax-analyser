@@ -57,11 +57,13 @@ import com.compiler.ast.Read;
 import com.compiler.ast.Return;
 import com.compiler.ast.Sub;
 import com.compiler.ast.Type;
+import com.compiler.ast.TypeArray;
 import com.compiler.ast.TypeBool;
 import com.compiler.ast.TypeChar;
 import com.compiler.ast.TypeCustom;
 import com.compiler.ast.TypeFloat;
 import com.compiler.ast.TypeInt;
+import com.compiler.typeCheckUtils.STyArray;
 import com.compiler.typeCheckUtils.STyBool;
 import com.compiler.typeCheckUtils.STyChar;
 import com.compiler.typeCheckUtils.STyData;
@@ -263,6 +265,8 @@ public class TypeCheckVisitor implements Visitor {
 
    public void visit(Attribution attr) {
       LValue id = attr.getID();
+
+      System.out.println(attr.getExp().getClass());
 
       // x.z = 10
       if (id instanceof AttributeAccess) {
@@ -642,6 +646,7 @@ public class TypeCheckVisitor implements Visitor {
    }
 
    public void visit(TypeInt type) {
+
       this.paramStack.push(typeInt);
    }
 
@@ -667,6 +672,10 @@ public class TypeCheckVisitor implements Visitor {
       }
    }
 
+   public void visit(TypeArray typeArray) {
+
+   }
+
    public void visit(FunctionCallArray functionCall) {
 
       Function func = functions.get(functionCall.getFunctionName());
@@ -680,29 +689,35 @@ public class TypeCheckVisitor implements Visitor {
 
             func.accept(this);
 
-            // if (functionCall.getReturnsId().size() > 0 && returnMode) {
-            // functionCall.getReturnExpr().accept(this);
+            if (returnMode) {
+               System.out.println("Return expr type  + " + functionCall.getReturnExpr());
 
-            // for (LValue returnId : functionCall.getReturnsId()) {
-            // String returnVariableName = returnId.getId();
+               functionCall.getReturnExpr().accept(this);
 
-            // SType receivedType = typeStack.pop();
-            // SType expectedType = paramStack.pop();
+               SType arrayIndexType = typeStack.pop();
 
-            // if (expectedType.match(receivedType)) {
-            // this.env.peek().put(returnVariableName, receivedType);
-            // } else {
-            // addErrorMessage(func,
-            // TypeCheckUtils.createWrongFunctionReturnMessage(expectedType, receivedType,
-            // func.getName()));
+               System.out.println("Array index type" + arrayIndexType);
 
-            // this.env.peek().put(returnVariableName, typeErr);
-            // }
+               // for (LValue returnId : functionCall.getReturnsId()) {
+               // String returnVariableName = returnId.getId();
 
-            // }
+               // SType receivedType = typeStack.pop();
+               // SType expectedType = paramStack.pop();
 
-            // returnMode = false;
-            // }
+               // if (expectedType.match(receivedType)) {
+               // this.env.peek().put(returnVariableName, receivedType);
+               // } else {
+               // addErrorMessage(func,
+               // TypeCheckUtils.createWrongFunctionReturnMessage(expectedType, receivedType,
+               // func.getName()));
+
+               // this.env.peek().put(returnVariableName, typeErr);
+               // }
+
+               // }
+
+               returnMode = false;
+            }
          }
 
          else {
@@ -718,6 +733,25 @@ public class TypeCheckVisitor implements Visitor {
    }
 
    public void visit(NewArray newArray) {
+      newArray.getType().accept(this);
+      SType returnedType;
+
+      if (newArray.getType() instanceof TypeCustom) {
+         returnedType = typeStack.pop();
+      } else {
+         returnedType = paramStack.pop();
+      }
+
+      newArray.getExpr().accept(this);
+
+      SType indexType = this.typeStack.pop();
+
+      if (indexType.match(typeInt)) {
+         this.typeStack.push(new STyArray(returnedType));
+      } else {
+         addErrorMessage(newArray, "Array index expression must return a int value");
+         typeStack.push(typeErr);
+      }
 
    }
 

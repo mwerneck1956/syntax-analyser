@@ -106,7 +106,10 @@ params
 
 type
 	returns[Type basicType]:
-	type OPEN_SQUAREBRACKET CLOSE_SQUAREBRACKET
+	t = type OPEN_SQUAREBRACKET CLOSE_SQUAREBRACKET { 
+		System.out.println("Criado type array");
+		$basicType = new TypeArray($OPEN_SQUAREBRACKET.line,$OPEN_SQUAREBRACKET.pos, $t.basicType);
+	}
 	| btype { 
 		$basicType = $btype.basicType;
 	};
@@ -306,7 +309,7 @@ LITERAL_FLOAT: [0-9]* '.' [0-9]+;
 LITERAL_CHAR: '\'' ( '\\' [btnr"'\\] | ~[\r\n\\"]) '\'';
 
 ID: [a-z]+ ('_' | [0-9] | [a-zA-Z])*;
-TYPE: [A-Z][A-Za-z]*;
+TYPE: [A-Z] ('_' | [0-9] | [a-zA-Z])*;
 
 NEWLINE: '\r'? '\n' -> skip;
 WHITESPACE: [ \t]+ -> skip;

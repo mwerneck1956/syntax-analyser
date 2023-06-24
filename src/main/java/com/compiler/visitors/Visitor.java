@@ -94,4 +94,6 @@ public interface Visitor {
 
     public abstract void visit(TypeCustom customType);
 
+    public abstract void visit(TypeArray typeArray);
+
 }

@@ -598,6 +598,10 @@ public class InterpretVisitor implements Visitor {
 
    }
 
+   public void visit(TypeArray typeArray) {
+
+   }
+
    public void visit(FunctionCallArray functionCall) {
 
    }
