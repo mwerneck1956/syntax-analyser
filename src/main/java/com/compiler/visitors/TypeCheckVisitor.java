@@ -387,14 +387,23 @@ public class TypeCheckVisitor implements Visitor {
             if (functionCall.getReturnsId().size() > 0 && returnMode) {
 
                for (LValue returnId : functionCall.getReturnsId()) {
-                  // Conferir se tipo da variavel é igual ao tipo retornado
                   String returnVariableName = returnId.getId();
 
                   SType receivedType = typeStack.pop();
                   SType expectedType = paramStack.pop();
 
                   if (expectedType.match(receivedType)) {
-                     this.env.peek().put(returnVariableName, receivedType);
+                     if (this.env.peek().containsKey(returnVariableName)) {
+                        SType currentType = this.env.peek().get(returnVariableName);
+
+                        if (!currentType.match(expectedType))
+                           addErrorMessage(func, TypeCheckUtils.createVariableRedeclarationMessage(expectedType,
+                                 currentType, returnVariableName));
+
+                     } else {
+                        this.env.peek().put(returnVariableName, receivedType);
+                     }
+
                   } else {
                      addErrorMessage(func,
                            TypeCheckUtils.createWrongFunctionReturnMessage(expectedType, receivedType,
@@ -659,8 +668,8 @@ public class TypeCheckVisitor implements Visitor {
          SType lValueType = typeStack.pop();
 
          if (lValueType instanceof STyArray) {
-            SType arrayType = ((STyArray) lValueType).getType();
 
+            SType arrayType = ((STyArray) lValueType).getType();
             typeStack.push(arrayType);
          } else {
             addErrorMessage(arrayPositionAccess, "Var " + arrayPositionAccess.getLeftValue().getId() + " isnt a array");
@@ -704,58 +713,61 @@ public class TypeCheckVisitor implements Visitor {
 
    }
 
-   public void visit(FunctionCallArray functionCall) {
+   // public void visit(FunctionCallArray functionCall) {
 
-      Function func = functions.get(functionCall.getFunctionName());
+   // Function func = functions.get(functionCall.getFunctionName());
 
-      if (func != null) {
-         int receivedParams = functionCall.getParams().size();
+   // if (func != null) {
+   // int receivedParams = functionCall.getParams().size();
 
-         if (func.isQuantityOfParamsValid(receivedParams)) {
-            for (Expr expr : functionCall.getParams())
-               expr.accept(this);
+   // if (func.isQuantityOfParamsValid(receivedParams)) {
+   // for (Expr expr : functionCall.getParams())
+   // expr.accept(this);
 
-            func.accept(this);
+   // func.accept(this);
 
-            if (returnMode) {
+   // if (returnMode) {
 
-               functionCall.getReturnExpr().accept(this);
+   // functionCall.getReturnExpr().accept(this);
 
-               SType arrayIndexType = typeStack.pop();
+   // SType arrayIndexType = typeStack.pop();
 
-               // for (LValue returnId : functionCall.getReturnsId()) {
-               // String returnVariableName = returnId.getId();
+   // // for (LValue returnId : functionCall.getReturnsId()) {
+   // // String returnVariableName = returnId.getId();
 
-               // SType receivedType = typeStack.pop();
-               // SType expectedType = paramStack.pop();
+   // // SType receivedType = typeStack.pop();
+   // // SType expectedType = paramStack.pop();
 
-               // if (expectedType.match(receivedType)) {
-               // this.env.peek().put(returnVariableName, receivedType);
-               // } else {
-               // addErrorMessage(func,
-               // TypeCheckUtils.createWrongFunctionReturnMessage(expectedType, receivedType,
-               // func.getName()));
+   // // if (expectedType.match(receivedType)) {
+   // // this.env.peek().put(returnVariableName, receivedType);
+   // // } else {
+   // // addErrorMessage(func,
+   // // TypeCheckUtils.createWrongFunctionReturnMessage(expectedType,
+   // receivedType,
+   // // func.getName()));
 
-               // this.env.peek().put(returnVariableName, typeErr);
-               // }
+   // // this.env.peek().put(returnVariableName, typeErr);
+   // // }
 
-               // }
+   // // }
 
-               returnMode = false;
-            }
-         }
+   // returnMode = false;
+   // }
+   // }
 
-         else {
-            addErrorMessage(func, "Function " + functionCall.getFunctionName() + " expected "
-                  + func.getParamlist().size() + " params");
-         }
+   // else {
+   // addErrorMessage(func, "Function " + functionCall.getFunctionName() + "
+   // expected "
+   // + func.getParamlist().size() + " params");
+   // }
 
-      } else {
-         String errMessage = "Function: " + functionCall.getFunctionName() + " Not declared";
-         addErrorMessage(func, errMessage);
-      }
+   // } else {
+   // String errMessage = "Function: " + functionCall.getFunctionName() + " Not
+   // declared";
+   // addErrorMessage(func, errMessage);
+   // }
 
-   }
+   // }
 
    public void visit(NewArray newArray) {
 

@@ -4,7 +4,11 @@ data Ponto{
 }
 
 
+funcao() : Int{
+  return 5;
+}
+
 main(){
- a = new Ponto[10];
- a[0].teste = 10;
+  l = 20.5;
+  funcao()<l>;
 }
