@@ -248,7 +248,6 @@ pexp
 		$value =  newData;
 	}
 	| NEW type OPEN_SQUAREBRACKET exp CLOSE_SQUAREBRACKET { 
-		System.out.println("Passou here");
 		$value = new NewArray($NEW.line, $NEW.pos, $type.basicType, $exp.expInstance);
 	}
 	| ID { 
@@ -257,13 +256,14 @@ pexp
 		exps {
 		functionCall.addParams($exps.expressions);
 	 }
-	)? CLOSE_PARENTHESIS OPEN_SQUAREBRACKET exp CLOSE_SQUAREBRACKET { 
+	)? CLOSE_PARENTHESIS OPEN_SQUAREBRACKET exp { 
+		functionCall.setReturnExpr($exp.expInstance);
+	} CLOSE_SQUAREBRACKET { 
 		$value = functionCall;
 	};
 lvalue
 	returns[LValue node]:
 	ID { 
-		System.out.println("Pasando aqui");
 		$node = new ID($ID.line,$ID.pos, $ID.text);	
 	}
 	| l = lvalue OPEN_SQUAREBRACKET exp CLOSE_SQUAREBRACKET {

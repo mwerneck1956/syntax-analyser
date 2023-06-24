@@ -1,3 +1,10 @@
+data Ponto{
+  lado :: Float;
+  lado2 :: Int;
+}
+
+
 main(){
-  banana[10] = 5;
+  circulo = new Ponto;
+  read circulo.lado;
 }

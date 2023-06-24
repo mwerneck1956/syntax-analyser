@@ -20,10 +20,10 @@ public class SyntaxParser implements ParseAdaptor {
          langParser parser = new langParser(tokens);
 
          parser.setBuildParseTree(false);
-         parser.prog();
+         Prog ast = parser.prog().ast;
 
          if (parser.getNumberOfSyntaxErrors() == 0)
-            return parser.prog().ast;
+            return ast;
 
          return null;
       } catch (IOException err) {

@@ -45,19 +45,19 @@ public class App {
             Prog ast = parser.prog().ast;
 
             if (parser.getNumberOfSyntaxErrors() == 0) {
-                // TypeCheckVisitor typeCheckVisitor = new TypeCheckVisitor();
-                // ast.accept(typeCheckVisitor);
+                TypeCheckVisitor typeCheckVisitor = new TypeCheckVisitor();
+                ast.accept(typeCheckVisitor);
 
-                // if (typeCheckVisitor.getErrors().size() == 0) {
+                if (typeCheckVisitor.getErrors().size() == 0) {
+                    // InterpretVisitor visitor = new InterpretVisitor();
+                    // ast.accept(visitor);
+                } else {
+                    typeCheckVisitor.printErrors();
+                    throw new Exception("The program has semantical errors");
+                }
+
                 // InterpretVisitor visitor = new InterpretVisitor();
                 // ast.accept(visitor);
-                // } else {
-                // typeCheckVisitor.printErrors();
-                // throw new Exception("The program has semantical errors");
-                // }
-
-                InterpretVisitor visitor = new InterpretVisitor();
-                ast.accept(visitor);
             }
         }
 

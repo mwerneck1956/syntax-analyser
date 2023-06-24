@@ -57,6 +57,10 @@ public class TypeCheckUtils {
       return "Object " + objName + " dont have attribute " + attribute;
    }
 
+   public static String createTypeErrorRead(String varName, SType type) {
+      return " Read returns a Int and variable " + varName + " is : " + type;
+   }
+
    public static boolean isInstanceOfNumber(SType type) {
       STyInt typeInt = STyInt.newSTyInt();
       STyFloat typeFloat = STyFloat.newSTyFloat();

@@ -11,21 +11,17 @@ import com.compiler.visitors.Visitor;
 public class FunctionCallArray extends LValue {
    private String functionName;
    private ArrayList<Expr> params;
-   private ArrayList<LValue> ReturnsId;
+   private Expr returnExpr;
 
    public FunctionCallArray(int line, int column, String functionName) {
       super(line, column);
       this.functionName = functionName;
       this.params = new ArrayList<Expr>();
-      this.ReturnsId = new ArrayList<LValue>();
+      this.returnExpr = null;
    }
 
    public void addParams(ArrayList<Expr> lvalue) {
       this.params = lvalue;
-   }
-
-   public void addReturn(LValue returnId) {
-      this.ReturnsId.add(returnId);
    }
 
    public String getFunctionName() {
@@ -41,8 +37,12 @@ public class FunctionCallArray extends LValue {
       return params;
    }
 
-   public ArrayList<LValue> getReturnsId() {
-      return ReturnsId;
+   public void setReturnExpr(Expr returnExpr) {
+      this.returnExpr = returnExpr;
+   }
+
+   public Expr getReturnExpr() {
+      return returnExpr;
    }
 
    public void accept(Visitor visitor) {

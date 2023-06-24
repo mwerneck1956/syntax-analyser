@@ -8,15 +8,68 @@ package com.compiler.visitors;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Stack;
-import java.util.Scanner;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.compiler.ast.*;
-import com.compiler.typeCheckUtils.*;
+import com.compiler.ast.Add;
+import com.compiler.ast.And;
+import com.compiler.ast.ArrayPositionAccess;
+import com.compiler.ast.AttributeAccess;
+import com.compiler.ast.Attribution;
+import com.compiler.ast.BasicType;
+import com.compiler.ast.BinOP;
+import com.compiler.ast.Cmd;
+import com.compiler.ast.CmdList;
+import com.compiler.ast.CustomRuntimeException;
+import com.compiler.ast.Data;
+import com.compiler.ast.Declaration;
+import com.compiler.ast.Diff;
+import com.compiler.ast.Div;
+import com.compiler.ast.Equal;
+import com.compiler.ast.Expr;
+import com.compiler.ast.Function;
+import com.compiler.ast.FunctionCall;
+import com.compiler.ast.FunctionCallArray;
+import com.compiler.ast.GreatherThan;
+import com.compiler.ast.ID;
+import com.compiler.ast.If;
+import com.compiler.ast.Iterate;
+import com.compiler.ast.LValue;
+import com.compiler.ast.LessThan;
+import com.compiler.ast.LiteralChar;
+import com.compiler.ast.LiteralFalse;
+import com.compiler.ast.LiteralFloat;
+import com.compiler.ast.LiteralInt;
+import com.compiler.ast.LiteralNull;
+import com.compiler.ast.LiteralTrue;
+import com.compiler.ast.Mod;
+import com.compiler.ast.Mult;
+import com.compiler.ast.NewArray;
+import com.compiler.ast.NewData;
+import com.compiler.ast.Node;
+import com.compiler.ast.Not;
+import com.compiler.ast.Param;
+import com.compiler.ast.ParenthesisExpression;
+import com.compiler.ast.Print;
+import com.compiler.ast.Prog;
+import com.compiler.ast.Read;
+import com.compiler.ast.Return;
+import com.compiler.ast.Sub;
+import com.compiler.ast.Type;
+import com.compiler.ast.TypeBool;
+import com.compiler.ast.TypeChar;
+import com.compiler.ast.TypeCustom;
+import com.compiler.ast.TypeFloat;
+import com.compiler.ast.TypeInt;
+import com.compiler.typeCheckUtils.STyBool;
+import com.compiler.typeCheckUtils.STyChar;
+import com.compiler.typeCheckUtils.STyData;
+import com.compiler.typeCheckUtils.STyErr;
+import com.compiler.typeCheckUtils.STyFloat;
+import com.compiler.typeCheckUtils.STyInt;
+import com.compiler.typeCheckUtils.SType;
 import com.compiler.util.TypeCheckUtils;
-import com.compiler.util.Util;
 
 public class TypeCheckVisitor implements Visitor {
 
@@ -313,57 +366,53 @@ public class TypeCheckVisitor implements Visitor {
    }
 
    public void visit(FunctionCall functionCall) {
-      try {
 
-         Function func = functions.get(functionCall.getFunctionName());
+      Function func = functions.get(functionCall.getFunctionName());
 
-         if (func != null) {
-            int receivedParams = functionCall.getParams().size();
+      if (func != null) {
+         int receivedParams = functionCall.getParams().size();
 
-            if (func.isQuantityOfParamsValid(receivedParams)) {
-               for (Expr expr : functionCall.getParams())
-                  expr.accept(this);
+         if (func.isQuantityOfParamsValid(receivedParams)) {
+            for (Expr expr : functionCall.getParams())
+               expr.accept(this);
 
-               func.accept(this);
+            func.accept(this);
 
-               if (functionCall.getReturnsId().size() > 0 && returnMode) {
+            if (functionCall.getReturnsId().size() > 0 && returnMode) {
 
-                  for (LValue returnId : functionCall.getReturnsId()) {
-                     // Conferir se tipo da variavel é igual ao tipo retornado
-                     String returnVariableName = returnId.getId();
+               for (LValue returnId : functionCall.getReturnsId()) {
+                  // Conferir se tipo da variavel é igual ao tipo retornado
+                  String returnVariableName = returnId.getId();
 
-                     SType receivedType = typeStack.pop();
-                     SType expectedType = paramStack.pop();
+                  SType receivedType = typeStack.pop();
+                  SType expectedType = paramStack.pop();
 
-                     if (expectedType.match(receivedType)) {
-                        this.env.peek().put(returnVariableName, receivedType);
-                     } else {
-                        addErrorMessage(func,
-                              TypeCheckUtils.createWrongFunctionReturnMessage(expectedType, receivedType,
-                                    func.getName()));
+                  if (expectedType.match(receivedType)) {
+                     this.env.peek().put(returnVariableName, receivedType);
+                  } else {
+                     addErrorMessage(func,
+                           TypeCheckUtils.createWrongFunctionReturnMessage(expectedType, receivedType,
+                                 func.getName()));
 
-                        this.env.peek().put(returnVariableName, typeErr);
-                     }
-
+                     this.env.peek().put(returnVariableName, typeErr);
                   }
 
-                  returnMode = false;
                }
-            }
 
-            else {
-               addErrorMessage(func, "Function " + functionCall.getFunctionName() + " expected "
-                     + func.getParamlist().size() + " params");
+               returnMode = false;
             }
-
-         } else {
-            String errMessage = "Function: " + functionCall.getFunctionName() + " Not declared";
-            addErrorMessage(func, errMessage);
          }
 
-      } catch (Exception err) {
+         else {
+            addErrorMessage(func, "Function " + functionCall.getFunctionName() + " expected "
+                  + func.getParamlist().size() + " params");
+         }
 
+      } else {
+         String errMessage = "Function: " + functionCall.getFunctionName() + " Not declared";
+         addErrorMessage(func, errMessage);
       }
+
    }
 
    @Override
@@ -446,39 +495,29 @@ public class TypeCheckVisitor implements Visitor {
    }
 
    public void visit(Read read) {
-      Scanner scanner = new Scanner(System.in);
 
-      String value = scanner.nextLine();
-      scanner.close();
+      String attributionId = read.getLvalue().getId();
+      read.getLvalue().accept(this);
 
-      if (Util.isInteger(value)) {
-         this.env.peek().put(read.getLvalue().getId(), typeInt);
-      } else if (Util.isDouble(value)) {
-         this.env.peek().put(read.getLvalue().getId(), typeFloat);
+      SType currentVarType = typeStack.pop();
+
+      if (currentVarType.match(typeInt)) {
+         this.env.peek().put(attributionId, typeInt);
       } else {
-         this.env.peek().put(read.getLvalue().getId(), typeChar);
+         addErrorMessage(read, TypeCheckUtils.createTypeErrorRead(attributionId, currentVarType));
       }
 
    }
 
    public void visit(LessThan lessThan) {
-      try {
-         lessThan.getLeft().accept(this);
-         lessThan.getRight().accept(this);
 
-         SType left, right;
+      lessThan.getLeft().accept(this);
+      lessThan.getRight().accept(this);
 
-         right = typeStack.pop();
-         left = typeStack.pop();
+      SType left, right;
 
-         // Boolean res = new Boolean((Integer) left < (Integer) right);
-
-         // operands.push(res);
-
-         // logger.info("Less than added " + res + " To te stack");
-      } catch (Exception err) {
-
-      }
+      right = typeStack.pop();
+      left = typeStack.pop();
 
    }
 
@@ -566,23 +605,32 @@ public class TypeCheckVisitor implements Visitor {
    }
 
    public void visit(AttributeAccess attributeAccess) {
-      try {
-         LValue leftSideId = attributeAccess.getLeftValue();
 
-         if (this.env.peek().containsKey(leftSideId.getId())) {
-            // HashMap<String, SType> var = (HashMap<String, SType>)
-            // this.env.peek().get(leftSideId.getId());
+      LValue leftSideId = attributeAccess.getLeftValue();
 
-            // Object idValue = var.get(attributeAccess.getAcessId().getId());
-            // operands.push(idValue);
+      if (this.env.peek().containsKey(leftSideId.getId())) {
 
-         } else {
-            throw new CustomRuntimeException("Var " + leftSideId.getId() + " not  declared", leftSideId);
+         STyData var = (STyData) this.env.peek().get(leftSideId.getId());
+         String rightSideId = attributeAccess.getAcessId().getId();
+
+         STyData data = datas.get(var.getId());
+
+         if (data.getVars().containsKey(rightSideId)) {
+            this.typeStack.push(data.getVars().get(rightSideId));
          }
 
-      } catch (Exception err) {
-         throw new CustomRuntimeException(err.getMessage(), attributeAccess);
+         else {
+            addErrorMessage(attributeAccess,
+                  TypeCheckUtils.createObjectInvalidAttributeMessage(rightSideId, leftSideId.getId()));
+
+            this.typeStack.push(typeErr);
+         }
+
+      } else {
+         addErrorMessage(attributeAccess, "Var " + leftSideId.getId() + " not  declared" + leftSideId);
+         this.typeStack.push(typeErr);
       }
+
    }
 
    public void visit(NewData data) {
@@ -620,6 +668,52 @@ public class TypeCheckVisitor implements Visitor {
    }
 
    public void visit(FunctionCallArray functionCall) {
+
+      Function func = functions.get(functionCall.getFunctionName());
+
+      if (func != null) {
+         int receivedParams = functionCall.getParams().size();
+
+         if (func.isQuantityOfParamsValid(receivedParams)) {
+            for (Expr expr : functionCall.getParams())
+               expr.accept(this);
+
+            func.accept(this);
+
+            // if (functionCall.getReturnsId().size() > 0 && returnMode) {
+            // functionCall.getReturnExpr().accept(this);
+
+            // for (LValue returnId : functionCall.getReturnsId()) {
+            // String returnVariableName = returnId.getId();
+
+            // SType receivedType = typeStack.pop();
+            // SType expectedType = paramStack.pop();
+
+            // if (expectedType.match(receivedType)) {
+            // this.env.peek().put(returnVariableName, receivedType);
+            // } else {
+            // addErrorMessage(func,
+            // TypeCheckUtils.createWrongFunctionReturnMessage(expectedType, receivedType,
+            // func.getName()));
+
+            // this.env.peek().put(returnVariableName, typeErr);
+            // }
+
+            // }
+
+            // returnMode = false;
+            // }
+         }
+
+         else {
+            addErrorMessage(func, "Function " + functionCall.getFunctionName() + " expected "
+                  + func.getParamlist().size() + " params");
+         }
+
+      } else {
+         String errMessage = "Function: " + functionCall.getFunctionName() + " Not declared";
+         addErrorMessage(func, errMessage);
+      }
 
    }
 
