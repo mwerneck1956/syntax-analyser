@@ -689,7 +689,6 @@ public class langParser extends Parser {
 					setState(132);
 					match(CLOSE_SQUAREBRACKET);
 					 
-					          		System.out.println("Criado type array");
 					          		((TypeContext)_localctx).basicType =  new TypeArray((((TypeContext)_localctx).OPEN_SQUAREBRACKET!=null?((TypeContext)_localctx).OPEN_SQUAREBRACKET.getLine():0),(((TypeContext)_localctx).OPEN_SQUAREBRACKET!=null?((TypeContext)_localctx).OPEN_SQUAREBRACKET.getCharPositionInLine():0), ((TypeContext)_localctx).t.basicType);
 					          	
 					}

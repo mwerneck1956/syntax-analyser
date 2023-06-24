@@ -10,6 +10,12 @@ public class STyArray extends SType {
     }
 
     @Override
+    public String toString() {
+        return type.toString() + "[]";
+
+    }
+
+    @Override
     public boolean match(SType v) {
         return (v instanceof STyErr) || (v instanceof STyArray) && (type.match(((STyArray) v).getType()));
     }

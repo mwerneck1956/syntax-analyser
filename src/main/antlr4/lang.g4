@@ -107,7 +107,6 @@ params
 type
 	returns[Type basicType]:
 	t = type OPEN_SQUAREBRACKET CLOSE_SQUAREBRACKET { 
-		System.out.println("Criado type array");
 		$basicType = new TypeArray($OPEN_SQUAREBRACKET.line,$OPEN_SQUAREBRACKET.pos, $t.basicType);
 	}
 	| btype { 

@@ -61,6 +61,10 @@ public class TypeCheckUtils {
       return " Read returns a Int and variable " + varName + " is : " + type;
    }
 
+   public static String createInvalidArrayIndexTypeMessage(SType received) {
+      return "Array index must be Int, " + received.toString() + " received";
+   }
+
    public static boolean isInstanceOfNumber(SType type) {
       STyInt typeInt = STyInt.newSTyInt();
       STyFloat typeFloat = STyFloat.newSTyFloat();

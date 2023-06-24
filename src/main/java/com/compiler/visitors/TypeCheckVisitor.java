@@ -63,6 +63,7 @@ import com.compiler.ast.TypeChar;
 import com.compiler.ast.TypeCustom;
 import com.compiler.ast.TypeFloat;
 import com.compiler.ast.TypeInt;
+import com.compiler.typeCheckUtils.STyArr;
 import com.compiler.typeCheckUtils.STyArray;
 import com.compiler.typeCheckUtils.STyBool;
 import com.compiler.typeCheckUtils.STyChar;
@@ -266,40 +267,39 @@ public class TypeCheckVisitor implements Visitor {
    public void visit(Attribution attr) {
       LValue id = attr.getID();
 
-      System.out.println(attr.getExp().getClass());
+      if (id instanceof ArrayPositionAccess) {
+         id.accept(this);
+      }
 
       // x.z = 10
       if (id instanceof AttributeAccess) {
-
          AttributeAccess access = (AttributeAccess) id;
          LValue leftSideId = access.getLeftValue();
          String rightSideId = access.getAcessId().getId();
 
          leftSideId.accept(this);
 
-         if (this.env.peek().containsKey(leftSideId.getId())) {
-            STyData var = (STyData) this.env.peek().get(leftSideId.getId());
+         STyData var = (STyData) typeStack.pop();
+         STyData data = datas.get(var.getId());
 
-            STyData data = datas.get(var.getId());
+         if (data.getVars().containsKey(rightSideId)) {
+            attr.getExp().accept(this);
+            SType val = typeStack.pop();
 
-            if (data.getVars().containsKey(rightSideId)) {
-               attr.getExp().accept(this);
-               SType val = typeStack.pop();
-
-               var.add(access.getAcessId().getName(), val);
-               env.peek().put(id.getId(), val);
-            } else {
-               addErrorMessage(leftSideId,
-                     TypeCheckUtils.createObjectInvalidAttributeMessage(rightSideId, leftSideId.getId()));
-            }
+            var.add(access.getAcessId().getName(), val);
+            env.peek().put(id.getId(), val);
+         } else {
+            addErrorMessage(leftSideId,
+                  TypeCheckUtils.createObjectInvalidAttributeMessage(rightSideId, leftSideId.getId()));
          }
+
       } else {
          attr.getExp().accept(this);
-
          SType val = typeStack.pop();
 
          if (this.env.peek().containsKey(id.getId())) {
-            SType currentType = this.env.peek().get(id.getId());
+            id.accept(this);
+            SType currentType = typeStack.pop();
 
             if (!currentType.match(val)) {
                addErrorMessage(id, TypeCheckUtils.createVariableRedeclarationMessage(currentType, val, id.getId()));
@@ -422,13 +422,18 @@ public class TypeCheckVisitor implements Visitor {
    @Override
    public void visit(ID id) {
 
-      logger.info("Visiting id : \"" + id.getName() + "\"");
-
       if (env.peek().containsKey(id.getName())) {
          SType idValue = env.peek().get(id.getName());
-         typeStack.push(idValue);
 
-         logger.info("Adding value " + idValue + " to the operands");
+         System.out.println("Passou e " + idValue.getClass());
+
+         if (idValue instanceof STyArray) {
+            STyArray arrayType = (STyArray) idValue;
+            typeStack.push(arrayType.getType());
+         } else {
+            typeStack.push(idValue);
+         }
+
       } else {
          addErrorMessage(id, "Variable " + id.getName() + " not declared");
          typeStack.push(typeErr);
@@ -643,6 +648,18 @@ public class TypeCheckVisitor implements Visitor {
 
    public void visit(ArrayPositionAccess arrayPositionAccess) {
 
+      arrayPositionAccess.getPositionExpr().accept(this);
+      SType indexType = typeStack.pop();
+
+      if (indexType.match(typeInt)) {
+         arrayPositionAccess.getLeftValue().accept(this);
+
+         // SType lValue = typeStack.pop();
+         // System.out.println("Type do cara da esquerda " + lValue.getClass());
+      } else {
+         addErrorMessage(arrayPositionAccess, TypeCheckUtils.createInvalidArrayIndexTypeMessage(indexType));
+         typeStack.push(typeErr);
+      }
    }
 
    public void visit(TypeInt type) {
@@ -690,13 +707,10 @@ public class TypeCheckVisitor implements Visitor {
             func.accept(this);
 
             if (returnMode) {
-               System.out.println("Return expr type  + " + functionCall.getReturnExpr());
 
                functionCall.getReturnExpr().accept(this);
 
                SType arrayIndexType = typeStack.pop();
-
-               System.out.println("Array index type" + arrayIndexType);
 
                // for (LValue returnId : functionCall.getReturnsId()) {
                // String returnVariableName = returnId.getId();
@@ -733,6 +747,7 @@ public class TypeCheckVisitor implements Visitor {
    }
 
    public void visit(NewArray newArray) {
+
       newArray.getType().accept(this);
       SType returnedType;
 
@@ -749,7 +764,7 @@ public class TypeCheckVisitor implements Visitor {
       if (indexType.match(typeInt)) {
          this.typeStack.push(new STyArray(returnedType));
       } else {
-         addErrorMessage(newArray, "Array index expression must return a int value");
+         addErrorMessage(newArray, TypeCheckUtils.createInvalidArrayIndexTypeMessage(returnedType));
          typeStack.push(typeErr);
       }
 

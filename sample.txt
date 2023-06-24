@@ -5,5 +5,8 @@ data Ponto{
 
 
 main(){
-  circulo = new Int[10];
+ a = new Ponto;
+ b = new Ponto;
+
+ a[0].lado = 20.5;
 }

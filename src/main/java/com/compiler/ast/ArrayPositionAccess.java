@@ -24,6 +24,10 @@ public class ArrayPositionAccess extends LValue {
       return leftValue;
    }
 
+   public Expr getPositionExpr() {
+      return positionExpr;
+   }
+
    public void accept(Visitor visitor) {
       visitor.visit(this);
    }
