@@ -5,8 +5,6 @@ data Ponto{
 
 
 main(){
- a = new Ponto;
- b = new Ponto;
-
- a[0].lado = 20.5;
+ a = new Ponto[10];
+ a[0].teste = 10;
 }

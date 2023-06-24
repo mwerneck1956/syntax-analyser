@@ -279,7 +279,9 @@ public class TypeCheckVisitor implements Visitor {
 
          leftSideId.accept(this);
 
-         STyData var = (STyData) typeStack.pop();
+         SType varType = typeStack.pop();
+
+         STyData var = (STyData) varType;
          STyData data = datas.get(var.getId());
 
          if (data.getVars().containsKey(rightSideId)) {
@@ -424,15 +426,7 @@ public class TypeCheckVisitor implements Visitor {
 
       if (env.peek().containsKey(id.getName())) {
          SType idValue = env.peek().get(id.getName());
-
-         System.out.println("Passou e " + idValue.getClass());
-
-         if (idValue instanceof STyArray) {
-            STyArray arrayType = (STyArray) idValue;
-            typeStack.push(arrayType.getType());
-         } else {
-            typeStack.push(idValue);
-         }
+         typeStack.push(idValue);
 
       } else {
          addErrorMessage(id, "Variable " + id.getName() + " not declared");
@@ -643,19 +637,36 @@ public class TypeCheckVisitor implements Visitor {
    }
 
    public void visit(NewData data) {
-      data.getType().accept(this);
+
+      if (data.getType() instanceof TypeCustom) {
+         data.getType().accept(this);
+      } else {
+         addErrorMessage(data, data.getTypeName() + " cannot be instantiate with New");
+         typeStack.push(typeErr);
+      }
+
    }
 
    public void visit(ArrayPositionAccess arrayPositionAccess) {
 
       arrayPositionAccess.getPositionExpr().accept(this);
+
       SType indexType = typeStack.pop();
 
       if (indexType.match(typeInt)) {
          arrayPositionAccess.getLeftValue().accept(this);
 
-         // SType lValue = typeStack.pop();
-         // System.out.println("Type do cara da esquerda " + lValue.getClass());
+         SType lValueType = typeStack.pop();
+
+         if (lValueType instanceof STyArray) {
+            SType arrayType = ((STyArray) lValueType).getType();
+
+            typeStack.push(arrayType);
+         } else {
+            addErrorMessage(arrayPositionAccess, "Var " + arrayPositionAccess.getLeftValue().getId() + " isnt a array");
+            typeStack.push(typeErr);
+         }
+
       } else {
          addErrorMessage(arrayPositionAccess, TypeCheckUtils.createInvalidArrayIndexTypeMessage(indexType));
          typeStack.push(typeErr);
