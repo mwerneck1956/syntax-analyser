@@ -26,8 +26,7 @@ public class SyntaxParser implements ParseAdaptor {
             return ast;
 
          return null;
-      } catch (IOException err) {
-         System.err.println("File : " + path + " Not found");
+      } catch (Exception err) {
          return null;
       }
    }

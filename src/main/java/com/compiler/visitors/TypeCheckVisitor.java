@@ -11,7 +11,6 @@ import java.util.Stack;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.util.TypeUtil;
 
 import com.compiler.ast.Add;
 import com.compiler.ast.And;
@@ -64,7 +63,6 @@ import com.compiler.ast.TypeChar;
 import com.compiler.ast.TypeCustom;
 import com.compiler.ast.TypeFloat;
 import com.compiler.ast.TypeInt;
-import com.compiler.typeCheckUtils.STyArr;
 import com.compiler.typeCheckUtils.STyArray;
 import com.compiler.typeCheckUtils.STyBool;
 import com.compiler.typeCheckUtils.STyChar;
@@ -270,10 +268,22 @@ public class TypeCheckVisitor implements Visitor {
 
       if (id instanceof ArrayPositionAccess) {
          id.accept(this);
+
+         SType expectedType = typeStack.pop();
+
+         attr.getExp().accept(this);
+
+         SType exprType = typeStack.pop();
+
+         String idWithIndex = id.getId() + "[]";
+
+         if (!expectedType.match(exprType))
+            addErrorMessage(id, TypeCheckUtils.createVariableRedeclarationMessage(expectedType, exprType, idWithIndex));
+
       }
 
       // x.z = 10
-      if (id instanceof AttributeAccess) {
+      else if (id instanceof AttributeAccess) {
          AttributeAccess access = (AttributeAccess) id;
          LValue leftSideId = access.getLeftValue();
          String rightSideId = access.getAcessId().getId();
@@ -290,8 +300,10 @@ public class TypeCheckVisitor implements Visitor {
                attr.getExp().accept(this);
                SType val = typeStack.pop();
 
-               var.add(access.getAcessId().getName(), val);
-               env.peek().put(id.getId(), val);
+               if (!(leftSideId instanceof ArrayPositionAccess)) {
+                  var.add(access.getAcessId().getName(), val);
+                  env.peek().put(id.getId(), val);
+               }
             } else {
                addErrorMessage(leftSideId,
                      TypeCheckUtils.createObjectInvalidAttributeMessage(rightSideId, leftSideId.getId()));
@@ -426,6 +438,8 @@ public class TypeCheckVisitor implements Visitor {
          else {
             addErrorMessage(func, "Function " + functionCall.getFunctionName() + " expected "
                   + func.getParamlist().size() + " params");
+
+            this.typeStack.push(typeErr);
          }
 
       } else {
@@ -454,13 +468,15 @@ public class TypeCheckVisitor implements Visitor {
    public void visit(If ifExpr) {
       ifExpr.getCondition().accept(this);
 
-      if (typeStack.pop().match(typeBool)) {
+      SType returnType = typeStack.pop();
+
+      if (returnType.match(typeBool) || TypeCheckUtils.isInstanceOfNumber(returnType)) {
          ifExpr.getThen().accept(this);
 
          if (ifExpr.getOnElse() != null)
             ifExpr.getOnElse().accept(this);
       } else {
-         addErrorMessage(ifExpr, " If test expression must have type Bool");
+         addErrorMessage(ifExpr, " If test expression must have type Bool and expr type is " + returnType);
       }
    }
 
@@ -469,11 +485,13 @@ public class TypeCheckVisitor implements Visitor {
 
       iterate.getCondition().accept(this);
 
-      if (typeStack.pop().match(typeBool)) {
+      SType returnType = typeStack.pop();
+
+      if (returnType.match(typeBool) || TypeCheckUtils.isInstanceOfNumber(returnType)) {
          iterate.getBody().accept(this);
          iterate.getCondition().accept(this);
       } else {
-         addErrorMessage(iterate, " If test expression must have type Bool");
+         addErrorMessage(iterate, " If test expression must have type Bool and expr type is " + returnType);
       }
 
    }
@@ -551,27 +569,19 @@ public class TypeCheckVisitor implements Visitor {
    }
 
    public void visit(And and) {
-      try {
-         and.getLeft().accept(this);
-         and.getRight().accept(this);
+      and.getLeft().accept(this);
+      and.getRight().accept(this);
 
-         Object left, right;
+      SType left, right;
 
-         right = operands.pop();
-         left = operands.pop();
+      right = typeStack.pop();
+      left = typeStack.pop();
 
-         if (right instanceof Number) {
-            right = new Integer(right.toString()) != 0;
-         }
-
-         if (left instanceof Number) {
-            left = new Integer(left.toString()) != 0;
-         }
-
-         operands.push(new Boolean((Boolean) left && (Boolean) right));
-
-      } catch (Exception err) {
-         throw new CustomRuntimeException(err.getMessage(), and);
+      if (left.match(typeBool) && right.match(typeBool))
+         typeStack.push(typeBool);
+      else {
+         addErrorMessage(and, "And left and right expression must have type bool");
+         typeStack.push(typeErr);
       }
 
    }
@@ -689,7 +699,6 @@ public class TypeCheckVisitor implements Visitor {
          SType lValueType = typeStack.pop();
 
          if (lValueType instanceof STyArray) {
-
             SType arrayType = ((STyArray) lValueType).getType();
             typeStack.push(arrayType);
          } else {
@@ -701,6 +710,29 @@ public class TypeCheckVisitor implements Visitor {
          addErrorMessage(arrayPositionAccess, TypeCheckUtils.createInvalidArrayIndexTypeMessage(indexType));
          typeStack.push(typeErr);
       }
+   }
+
+   public void checkArrayIfArrayIndexIsValid(ArrayPositionAccess arrayPositionAccess) {
+      // LiteralInt index = (LiteralInt) functionCall.getReturnExpr();
+
+      // if (index.getValue() < func.getReturns().size()) {
+
+      // // É necessário porquê pela implementação do Return, o mesmo coloca todos
+      // tipos
+      // // de retorno na pilha de paramêtros
+      // cleanParamsStack();
+
+      // func.getReturns().get(index.getValue()).accept(this);
+
+      // SType expectedType = paramStack.pop();
+      // typeStack.push(expectedType);
+
+      // } else {
+      // addErrorMessage(index, " Return index in function call is out of array
+      // limits");
+      // typeStack.push(typeErr);
+      // }
+
    }
 
    public void visit(TypeInt type) {
@@ -811,12 +843,6 @@ public class TypeCheckVisitor implements Visitor {
       SType returnedType;
 
       returnedType = paramStack.pop();
-
-      // if (newArray.getType() instanceof TypeCustom) {
-      // returnedType = paramStack.pop();
-      // } else {
-      // returnedType = paramStack.pop();
-      // }
 
       newArray.getExpr().accept(this);
 

@@ -2,7 +2,7 @@ package com.compiler.typeCheckUtils;
 
 public class STyBool extends SType {
 
-     private static STyBool st = new STyBool();;
+     private static STyBool st = new STyBool();
 
      private STyBool() {
      }

@@ -31,7 +31,7 @@ public class App {
 
         if (args[0].equals("-byt")) {
             System.out.println("Executando bateria de testes semânticos:");
-            new TestParser(semanticalParser, "semantica/certo");
+            new TestParser(semanticalParser, "semantica/errado");
             return;
         } else {
             CharStream stream = CharStreams.fromFileName(args[0]);
