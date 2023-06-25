@@ -1,10 +1,13 @@
 data Ponto {
-   x :: Float;
+   x :: Int;
    y :: Int;
 }
 
+funcao() : Int,Float{
+   return 25,10.5;
+}
 main(){
-   size = 10;
-   a = new Ponto[size];
-   a[20].x = 5.5;
+   a = new Ponto[10];
+   a[5].x = funcao()[1 + 2];
+   print a[5].x;
 }

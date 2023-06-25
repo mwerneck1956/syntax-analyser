@@ -308,48 +308,34 @@ public class InterpretVisitor implements Visitor {
    }
 
    public void visit(FunctionCall functionCall) {
-      try {
 
-         logger.info("Calling function:  " + functionCall.getFunctionName());
+      logger.info("Calling function:  " + functionCall.getFunctionName());
 
-         Function func = functions.get(functionCall.getFunctionName());
+      Function func = functions.get(functionCall.getFunctionName());
 
-         if (func != null) {
-            int receivedParams = functionCall.getParams().size();
+      int receivedParams = functionCall.getParams().size();
 
-            if (func.isQuantityOfParamsValid(receivedParams)) {
-               for (Expr expr : functionCall.getParams())
-                  expr.accept(this);
+      if (func.isQuantityOfParamsValid(receivedParams)) {
+         for (Expr expr : functionCall.getParams())
+            expr.accept(this);
 
-               func.accept(this);
+         func.accept(this);
 
-               if (functionCall.getReturnsId().size() > 0 && returnMode) {
+         if (functionCall.getReturnsId().size() > 0 && returnMode) {
 
-                  for (LValue returnId : functionCall.getReturnsId()) {
-                     String returnVariableName = returnId.getId();
+            for (LValue returnId : functionCall.getReturnsId()) {
+               String returnVariableName = returnId.getId();
 
-                     Object value = operands.pop();
-                     this.env.peek().put(returnVariableName, value);
+               Object value = operands.pop();
+               this.env.peek().put(returnVariableName, value);
 
-                     logger.info("Putting return variable " + returnVariableName + " with value : " + value);
-                  }
-
-                  returnMode = false;
-               }
+               logger.info("Putting return variable " + returnVariableName + " with value : " + value);
             }
 
-            else
-               throw new CustomRuntimeException("Function " + functionCall.getFunctionName() + " expected "
-                     + func.getParamlist().size() + " params", functionCall);
-
-         } else {
-            String errMessage = "Function: " + functionCall.getFunctionName() + " Not declared";
-            throw new CustomRuntimeException(errMessage, functionCall);
+            returnMode = false;
          }
-
-      } catch (Exception err) {
-
       }
+
    }
 
    @Override
@@ -613,8 +599,49 @@ public class InterpretVisitor implements Visitor {
    }
 
    public void visit(FunctionCallArray functionCall) {
+      Function func = functions.get(functionCall.getFunctionName());
 
+      int receivedParams = functionCall.getParams().size();
+
+      if (func.isQuantityOfParamsValid(receivedParams)) {
+         for (Expr expr : functionCall.getParams())
+            expr.accept(this);
+
+         func.accept(this);
+
+         if (returnMode) {
+
+            functionCall.getReturnExpr().accept(this);
+
+            Number returnedIndex = (Number) operands.pop();
+
+            System.out.println("Return index " + returnedIndex);
+
+            if (returnedIndex.intValue() > func.getReturns().size())
+               throw new CustomRuntimeException(
+                     "Index : " + returnedIndex.intValue() + " out of bonds for function return : "
+                           + functionCall.getFunctionName(),
+                     functionCall);
+
+            Object value = null;
+
+            for (int i = 0; i < func.getReturns().size(); i++) {
+               if (i == returnedIndex.intValue())
+                  value = operands.pop();
+               else
+                  operands.pop();
+            }
+
+            operands.push(value);
+            returnMode = false;
+         }
+      }
    }
+
+   // private void clearOperandsStack() {
+   // while (!operands.empty())
+   // operands.pop();
+   // }
 
    public void visit(NewArray newArray) {
 
