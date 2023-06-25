@@ -776,6 +776,11 @@ public class TypeCheckVisitor implements Visitor {
             LiteralInt index = (LiteralInt) functionCall.getReturnExpr();
 
             if (index.getValue() < func.getReturns().size()) {
+
+               // É necessário porquê pela implementação do Return, o mesmo coloca todos tipos
+               // de retorno na pilha de paramêtros
+               cleanParamsStack();
+
                func.getReturns().get(index.getValue()).accept(this);
 
                SType expectedType = paramStack.pop();
@@ -793,8 +798,9 @@ public class TypeCheckVisitor implements Visitor {
       }
    }
 
-   private void checkTypeRedeclaration() {
-
+   private void cleanParamsStack() {
+      while (!paramStack.empty())
+         paramStack.pop();
    }
 
    public void visit(NewArray newArray) {

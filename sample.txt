@@ -1,4 +1,4 @@
-fibonacci(n :: Int) : Int {
+fibonacci(n :: Int) : Int, Float {
   if (n < 1)
     return n;
   if (n == 1)
@@ -7,7 +7,7 @@ fibonacci(n :: Int) : Int {
 }
 
 main() {
-  read k;
-  v = k + 2;
-  print v;
+  k = 10.5;
+  k = fibonacci(5)[0];
+  print k;
 }
