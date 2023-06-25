@@ -12,6 +12,7 @@ public class FunctionCall extends Cmd {
    private String functionName;
    private ArrayList<Expr> params;
    private ArrayList<LValue> ReturnsId;
+   private Expr returnArrayIndex;
 
    public FunctionCall(int line, int column, String functionName) {
       super(line, column);
@@ -47,6 +48,14 @@ public class FunctionCall extends Cmd {
 
    public void accept(Visitor visitor) {
       visitor.visit(this);
+   }
+
+   public void setReturnArrayIndex(Expr returnArrayIndex) {
+      this.returnArrayIndex = returnArrayIndex;
+   }
+
+   public Expr getReturnArrayIndex() {
+      return returnArrayIndex;
    }
 
 }

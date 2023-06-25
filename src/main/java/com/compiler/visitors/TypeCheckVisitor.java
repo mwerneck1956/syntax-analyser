@@ -11,6 +11,7 @@ import java.util.Stack;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.util.TypeUtil;
 
 import com.compiler.ast.Add;
 import com.compiler.ast.And;
@@ -279,25 +280,29 @@ public class TypeCheckVisitor implements Visitor {
 
          leftSideId.accept(this);
 
-         SType varType = paramStack.pop();
+         SType varType = typeStack.pop();
 
-         STyData var = (STyData) varType;
-         STyData data = datas.get(var.getId());
+         if (varType instanceof STyData) {
+            STyData var = (STyData) varType;
+            STyData data = datas.get(var.getId());
 
-         if (data.getVars().containsKey(rightSideId)) {
-            attr.getExp().accept(this);
-            SType val = typeStack.pop();
+            if (data.getVars().containsKey(rightSideId)) {
+               attr.getExp().accept(this);
+               SType val = typeStack.pop();
 
-            var.add(access.getAcessId().getName(), val);
-            env.peek().put(id.getId(), val);
-         } else {
-            addErrorMessage(leftSideId,
-                  TypeCheckUtils.createObjectInvalidAttributeMessage(rightSideId, leftSideId.getId()));
+               var.add(access.getAcessId().getName(), val);
+               env.peek().put(id.getId(), val);
+            } else {
+               addErrorMessage(leftSideId,
+                     TypeCheckUtils.createObjectInvalidAttributeMessage(rightSideId, leftSideId.getId()));
+            }
+
          }
 
       } else {
          attr.getExp().accept(this);
-         SType val = paramStack.pop();
+
+         SType val = typeStack.pop();
 
          if (this.env.peek().containsKey(id.getId())) {
             id.accept(this);
@@ -435,6 +440,7 @@ public class TypeCheckVisitor implements Visitor {
 
       if (env.peek().containsKey(id.getName())) {
          SType idValue = env.peek().get(id.getName());
+
          typeStack.push(idValue);
 
       } else {
@@ -446,8 +452,6 @@ public class TypeCheckVisitor implements Visitor {
 
    @Override
    public void visit(If ifExpr) {
-      logger.info("Visiting if");
-
       ifExpr.getCondition().accept(this);
 
       if (typeStack.pop().match(typeBool)) {
@@ -493,7 +497,7 @@ public class TypeCheckVisitor implements Visitor {
    }
 
    public void visit(LiteralNull literal) {
-      this.operands.push(null);
+      this.typeStack.push(null);
    }
 
    public void visit(LiteralTrue literal) {
@@ -509,16 +513,25 @@ public class TypeCheckVisitor implements Visitor {
    public void visit(Read read) {
 
       String attributionId = read.getLvalue().getId();
-      read.getLvalue().accept(this);
 
-      SType currentVarType = typeStack.pop();
+      if (checkIfHasVariableDeclared(attributionId)) {
+         read.getLvalue().accept(this);
 
-      if (currentVarType.match(typeInt)) {
-         this.env.peek().put(attributionId, typeInt);
+         SType currentVarType = typeStack.pop();
+
+         if (currentVarType.match(typeInt)) {
+            this.env.peek().put(attributionId, typeInt);
+         } else {
+            addErrorMessage(read, TypeCheckUtils.createTypeErrorRead(attributionId, currentVarType));
+         }
       } else {
-         addErrorMessage(read, TypeCheckUtils.createTypeErrorRead(attributionId, currentVarType));
+         this.env.peek().put(attributionId, typeInt);
       }
 
+   }
+
+   private boolean checkIfHasVariableDeclared(String varName) {
+      return this.env.peek().containsKey(varName);
    }
 
    public void visit(LessThan lessThan) {
@@ -531,6 +544,10 @@ public class TypeCheckVisitor implements Visitor {
       right = typeStack.pop();
       left = typeStack.pop();
 
+      if (TypeCheckUtils.isInstanceOfNumber(left) && TypeCheckUtils.isInstanceOfNumber(right))
+         typeStack.push(typeBool);
+      else
+         typeStack.push(typeErr);
    }
 
    public void visit(And and) {
@@ -618,7 +635,11 @@ public class TypeCheckVisitor implements Visitor {
 
       LValue leftSideId = attributeAccess.getLeftValue();
 
-      if (this.env.peek().containsKey(leftSideId.getId())) {
+      leftSideId.accept(this);
+
+      SType returned = this.typeStack.pop();
+
+      if (returned instanceof STyData) {
 
          STyData var = (STyData) this.env.peek().get(leftSideId.getId());
          String rightSideId = attributeAccess.getAcessId().getId();
@@ -635,10 +656,8 @@ public class TypeCheckVisitor implements Visitor {
 
             this.typeStack.push(typeErr);
          }
-
       } else {
-         addErrorMessage(attributeAccess, "Var " + leftSideId.getId() + " not  declared" + leftSideId);
-         this.typeStack.push(typeErr);
+         typeStack.push(typeErr);
       }
 
    }
@@ -647,6 +666,10 @@ public class TypeCheckVisitor implements Visitor {
 
       if (data.getType() instanceof TypeCustom) {
          data.getType().accept(this);
+
+         SType returnedType = paramStack.pop();
+         typeStack.push(returnedType);
+
       } else {
          addErrorMessage(data, data.getTypeName() + " cannot be instantiate with New");
          typeStack.push(typeErr);
@@ -714,72 +737,78 @@ public class TypeCheckVisitor implements Visitor {
       this.paramStack.push(new STyArray(returnedType));
    }
 
-   // public void visit(FunctionCallArray functionCall) {
+   public void visit(FunctionCallArray functionCall) {
 
-   // Function func = functions.get(functionCall.getFunctionName());
+      Function func = functions.get(functionCall.getFunctionName());
 
-   // if (func != null) {
-   // int receivedParams = functionCall.getParams().size();
+      if (func != null) {
+         int receivedParams = functionCall.getParams().size();
 
-   // if (func.isQuantityOfParamsValid(receivedParams)) {
-   // for (Expr expr : functionCall.getParams())
-   // expr.accept(this);
+         if (func.isQuantityOfParamsValid(receivedParams)) {
+            for (Expr expr : functionCall.getParams())
+               expr.accept(this);
 
-   // func.accept(this);
+            func.accept(this);
 
-   // if (returnMode) {
+            if (returnMode) {
+               this.onFunctionCallArrayReturn(functionCall, func);
+            }
+         }
 
-   // functionCall.getReturnExpr().accept(this);
+         else {
+            addErrorMessage(func, "Function " + functionCall.getFunctionName() + " expected "
+                  + func.getParamlist().size() + " params");
+         }
 
-   // SType arrayIndexType = typeStack.pop();
+      } else {
+         String errMessage = "Function: " + functionCall.getFunctionName() + " Not declared";
+         addErrorMessage(func, errMessage);
+      }
 
-   // // for (LValue returnId : functionCall.getReturnsId()) {
-   // // String returnVariableName = returnId.getId();
+   }
 
-   // // SType receivedType = typeStack.pop();
-   // // SType expectedType = paramStack.pop();
+   private void onFunctionCallArrayReturn(FunctionCallArray functionCall, Function func) {
+      functionCall.getReturnExpr().accept(this);
+      SType indexType = typeStack.pop();
 
-   // // if (expectedType.match(receivedType)) {
-   // // this.env.peek().put(returnVariableName, receivedType);
-   // // } else {
-   // // addErrorMessage(func,
-   // // TypeCheckUtils.createWrongFunctionReturnMessage(expectedType,
-   // receivedType,
-   // // func.getName()));
+      if (indexType.match(typeInt)) {
+         if (functionCall.getReturnExpr() instanceof LiteralInt) {
+            LiteralInt index = (LiteralInt) functionCall.getReturnExpr();
 
-   // // this.env.peek().put(returnVariableName, typeErr);
-   // // }
+            if (index.getValue() < func.getReturns().size()) {
+               func.getReturns().get(index.getValue()).accept(this);
 
-   // // }
+               SType expectedType = paramStack.pop();
+               typeStack.push(expectedType);
 
-   // returnMode = false;
-   // }
-   // }
+            } else {
+               addErrorMessage(index, " Return index in function call is out of array limits");
+               typeStack.push(typeErr);
+            }
 
-   // else {
-   // addErrorMessage(func, "Function " + functionCall.getFunctionName() + "
-   // expected "
-   // + func.getParamlist().size() + " params");
-   // }
+         }
 
-   // } else {
-   // String errMessage = "Function: " + functionCall.getFunctionName() + " Not
-   // declared";
-   // addErrorMessage(func, errMessage);
-   // }
+      } else {
+         addErrorMessage(func, TypeCheckUtils.createInvalidArrayIndexTypeMessage(indexType));
+      }
+   }
 
-   // }
+   private void checkTypeRedeclaration() {
+
+   }
 
    public void visit(NewArray newArray) {
 
       newArray.getType().accept(this);
       SType returnedType;
 
-      if (newArray.getType() instanceof TypeCustom) {
-         returnedType = typeStack.pop();
-      } else {
-         returnedType = paramStack.pop();
-      }
+      returnedType = paramStack.pop();
+
+      // if (newArray.getType() instanceof TypeCustom) {
+      // returnedType = paramStack.pop();
+      // } else {
+      // returnedType = paramStack.pop();
+      // }
 
       newArray.getExpr().accept(this);
 
