@@ -1,6 +1,0 @@
-2023-06-25 19:27:04,244 [com.compiler.App.main()] INFO  InterpretVisitor:283 - Executing main function
-2023-06-25 19:27:04,246 [com.compiler.App.main()] INFO  InterpretVisitor:254 - New attribution a = [Ljava.util.HashMap;@1e6bf6d9
-2023-06-25 19:27:04,246 [com.compiler.App.main()] INFO  InterpretVisitor:286 - Executing funcao function
-2023-06-25 19:27:04,246 [com.compiler.App.main()] INFO  InterpretVisitor:501 - Visiting a return
-2023-06-25 19:27:04,246 [com.compiler.App.main()] INFO  InterpretVisitor:55 - Visiting add with 1 + 2
-2023-06-25 19:27:04,246 [com.compiler.App.main()] INFO  InterpretVisitor:71 - Add finished storing 3 to the operands
