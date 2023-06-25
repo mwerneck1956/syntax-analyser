@@ -1,18 +1,5 @@
-2023-06-25 17:10:23,565 [com.compiler.App.main()] INFO  InterpretVisitor:116 - Error ocurred at line  2 and column 9 : And left and right expression must have type bool
-2023-06-25 17:10:23,570 [com.compiler.App.main()] INFO  InterpretVisitor:116 - Error ocurred at line  2 and column 6 : Variable flaes not declared
-2023-06-25 17:10:23,583 [com.compiler.App.main()] INFO  InterpretVisitor:116 - Error ocurred at line  8 and column 4 : Cannot redeclare variable : x from Float to Int
-2023-06-25 17:10:23,585 [com.compiler.App.main()] INFO  InterpretVisitor:116 - Error ocurred at line  8 and column 4 : Object x dont have attribute z
-2023-06-25 17:10:23,588 [com.compiler.App.main()] INFO  InterpretVisitor:116 - Error ocurred at line  2 and column 11 : Type Ponto not declared
-2023-06-25 17:10:23,591 [com.compiler.App.main()] INFO  InterpretVisitor:116 - Error ocurred at line  2 and column 0 : Function f expected 1 params
-2023-06-25 17:10:23,593 [com.compiler.App.main()] INFO  InterpretVisitor:116 - Error ocurred at line  2 and column 0 : Function f doesnt return any value
-2023-06-25 17:10:23,598 [com.compiler.App.main()] INFO  InterpretVisitor:116 - Error ocurred at line  2 and column 0 : Cannot redeclare variable : z from Float to Int
-2023-06-25 17:10:23,604 [com.compiler.App.main()] INFO  InterpretVisitor:116 - Error ocurred at line  2 and column 5 : Variable x not declared
-2023-06-25 17:10:23,606 [com.compiler.App.main()] INFO  InterpretVisitor:116 - Error ocurred at line  4 and column 5 : Cannot redeclare variable : x from Bool to Int
-2023-06-25 17:10:23,610 [com.compiler.App.main()] INFO  InterpretVisitor:116 - Error ocurred at line  8 and column 19 : Variable l not declared
-2023-06-25 17:10:23,611 [com.compiler.App.main()] INFO  InterpretVisitor:116 - Error ocurred at line  10 and column 11 : Int cannot be instantiate with New
-2023-06-25 17:10:23,612 [com.compiler.App.main()] INFO  InterpretVisitor:116 - Error ocurred at line  8 and column 19 : Variable l not declared
-2023-06-25 17:10:23,613 [com.compiler.App.main()] INFO  InterpretVisitor:116 - Error ocurred at line  9 and column 4 : Cannot redeclare variable : z[] from Int[] to Ponto
-2023-06-25 17:10:23,615 [com.compiler.App.main()] INFO  InterpretVisitor:116 - Error ocurred at line  7 and column 0 : Main function received 2 params, the main function must not have params
-2023-06-25 17:10:23,619 [com.compiler.App.main()] INFO  InterpretVisitor:116 - Error ocurred at line  2 and column 0 : Function f expected 1 params
-2023-06-25 17:10:23,621 [com.compiler.App.main()] INFO  InterpretVisitor:116 - Error ocurred at line  2 and column 0 : Function f expected 1 params
-2023-06-25 17:10:23,627 [com.compiler.App.main()] INFO  InterpretVisitor:116 - Error ocurred at line  14 and column 0 : Function spook expected 1 params
+2023-06-25 18:58:28,677 [com.compiler.App.main()] INFO  InterpretVisitor:283 - Executing main function
+2023-06-25 18:58:28,679 [com.compiler.App.main()] INFO  InterpretVisitor:254 - New attribution size = 10
+2023-06-25 18:58:28,680 [com.compiler.App.main()] INFO  InterpretVisitor:358 - Visiting id : "size"
+2023-06-25 18:58:28,680 [com.compiler.App.main()] INFO  InterpretVisitor:364 - Adding value 10 to the operands
+2023-06-25 18:58:28,680 [com.compiler.App.main()] INFO  InterpretVisitor:254 - New attribution a = [Ljava.util.HashMap;@1e6f1783

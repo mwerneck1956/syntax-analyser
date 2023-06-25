@@ -1,3 +1,10 @@
-principal(){
-   a = 10;
+data Ponto {
+   x :: Float;
+   y :: Int;
+}
+
+main(){
+   size = 10;
+   a = new Ponto[size];
+   a[20].x = 5.5;
 }

@@ -673,7 +673,15 @@ public class TypeCheckVisitor implements Visitor {
 
       if (returned instanceof STyData) {
 
-         STyData var = (STyData) this.env.peek().get(leftSideId.getId());
+         STyData var;
+
+         if (leftSideId instanceof ArrayPositionAccess) {
+            leftSideId.accept(this);
+
+            var = (STyData) typeStack.pop();
+         } else
+            var = (STyData) this.env.peek().get(leftSideId.getId());
+
          String rightSideId = attributeAccess.getAcessId().getId();
 
          STyData data = datas.get(var.getId());

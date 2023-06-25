@@ -47,35 +47,28 @@ public class InterpretVisitor implements Visitor {
             main = f;
       }
 
-      if (main == null)
-         throw new RuntimeException("The program doesnt have a main function");
-
       main.accept(this);
    }
 
    public void visit(Add add) {
-      try {
 
-         logger.info("Visiting add with " + add.toString());
+      logger.info("Visiting add with " + add.toString());
 
-         add.getLeft().accept(this);
-         add.getRight().accept(this);
+      add.getLeft().accept(this);
+      add.getRight().accept(this);
 
-         Number left, right, res;
+      Number left, right, res;
 
-         right = (Number) operands.pop();
-         left = (Number) operands.pop();
+      right = (Number) operands.pop();
+      left = (Number) operands.pop();
 
-         if (left instanceof Float || right instanceof Float)
-            res = left.floatValue() + right.floatValue();
-         else
-            res = left.intValue() + right.intValue();
+      if (left instanceof Float || right instanceof Float)
+         res = left.floatValue() + right.floatValue();
+      else
+         res = left.intValue() + right.intValue();
 
-         operands.push(res);
-         logger.info("Add finished storing " + res + " to the operands");
-      } catch (Exception err) {
-         throw new CustomRuntimeException(err.getMessage(), add);
-      }
+      operands.push(res);
+      logger.info("Add finished storing " + res + " to the operands");
 
    }
 
@@ -213,25 +206,43 @@ public class InterpretVisitor implements Visitor {
    public void visit(Attribution attr) {
       LValue id = attr.getID();
 
-      if (id instanceof AttributeAccess) {
+      if (id instanceof ArrayPositionAccess) {
+         ArrayPositionAccess newArray = (ArrayPositionAccess) id;
 
+         newArray.getPositionExpr().accept(this);
+
+         Number index = (Number) operands.pop();
+
+         attr.getExp().accept(this);
+
+         Object value = this.operands.pop();
+         Object[] array = (Object[]) this.env.peek().get(id.getId());
+
+         array[index.intValue()] = value;
+
+         this.env.peek().put(id.getId(), array);
+
+      }
+
+      else if (id instanceof AttributeAccess) {
          AttributeAccess access = (AttributeAccess) id;
 
          LValue leftSideId = access.getLeftValue();
 
-         if (this.env.peek().containsKey(leftSideId.getId())) {
+         HashMap<String, Object> var;
 
-            HashMap<String, Object> var = (HashMap<String, Object>) this.env.peek().get(leftSideId.getId());
+         if (leftSideId instanceof ArrayPositionAccess) {
+            leftSideId.accept(this);
 
-            attr.getExp().accept(this);
-            Object val = operands.pop();
+            var = (HashMap<String, Object>) this.operands.pop();
+         } else
+            var = (HashMap<String, Object>) this.env.peek().get(leftSideId.getId());
 
-            var.put(access.getAcessId().getName(), val);
-            env.peek().put(id.getId(), val);
+         attr.getExp().accept(this);
+         Object val = operands.pop();
 
-         } else {
-            throw new CustomRuntimeException("Var " + leftSideId.getId() + " not  declared", leftSideId);
-         }
+         var.put(access.getAcessId().getName(), val);
+         env.peek().put(id.getId(), val);
 
       } else {
 
@@ -377,17 +388,12 @@ public class InterpretVisitor implements Visitor {
 
    @Override
    public void visit(Iterate iterate) {
-      try {
 
+      iterate.getCondition().accept(this);
+
+      while ((Boolean) operands.pop()) {
+         iterate.getBody().accept(this);
          iterate.getCondition().accept(this);
-
-         while ((Boolean) operands.pop()) {
-            iterate.getBody().accept(this);
-            iterate.getCondition().accept(this);
-         }
-
-      } catch (Exception err) {
-         throw new CustomRuntimeException(err.getMessage(), iterate);
       }
 
    }
@@ -436,58 +442,49 @@ public class InterpretVisitor implements Visitor {
 
       if (Util.isInteger(value)) {
          this.env.peek().put(read.getLvalue().getId(), Integer.parseInt(value));
-      } else if (Util.isDouble(value)) {
-         this.env.peek().put(read.getLvalue().getId(), Double.parseDouble(value));
       } else {
-         this.env.peek().put(read.getLvalue().getId(), value);
+         throw new CustomRuntimeException("Read value must be int", read);
       }
 
    }
 
    public void visit(LessThan lessThan) {
-      try {
-         lessThan.getLeft().accept(this);
-         lessThan.getRight().accept(this);
 
-         Number left, right;
+      lessThan.getLeft().accept(this);
+      lessThan.getRight().accept(this);
 
-         right = (Number) operands.pop();
-         left = (Number) operands.pop();
+      Number left, right;
 
-         Boolean res = new Boolean((Integer) left < (Integer) right);
+      right = (Number) operands.pop();
+      left = (Number) operands.pop();
 
-         operands.push(res);
+      Boolean res = new Boolean((Integer) left < (Integer) right);
 
-         logger.info("Less than added " + res + " To te stack");
-      } catch (Exception err) {
+      operands.push(res);
 
-      }
+      logger.info("Less than added " + res + " To te stack");
 
    }
 
    public void visit(And and) {
-      try {
-         and.getLeft().accept(this);
-         and.getRight().accept(this);
 
-         Object left, right;
+      and.getLeft().accept(this);
+      and.getRight().accept(this);
 
-         right = operands.pop();
-         left = operands.pop();
+      Object left, right;
 
-         if (right instanceof Number) {
-            right = new Integer(right.toString()) != 0;
-         }
+      right = operands.pop();
+      left = operands.pop();
 
-         if (left instanceof Number) {
-            left = new Integer(left.toString()) != 0;
-         }
-
-         operands.push(new Boolean((Boolean) left && (Boolean) right));
-
-      } catch (Exception err) {
-         throw new CustomRuntimeException(err.getMessage(), and);
+      if (right instanceof Number) {
+         right = new Integer(right.toString()) != 0;
       }
+
+      if (left instanceof Number) {
+         left = new Integer(left.toString()) != 0;
+      }
+
+      operands.push(new Boolean((Boolean) left && (Boolean) right));
 
    }
 
@@ -548,15 +545,17 @@ public class InterpretVisitor implements Visitor {
       try {
          LValue leftSideId = attributeAccess.getLeftValue();
 
-         if (this.env.peek().containsKey(leftSideId.getId())) {
-            HashMap<String, Object> var = (HashMap<String, Object>) this.env.peek().get(leftSideId.getId());
+         HashMap<String, Object> var;
 
-            Object idValue = var.get(attributeAccess.getAcessId().getId());
-            operands.push(idValue);
+         if (leftSideId instanceof ArrayPositionAccess) {
+            leftSideId.accept(this);
 
-         } else {
-            throw new CustomRuntimeException("Var " + leftSideId.getId() + " not  declared", leftSideId);
-         }
+            var = (HashMap<String, Object>) operands.pop();
+         } else
+            var = (HashMap<String, Object>) this.env.peek().get(leftSideId.getId());
+
+         Object idValue = var.get(attributeAccess.getAcessId().getId());
+         operands.push(idValue);
 
       } catch (Exception err) {
          throw new CustomRuntimeException(err.getMessage(), attributeAccess);
@@ -575,6 +574,17 @@ public class InterpretVisitor implements Visitor {
    }
 
    public void visit(ArrayPositionAccess arrayPositionAccess) {
+      arrayPositionAccess.getPositionExpr().accept(this);
+      Number index = (Number) this.operands.pop();
+
+      Object[] value = (Object[]) this.env.peek().get(arrayPositionAccess.getId());
+
+      if (index.intValue() > value.length) {
+         throw new CustomRuntimeException("Index out of bonds for var : " + arrayPositionAccess.getLeftValue().getId(),
+               arrayPositionAccess);
+      } else {
+         this.operands.push(value[index.intValue()]);
+      }
 
    }
 
@@ -612,10 +622,19 @@ public class InterpretVisitor implements Visitor {
 
       Number arraySize = (Number) operands.pop();
 
-      if (Util.isBasicDataType(newArray.getTypeName())) {
-         Object[] array = new Object[arraySize.intValue()];
+      if (newArray.getType() instanceof TypeCustom) {
+         HashMap<String, Object>[] objArray = new HashMap[arraySize.intValue()];
 
+         for (int i = 0; i < arraySize.intValue(); i++) {
+            objArray[i] = new HashMap<String, Object>();
+         }
+
+         operands.push(objArray);
+      } else {
+
+         Object[] array = new Object[arraySize.intValue()];
          operands.push(array);
       }
+
    }
 }

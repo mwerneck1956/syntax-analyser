@@ -31,7 +31,7 @@ public class App {
 
         if (args[0].equals("-byt")) {
             System.out.println("Executando bateria de testes semânticos:");
-            new TestParser(semanticalParser, "semantica/errado");
+            new TestParser(semanticalParser, "semantica/certo");
             return;
         } else {
             CharStream stream = CharStreams.fromFileName(args[0]);
@@ -49,15 +49,12 @@ public class App {
                 ast.accept(typeCheckVisitor);
 
                 if (typeCheckVisitor.getErrors().size() == 0) {
-                    // InterpretVisitor visitor = new InterpretVisitor();
-                    // ast.accept(visitor);
+                    InterpretVisitor visitor = new InterpretVisitor();
+                    ast.accept(visitor);
                 } else {
                     typeCheckVisitor.printErrors();
-                    throw new Exception("The program has semantical errors");
                 }
 
-                // InterpretVisitor visitor = new InterpretVisitor();
-                // ast.accept(visitor);
             }
         }
 
