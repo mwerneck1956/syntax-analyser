@@ -132,14 +132,17 @@ public class TypeCheckVisitor implements Visitor {
          Data data = prog.getDataList().get(dataName);
 
          STyData newData = new STyData(dataName);
+
          for (Declaration decl : data.getDeclarations()) {
             decl.getType().accept(this);
 
             SType type = paramStack.pop();
+
             newData.add(decl.getIdName(), type);
          }
 
          this.datas.put(dataName, newData);
+
       }
 
       for (Function f : this.functions.values()) {
@@ -149,9 +152,10 @@ public class TypeCheckVisitor implements Visitor {
       }
 
       if (main == null)
-         this.addErrorMessage(main, "The program doesnt have a main function");
+         this.errors.add("The program doesnt have a main function");
+      else
+         main.accept(this);
 
-      main.accept(this);
    }
 
    public void visit(Add add) {
@@ -299,11 +303,19 @@ public class TypeCheckVisitor implements Visitor {
             if (data.getVars().containsKey(rightSideId)) {
                attr.getExp().accept(this);
                SType val = typeStack.pop();
+               SType expectedType = data.getVars().get(rightSideId);
 
-               if (!(leftSideId instanceof ArrayPositionAccess)) {
-                  var.add(access.getAcessId().getName(), val);
-                  env.peek().put(id.getId(), val);
+               if (val.match(data.getVars().get(rightSideId))) {
+
+                  if (!(leftSideId instanceof ArrayPositionAccess)) {
+                     var.add(access.getAcessId().getName(), val);
+                     env.peek().put(id.getId(), val);
+                  }
+               } else {
+                  addErrorMessage(id,
+                        TypeCheckUtils.createVariableRedeclarationMessage(expectedType, val, rightSideId));
                }
+
             } else {
                addErrorMessage(leftSideId,
                      TypeCheckUtils.createObjectInvalidAttributeMessage(rightSideId, leftSideId.getId()));
@@ -355,6 +367,12 @@ public class TypeCheckVisitor implements Visitor {
       boolean isMainFunction = function.getName().equals("main");
 
       if (isMainFunction) {
+
+         if (function.getParamlist().size() > 0) {
+            addErrorMessage(function, "Main function received " + function.getParamlist().size()
+                  + " params, the main function must not have params");
+         }
+
          function.getBody().accept(this);
       } else {
          HashMap<String, SType> localEnv = new HashMap<String, SType>();
@@ -401,7 +419,11 @@ public class TypeCheckVisitor implements Visitor {
 
             func.accept(this);
 
-            if (functionCall.getReturnsId().size() > 0 && returnMode) {
+            if (functionCall.getReturnsId().size() > 0 && func.getReturns().size() == 0) {
+               addErrorMessage(func, "Function " + func.getName() + " doesnt return any value");
+            }
+
+            else if (functionCall.getReturnsId().size() > 0 && returnMode) {
 
                for (LValue returnId : functionCall.getReturnsId()) {
                   String returnVariableName = returnId.getId();

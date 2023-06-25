@@ -4,7 +4,7 @@ data Ponto {
 }
 
 main(){
-    x = new Ponto;
-    x.x = 1;
+   x = new Ponto;
+   x.x = 1;
    print x.x;
 }
