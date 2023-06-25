@@ -758,6 +758,8 @@ public class TypeCheckVisitor implements Visitor {
          else {
             addErrorMessage(func, "Function " + functionCall.getFunctionName() + " expected "
                   + func.getParamlist().size() + " params");
+
+            typeStack.push(typeErr);
          }
 
       } else {
