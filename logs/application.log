@@ -1,30 +1,19 @@
-2023-06-25 22:14:49,611 [com.compiler.App.main()] INFO  InterpretVisitor:290 - Executing main function
-2023-06-25 22:14:49,613 [com.compiler.App.main()] INFO  InterpretVisitor:293 - Executing fat function
-2023-06-25 22:14:49,613 [com.compiler.App.main()] INFO  InterpretVisitor:308 - Params in the stack : {n=6}
-2023-06-25 22:14:49,614 [com.compiler.App.main()] INFO  InterpretVisitor:369 - Visiting if
-2023-06-25 22:14:49,614 [com.compiler.App.main()] INFO  InterpretVisitor:351 - Visiting id : "n"
-2023-06-25 22:14:49,614 [com.compiler.App.main()] INFO  InterpretVisitor:357 - Adding value 6 to the operands
-2023-06-25 22:14:49,616 [com.compiler.App.main()] INFO  InterpretVisitor:181 - Testing if 0 == 6
-2023-06-25 22:14:49,617 [com.compiler.App.main()] INFO  InterpretVisitor:532 - Visiting a return
-2023-06-25 22:14:49,617 [com.compiler.App.main()] INFO  InterpretVisitor:261 - New attribution k = 5
-2023-06-25 22:14:49,617 [com.compiler.App.main()] INFO  InterpretVisitor:293 - Executing spook function
-2023-06-25 22:14:49,617 [com.compiler.App.main()] INFO  InterpretVisitor:308 - Params in the stack : {n=2}
-2023-06-25 22:14:49,617 [com.compiler.App.main()] INFO  InterpretVisitor:369 - Visiting if
-2023-06-25 22:14:49,617 [com.compiler.App.main()] INFO  InterpretVisitor:351 - Visiting id : "n"
-2023-06-25 22:14:49,617 [com.compiler.App.main()] INFO  InterpretVisitor:357 - Adding value 2 to the operands
-2023-06-25 22:14:49,617 [com.compiler.App.main()] INFO  InterpretVisitor:181 - Testing if 1 == 2
-2023-06-25 22:14:49,617 [com.compiler.App.main()] INFO  InterpretVisitor:369 - Visiting if
-2023-06-25 22:14:49,617 [com.compiler.App.main()] INFO  InterpretVisitor:351 - Visiting id : "n"
-2023-06-25 22:14:49,617 [com.compiler.App.main()] INFO  InterpretVisitor:357 - Adding value 2 to the operands
-2023-06-25 22:14:49,617 [com.compiler.App.main()] INFO  InterpretVisitor:181 - Testing if 2 == 2
-2023-06-25 22:14:49,618 [com.compiler.App.main()] INFO  InterpretVisitor:532 - Visiting a return
-2023-06-25 22:14:49,618 [com.compiler.App.main()] INFO  InterpretVisitor:61 - Visiting add with null + 1
-2023-06-25 22:14:49,618 [com.compiler.App.main()] INFO  InterpretVisitor:124 - Visiting mult
-2023-06-25 22:14:49,618 [com.compiler.App.main()] INFO  InterpretVisitor:351 - Visiting id : "n"
-2023-06-25 22:14:49,618 [com.compiler.App.main()] INFO  InterpretVisitor:357 - Adding value 2 to the operands
-2023-06-25 22:14:49,618 [com.compiler.App.main()] INFO  InterpretVisitor:77 - Add finished storing 5 to the operands
-2023-06-25 22:14:49,618 [com.compiler.App.main()] INFO  InterpretVisitor:261 - New attribution k = 5
-2023-06-25 22:14:49,618 [com.compiler.App.main()] INFO  InterpretVisitor:351 - Visiting id : "k"
-2023-06-25 22:14:49,618 [com.compiler.App.main()] INFO  InterpretVisitor:357 - Adding value 5 to the operands
-2023-06-25 22:14:49,618 [com.compiler.App.main()] INFO  InterpretVisitor:449 - Visiting print
-2023-06-25 22:14:49,619 [com.compiler.App.main()] INFO  InterpretVisitor:449 - Visiting print
+2023-06-25 22:57:57,892 [com.compiler.App.main()] INFO  InterpretVisitor:116 - Error ocurred at line  2 and column 9 : And left and right expression must have type bool
+2023-06-25 22:57:57,897 [com.compiler.App.main()] INFO  InterpretVisitor:116 - Error ocurred at line  2 and column 6 : Variable flaes not declared
+2023-06-25 22:57:57,907 [com.compiler.App.main()] INFO  InterpretVisitor:116 - Error ocurred at line  8 and column 4 : Cannot redeclare variable : x from Float to Int
+2023-06-25 22:57:57,910 [com.compiler.App.main()] INFO  InterpretVisitor:116 - Error ocurred at line  8 and column 4 : Object x dont have attribute z
+2023-06-25 22:57:57,913 [com.compiler.App.main()] INFO  InterpretVisitor:116 - Error ocurred at line  2 and column 11 : Type Ponto not declared
+2023-06-25 22:57:57,920 [com.compiler.App.main()] INFO  InterpretVisitor:116 - Error ocurred at line  2 and column 0 : Function f expected 1 params
+2023-06-25 22:57:57,923 [com.compiler.App.main()] INFO  InterpretVisitor:116 - Error ocurred at line  2 and column 0 : Function f doesnt return any value
+2023-06-25 22:57:57,930 [com.compiler.App.main()] INFO  InterpretVisitor:116 - Error ocurred at line  2 and column 0 : Cannot redeclare variable : z from Float to Int
+2023-06-25 22:57:57,938 [com.compiler.App.main()] INFO  InterpretVisitor:116 - Error ocurred at line  2 and column 5 : Variable x not declared
+2023-06-25 22:57:57,940 [com.compiler.App.main()] INFO  InterpretVisitor:116 - Error ocurred at line  4 and column 5 : Cannot redeclare variable : x from Bool to Int
+2023-06-25 22:57:57,943 [com.compiler.App.main()] INFO  InterpretVisitor:116 - Error ocurred at line  3 and column 4 :  If test expression must have type Bool and expr type is Int
+2023-06-25 22:57:57,947 [com.compiler.App.main()] INFO  InterpretVisitor:116 - Error ocurred at line  8 and column 19 : Variable l not declared
+2023-06-25 22:57:57,947 [com.compiler.App.main()] INFO  InterpretVisitor:116 - Error ocurred at line  10 and column 11 : Int cannot be instantiate with New
+2023-06-25 22:57:57,951 [com.compiler.App.main()] INFO  InterpretVisitor:116 - Error ocurred at line  8 and column 19 : Variable l not declared
+2023-06-25 22:57:57,951 [com.compiler.App.main()] INFO  InterpretVisitor:116 - Error ocurred at line  9 and column 4 : Cannot redeclare variable : z[] from Int[] to Ponto
+2023-06-25 22:57:57,953 [com.compiler.App.main()] INFO  InterpretVisitor:116 - Error ocurred at line  7 and column 0 : Main function received 2 params, the main function must not have params
+2023-06-25 22:57:57,959 [com.compiler.App.main()] INFO  InterpretVisitor:116 - Error ocurred at line  2 and column 0 : Function f expected 1 params
+2023-06-25 22:57:57,961 [com.compiler.App.main()] INFO  InterpretVisitor:116 - Error ocurred at line  2 and column 0 : Function f expected 1 params
+2023-06-25 22:57:57,968 [com.compiler.App.main()] INFO  InterpretVisitor:116 - Error ocurred at line  14 and column 0 : Function spook expected 1 params

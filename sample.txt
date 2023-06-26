@@ -13,19 +13,16 @@ data Ponto{
 main(){
    k = 5;
    p = new Ponto [6];
-   i = 5;
-   iterate(i > 0){
-      p[i] = new Ponto;
+   i = 0;
+   p[0].x = 10;
+   p[1].x = 10;
+   p[1].y = 20;
+   p[0].y = 20;
 
-      print p[i].x;
 
-      p[i].x = 12+i;
-      p[i].y = 12-i;
-      i = i - 1;
-
-      print i;
-      print '\n';
-   }
+   print p[0].x;
+   print '\n';
+   print p[1].y;
    print '\n';
 }
 

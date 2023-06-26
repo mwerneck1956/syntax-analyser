@@ -233,7 +233,6 @@ public class InterpretVisitor implements Visitor {
       else if (id instanceof AttributeAccess) {
 
          AttributeAccess access = (AttributeAccess) id;
-
          LValue leftSideId = access.getLeftValue();
 
          HashMap<String, Object> var;
@@ -242,6 +241,7 @@ public class InterpretVisitor implements Visitor {
             leftSideId.accept(this);
 
             var = (HashMap<String, Object>) this.operands.pop();
+
          } else
             var = (HashMap<String, Object>) this.env.peek().get(leftSideId.getId());
 
@@ -249,7 +249,8 @@ public class InterpretVisitor implements Visitor {
          Object val = operands.pop();
 
          var.put(access.getAcessId().getName(), val);
-         env.peek().put(id.getId(), val);
+
+         env.peek().put(id.getId(), var);
 
       } else {
 
@@ -566,6 +567,7 @@ public class InterpretVisitor implements Visitor {
 
          if (leftSideId instanceof ArrayPositionAccess) {
             leftSideId.accept(this);
+
             var = (HashMap<String, Object>) operands.pop();
 
          } else
