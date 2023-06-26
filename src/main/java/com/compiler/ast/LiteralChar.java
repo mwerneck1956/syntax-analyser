@@ -10,8 +10,26 @@ import com.compiler.visitors.Visitor;
 public class LiteralChar extends Expr {
     private String value;
 
-    public String getValue() {
-        return value;
+    public char getValue() {
+        if (this.value.length() == 3)
+            return value.charAt(1);
+
+        if (value.charAt(1) == '\\') {
+            char returnVal = ' ';
+
+            switch (value.charAt(2)) {
+                case 'n':
+                    returnVal = '\n';
+                    break;
+                case 't':
+                    returnVal = '\t';
+                    break;
+            }
+
+            return returnVal;
+        }
+
+        return value.charAt(1);
     }
 
     public LiteralChar(int line, int col, String value) {

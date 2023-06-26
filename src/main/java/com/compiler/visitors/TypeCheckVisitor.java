@@ -609,18 +609,18 @@ public class TypeCheckVisitor implements Visitor {
    }
 
    public void visit(GreatherThan greatherThan) {
-
       greatherThan.getLeft().accept(this);
       greatherThan.getRight().accept(this);
 
-      Number left, right;
+      SType left, right;
 
-      right = (Number) operands.pop();
-      left = (Number) operands.pop();
+      right = typeStack.pop();
+      left = typeStack.pop();
 
-      Boolean res = new Boolean((Integer) left > (Integer) right);
-
-      operands.push(res);
+      if (TypeCheckUtils.isInstanceOfNumber(left) && TypeCheckUtils.isInstanceOfNumber(right))
+         typeStack.push(typeBool);
+      else
+         typeStack.push(typeErr);
 
    }
 

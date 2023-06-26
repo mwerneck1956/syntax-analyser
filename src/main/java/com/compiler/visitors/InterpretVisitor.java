@@ -377,16 +377,26 @@ public class InterpretVisitor implements Visitor {
 
       iterate.getCondition().accept(this);
 
-      while ((Boolean) operands.pop()) {
+      while (checkWhileCondition()) {
          iterate.getBody().accept(this);
          iterate.getCondition().accept(this);
       }
 
    }
 
+   public boolean checkWhileCondition() {
+      Object value = operands.pop();
+
+      if (value instanceof Boolean)
+         return (Boolean) value;
+      else {
+         return ((Number) value).intValue() > 0;
+      }
+   }
+
    @Override
    public void visit(LiteralChar literal) {
-      this.operands.push(new String(literal.getValue()));
+      this.operands.push(literal.getValue());
 
    }
 
@@ -417,7 +427,7 @@ public class InterpretVisitor implements Visitor {
 
       logger.info("Visiting print");
 
-      System.out.println(operands.pop());
+      System.out.print(operands.pop().toString());
    }
 
    public void visit(Read read) {
@@ -615,8 +625,6 @@ public class InterpretVisitor implements Visitor {
 
             Number returnedIndex = (Number) operands.pop();
 
-            System.out.println("Return index " + returnedIndex);
-
             if (returnedIndex.intValue() > func.getReturns().size())
                throw new CustomRuntimeException(
                      "Index : " + returnedIndex.intValue() + " out of bonds for function return : "
@@ -624,6 +632,8 @@ public class InterpretVisitor implements Visitor {
                      functionCall);
 
             Object value = null;
+
+            System.out.println("Operands" + operands);
 
             for (int i = 0; i < func.getReturns().size(); i++) {
                if (i == returnedIndex.intValue())
@@ -637,11 +647,6 @@ public class InterpretVisitor implements Visitor {
          }
       }
    }
-
-   // private void clearOperandsStack() {
-   // while (!operands.empty())
-   // operands.pop();
-   // }
 
    public void visit(NewArray newArray) {
 
