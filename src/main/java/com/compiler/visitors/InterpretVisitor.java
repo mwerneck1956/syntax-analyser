@@ -79,8 +79,8 @@ public class InterpretVisitor implements Visitor {
 
          Number left, right, res;
 
-         left = (Number) operands.pop();
          right = (Number) operands.pop();
+         left = (Number) operands.pop();
 
          if (left instanceof Float || right instanceof Float)
             res = left.floatValue() - right.floatValue();
@@ -377,9 +377,23 @@ public class InterpretVisitor implements Visitor {
 
       iterate.getCondition().accept(this);
 
-      while (checkWhileCondition()) {
-         iterate.getBody().accept(this);
-         iterate.getCondition().accept(this);
+      Object conditionValue = operands.pop();
+
+      if (conditionValue instanceof Boolean) {
+         while ((Boolean) conditionValue) {
+            iterate.getBody().accept(this);
+            iterate.getCondition().accept(this);
+            conditionValue = operands.pop();
+         }
+      } else if (conditionValue instanceof Integer) {
+         Integer iterations = (Integer) conditionValue;
+         int i = 0;
+
+         while (i < iterations) {
+            iterate.getBody().accept(this);
+            i++;
+         }
+
       }
 
    }

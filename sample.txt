@@ -1,4 +1,21 @@
+
+--Saída esperada:
+
+--*****
+--****
+--***
+--**
+--*
+---- The marvelous env Debugger ------ 
+--nlines  :  5
+--i  :  0
+
 main(){
-   j = 10;
-   print j;
+   nlines = 5;
+   i = nlines;
+   iterate(i > 0){
+     iterate(i){ print '*';}
+     i = i - 1;
+     print '\n';
+   }
 }

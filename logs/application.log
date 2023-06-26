@@ -1,5 +1,0 @@
-2023-06-25 21:10:47,529 [com.compiler.App.main()] INFO  InterpretVisitor:283 - Executing main function
-2023-06-25 21:10:47,532 [com.compiler.App.main()] INFO  InterpretVisitor:254 - New attribution j = 10
-2023-06-25 21:10:47,532 [com.compiler.App.main()] INFO  InterpretVisitor:344 - Visiting id : "j"
-2023-06-25 21:10:47,532 [com.compiler.App.main()] INFO  InterpretVisitor:350 - Adding value 10 to the operands
-2023-06-25 21:10:47,532 [com.compiler.App.main()] INFO  InterpretVisitor:428 - Visiting print
