@@ -126,13 +126,20 @@ public class TypeCheckVisitor implements Visitor {
 
       Node main = null;
 
-      this.functions = prog.getFunctions();
+      for (Function f : prog.getFunctions()) {
 
-      for (String dataName : prog.getDataList().keySet()) {
-         Data data = prog.getDataList().get(dataName);
+         if (f.getName().equals("main"))
+            main = f;
 
-         STyData newData = new STyData(dataName);
+         if (!this.functions.containsKey(f.getName())) {
+            this.functions.put(f.getName(), f);
+         } else {
+            addErrorMessage(f, "Redlecaration of function " + f.getName() + " Not permited");
+         }
+      }
 
+      for (Data data : prog.getDataList()) {
+         STyData newData = new STyData(data.getIdName());
          for (Declaration decl : data.getDeclarations()) {
             decl.getType().accept(this);
 
@@ -141,14 +148,12 @@ public class TypeCheckVisitor implements Visitor {
             newData.add(decl.getIdName(), type);
          }
 
-         this.datas.put(dataName, newData);
+         if (!this.datas.containsKey(data.getIdName())) {
+            this.datas.put(data.getIdName(), newData);
+         } else {
+            this.errors.add("Redlecaration of data " + data.getIdName() + " Not permited");
+         }
 
-      }
-
-      for (Function f : this.functions.values()) {
-
-         if (f.getName().equals("main"))
-            main = f;
       }
 
       if (main == null)
@@ -492,7 +497,7 @@ public class TypeCheckVisitor implements Visitor {
 
       SType returnType = typeStack.pop();
 
-      if (returnType.match(typeBool) || TypeCheckUtils.isInstanceOfNumber(returnType)) {
+      if (returnType.match(typeBool)) {
          ifExpr.getThen().accept(this);
 
          if (ifExpr.getOnElse() != null)

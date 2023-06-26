@@ -6,21 +6,21 @@
 package com.compiler.ast;
 
 import java.util.HashMap;
-
+import java.util.ArrayList;
 import com.compiler.visitors.Visitable;
 import com.compiler.visitors.Visitor;
 
 public class Prog implements Visitable {
-   private HashMap<String, Data> dataList;
-   private HashMap<String, Function> functions;
+   private ArrayList<Data> dataList;
+   private ArrayList<Function> functions;
 
-   public Prog(HashMap<String, Data> dataList, HashMap<String, Function> functions) {
+   public Prog(ArrayList<Data> dataList, ArrayList<Function> functions) {
       this.dataList = dataList;
       this.functions = functions;
    }
 
    public void printDataList() {
-      for (Data value : dataList.values()) {
+      for (Data value : dataList) {
          value.printDataList();
       }
 
@@ -32,11 +32,11 @@ public class Prog implements Visitable {
       visitor.visit(this);
    }
 
-   public HashMap<String, Function> getFunctions() {
+   public ArrayList<Function> getFunctions() {
       return functions;
    }
 
-   public HashMap<String, Data> getDataList() {
+   public ArrayList<Data> getDataList() {
       return dataList;
    }
 

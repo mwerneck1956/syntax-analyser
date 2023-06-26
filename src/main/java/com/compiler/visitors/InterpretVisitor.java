@@ -14,6 +14,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.compiler.ast.*;
+import com.compiler.typeCheckUtils.STyData;
+import com.compiler.typeCheckUtils.SType;
 import com.compiler.util.Util;
 
 public class InterpretVisitor implements Visitor {
@@ -38,13 +40,17 @@ public class InterpretVisitor implements Visitor {
    public void visit(Prog prog) {
       Node main = null;
 
-      this.functions = prog.getFunctions();
-      this.datas = prog.getDataList();
-
-      for (Function f : this.functions.values()) {
+      for (Function f : prog.getFunctions()) {
 
          if (f.getName().equals("main"))
             main = f;
+
+         this.functions.put(f.getName(), f);
+
+      }
+
+      for (Data data : prog.getDataList()) {
+         this.datas.put(data.getIdName(), data);
       }
 
       main.accept(this);
@@ -207,24 +213,25 @@ public class InterpretVisitor implements Visitor {
       LValue id = attr.getID();
 
       if (id instanceof ArrayPositionAccess) {
+
          ArrayPositionAccess newArray = (ArrayPositionAccess) id;
 
          newArray.getPositionExpr().accept(this);
-
          Number index = (Number) operands.pop();
 
          attr.getExp().accept(this);
 
          Object value = this.operands.pop();
+
          Object[] array = (Object[]) this.env.peek().get(id.getId());
 
          array[index.intValue()] = value;
 
          this.env.peek().put(id.getId(), array);
-
       }
 
       else if (id instanceof AttributeAccess) {
+
          AttributeAccess access = (AttributeAccess) id;
 
          LValue leftSideId = access.getLeftValue();
@@ -441,7 +448,7 @@ public class InterpretVisitor implements Visitor {
 
       logger.info("Visiting print");
 
-      System.out.print(operands.pop().toString());
+      System.out.print(operands.pop());
    }
 
    public void visit(Read read) {
@@ -559,8 +566,8 @@ public class InterpretVisitor implements Visitor {
 
          if (leftSideId instanceof ArrayPositionAccess) {
             leftSideId.accept(this);
-
             var = (HashMap<String, Object>) operands.pop();
+
          } else
             var = (HashMap<String, Object>) this.env.peek().get(leftSideId.getId());
 
@@ -646,8 +653,6 @@ public class InterpretVisitor implements Visitor {
                      functionCall);
 
             Object value = null;
-
-            System.out.println("Operands" + operands);
 
             for (int i = 0; i < func.getReturns().size(); i++) {
                if (i == returnedIndex.intValue())

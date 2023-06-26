@@ -1,0 +1,30 @@
+2023-06-25 22:14:49,611 [com.compiler.App.main()] INFO  InterpretVisitor:290 - Executing main function
+2023-06-25 22:14:49,613 [com.compiler.App.main()] INFO  InterpretVisitor:293 - Executing fat function
+2023-06-25 22:14:49,613 [com.compiler.App.main()] INFO  InterpretVisitor:308 - Params in the stack : {n=6}
+2023-06-25 22:14:49,614 [com.compiler.App.main()] INFO  InterpretVisitor:369 - Visiting if
+2023-06-25 22:14:49,614 [com.compiler.App.main()] INFO  InterpretVisitor:351 - Visiting id : "n"
+2023-06-25 22:14:49,614 [com.compiler.App.main()] INFO  InterpretVisitor:357 - Adding value 6 to the operands
+2023-06-25 22:14:49,616 [com.compiler.App.main()] INFO  InterpretVisitor:181 - Testing if 0 == 6
+2023-06-25 22:14:49,617 [com.compiler.App.main()] INFO  InterpretVisitor:532 - Visiting a return
+2023-06-25 22:14:49,617 [com.compiler.App.main()] INFO  InterpretVisitor:261 - New attribution k = 5
+2023-06-25 22:14:49,617 [com.compiler.App.main()] INFO  InterpretVisitor:293 - Executing spook function
+2023-06-25 22:14:49,617 [com.compiler.App.main()] INFO  InterpretVisitor:308 - Params in the stack : {n=2}
+2023-06-25 22:14:49,617 [com.compiler.App.main()] INFO  InterpretVisitor:369 - Visiting if
+2023-06-25 22:14:49,617 [com.compiler.App.main()] INFO  InterpretVisitor:351 - Visiting id : "n"
+2023-06-25 22:14:49,617 [com.compiler.App.main()] INFO  InterpretVisitor:357 - Adding value 2 to the operands
+2023-06-25 22:14:49,617 [com.compiler.App.main()] INFO  InterpretVisitor:181 - Testing if 1 == 2
+2023-06-25 22:14:49,617 [com.compiler.App.main()] INFO  InterpretVisitor:369 - Visiting if
+2023-06-25 22:14:49,617 [com.compiler.App.main()] INFO  InterpretVisitor:351 - Visiting id : "n"
+2023-06-25 22:14:49,617 [com.compiler.App.main()] INFO  InterpretVisitor:357 - Adding value 2 to the operands
+2023-06-25 22:14:49,617 [com.compiler.App.main()] INFO  InterpretVisitor:181 - Testing if 2 == 2
+2023-06-25 22:14:49,618 [com.compiler.App.main()] INFO  InterpretVisitor:532 - Visiting a return
+2023-06-25 22:14:49,618 [com.compiler.App.main()] INFO  InterpretVisitor:61 - Visiting add with null + 1
+2023-06-25 22:14:49,618 [com.compiler.App.main()] INFO  InterpretVisitor:124 - Visiting mult
+2023-06-25 22:14:49,618 [com.compiler.App.main()] INFO  InterpretVisitor:351 - Visiting id : "n"
+2023-06-25 22:14:49,618 [com.compiler.App.main()] INFO  InterpretVisitor:357 - Adding value 2 to the operands
+2023-06-25 22:14:49,618 [com.compiler.App.main()] INFO  InterpretVisitor:77 - Add finished storing 5 to the operands
+2023-06-25 22:14:49,618 [com.compiler.App.main()] INFO  InterpretVisitor:261 - New attribution k = 5
+2023-06-25 22:14:49,618 [com.compiler.App.main()] INFO  InterpretVisitor:351 - Visiting id : "k"
+2023-06-25 22:14:49,618 [com.compiler.App.main()] INFO  InterpretVisitor:357 - Adding value 5 to the operands
+2023-06-25 22:14:49,618 [com.compiler.App.main()] INFO  InterpretVisitor:449 - Visiting print
+2023-06-25 22:14:49,619 [com.compiler.App.main()] INFO  InterpretVisitor:449 - Visiting print

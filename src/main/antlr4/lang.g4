@@ -14,6 +14,7 @@ grammar lang;
 	package com.compiler.grammar;
 	import com.compiler.ast.*;
 	import java.util.HashMap;
+	import java.util.ArrayList;
  }
 
 @lexer::header { package com.compiler.grammar; }
@@ -21,16 +22,16 @@ grammar lang;
 prog
 	returns[Prog ast]:
 	dataList functions { 
-		$ast = new Prog($dataList.dataListInstance, $functions.functionsMap);		
+		$ast = new Prog($dataList.dataListInstance, $functions.functionsList);		
 	};
 
 dataList
-	returns[HashMap<String,Data> dataListInstance]:
+	returns[ArrayList<Data> dataListInstance]:
 	{ 
-		$dataListInstance = new HashMap<String,Data>();
+		$dataListInstance = new ArrayList<Data>();
  	} (
 		d = data { 
-		$dataListInstance.put($d.dataObj.getIdName() , $d.dataObj);
+		$dataListInstance.add($d.dataObj);
 		}
 	)*;
 
@@ -58,10 +59,10 @@ decl
 };
 
 functions
-	returns[HashMap<String,Function> functionsMap]:
-	{ $functionsMap = new HashMap<String,Function>(); } (
+	returns[ArrayList<Function> functionsList]:
+	{ $functionsList = new ArrayList<Function>(); } (
 		func { 
-			$functionsMap.put($func.f.getName() , $func.f);
+			$functionsList.add($func.f);
 		}
 	)*;
 

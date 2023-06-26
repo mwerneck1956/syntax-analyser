@@ -8,6 +8,7 @@
 	package com.compiler.grammar;
 	import com.compiler.ast.*;
 	import java.util.HashMap;
+	import java.util.ArrayList;
  
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
@@ -149,7 +150,7 @@ public class langParser extends Parser {
 			setState(41);
 			((ProgContext)_localctx).functions = functions();
 			 
-					((ProgContext)_localctx).ast =  new Prog(((ProgContext)_localctx).dataList.dataListInstance, ((ProgContext)_localctx).functions.functionsMap);		
+					((ProgContext)_localctx).ast =  new Prog(((ProgContext)_localctx).dataList.dataListInstance, ((ProgContext)_localctx).functions.functionsList);		
 				
 			}
 		}
@@ -165,7 +166,7 @@ public class langParser extends Parser {
 	}
 
 	public static class DataListContext extends ParserRuleContext {
-		public HashMap<String,Data> dataListInstance;
+		public ArrayList<Data> dataListInstance;
 		public DataContext d;
 		public List<DataContext> data() {
 			return getRuleContexts(DataContext.class);
@@ -187,7 +188,7 @@ public class langParser extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 			 
-					((DataListContext)_localctx).dataListInstance =  new HashMap<String,Data>();
+					((DataListContext)_localctx).dataListInstance =  new ArrayList<Data>();
 			 	
 			setState(50);
 			_errHandler.sync(this);
@@ -198,7 +199,7 @@ public class langParser extends Parser {
 				setState(45);
 				((DataListContext)_localctx).d = data();
 				 
-						_localctx.dataListInstance.put(((DataListContext)_localctx).d.dataObj.getIdName() , ((DataListContext)_localctx).d.dataObj);
+						_localctx.dataListInstance.add(((DataListContext)_localctx).d.dataObj);
 						
 				}
 				}
@@ -371,7 +372,7 @@ public class langParser extends Parser {
 	}
 
 	public static class FunctionsContext extends ParserRuleContext {
-		public HashMap<String,Function> functionsMap;
+		public ArrayList<Function> functionsList;
 		public FuncContext func;
 		public List<FuncContext> func() {
 			return getRuleContexts(FuncContext.class);
@@ -392,7 +393,7 @@ public class langParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			 ((FunctionsContext)_localctx).functionsMap =  new HashMap<String,Function>(); 
+			 ((FunctionsContext)_localctx).functionsList =  new ArrayList<Function>(); 
 			setState(81);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
@@ -402,7 +403,7 @@ public class langParser extends Parser {
 				setState(76);
 				((FunctionsContext)_localctx).func = func();
 				 
-							_localctx.functionsMap.put(((FunctionsContext)_localctx).func.f.getName() , ((FunctionsContext)_localctx).func.f);
+							_localctx.functionsList.add(((FunctionsContext)_localctx).func.f);
 						
 				}
 				}

@@ -1,21 +1,31 @@
+-- Saída esperada
 
---Saída esperada:
-
---*****
---****
---***
---**
---*
 ---- The marvelous env Debugger ------ 
---nlines  :  5
---i  :  0
+--p  :  [{x=12, y=12}, {x=13, y=11}, {x=14, y=10}, {x=15, y=9}, {x=16, y=8}]
+--i  :  5
+--k  :  5
+
+data Ponto{
+   x :: Int;
+   y :: Int;
+}
 
 main(){
-   nlines = 5;
-   i = nlines;
+   k = 5;
+   p = new Ponto [6];
+   i = 5;
    iterate(i > 0){
-     iterate(i){ print '*';}
-     i = i - 1;
-     print '\n';
+      p[i] = new Ponto;
+
+      print p[i].x;
+
+      p[i].x = 12+i;
+      p[i].y = 12-i;
+      i = i - 1;
+
+      print i;
+      print '\n';
    }
+   print '\n';
 }
+
