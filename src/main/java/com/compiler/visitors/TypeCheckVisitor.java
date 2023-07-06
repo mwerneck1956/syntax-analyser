@@ -896,4 +896,8 @@ public class TypeCheckVisitor implements Visitor {
 
    }
 
+   public void visit(Declaration declaration) {
+
+   }
+
 }

@@ -96,4 +96,6 @@ public interface Visitor {
 
     public abstract void visit(TypeArray typeArray);
 
+    public abstract void visit(Declaration declaration);
+
 }

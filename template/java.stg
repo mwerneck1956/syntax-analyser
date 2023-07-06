@@ -12,7 +12,6 @@ public class <name> {
     <funcs; separator="\n\n">
   
     public static void main(String args[]) {
-        inicio();
     }
 }
 >>
@@ -25,14 +24,19 @@ public static void <name>(<params; separator=", ">) {
 >>
 
 data(id,decl) ::= <<
-class <id> {
+public class <id> {
     <decl; separator=";\n">;
 }
 >>
 
+
+class_attribute(name, type) ::= <<
+   public <type> <name> 
+>>
+
 public_decl(decl) ::= <<
  public <decl>
- >>
+>>
 
 param(type, name) ::= "<type> <name>"
 
@@ -104,7 +108,7 @@ _ret.get(<index>)
 mul_expr(left_expr, right_expr) ::= "(<left_expr> * <right_expr>)"
 div_expr(left_expr, right_expr) ::= "(<left_expr> / <right_expr>)"
 mod_expr(left_expr, right_expr) ::= "(<left_expr> % <right_expr>)"
-add_expr(left_expr, right_expr) ::= "(<left_expr> + <right_expr>)"
+addExpression(left_expr, right_expr) ::= "(<left_expr> + <right_expr>)"
 sub_expr(left_expr, right_expr) ::= "(<left_expr> - <right_expr>)"
 
 

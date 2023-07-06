@@ -7,7 +7,10 @@ package com.compiler.ast;
 
 import java.util.HashMap;
 
-public class Declaration {
+import com.compiler.visitors.Visitor;
+import com.compiler.visitors.Visitable;
+
+public class Declaration implements Visitable {
    private ID id;
    private Type type;
 
@@ -35,6 +38,10 @@ public class Declaration {
    @Override
    public String toString() {
       return id + " :: " + type.toString();
+   }
+
+   public void accept(Visitor visitor) {
+      visitor.visit(this);
    }
 
 }
