@@ -1,0 +1,116 @@
+group java;
+
+program(name, funcs, data, itr_count) ::= <<
+import java.util.ArrayList;
+import java.util.Scanner;
+
+<data; separator=";\n">
+
+public class <name> {
+    static Scanner scanner = new Scanner(System.in);
+    static ArrayList\<Object> _ret = new ArrayList\<Object>();
+    <funcs; separator="\n\n">
+  
+    public static void main(String args[]) {
+        inicio();
+    }
+}
+>>
+
+func(returns, name, params, decl, stmt) ::= <<
+public static void <name>(<params; separator=", ">) {
+    <if(decl)><decl; separator=";\n">;<endif>
+    <if(stmt)><stmt; separator=";\n">;<endif>
+}
+>>
+
+data(id,decl) ::= <<
+class <id> {
+    <decl; separator=";\n">;
+}
+>>
+
+public_decl(decl) ::= <<
+ public <decl>
+ >>
+
+param(type, name) ::= "<type> <name>"
+
+returnList (exprList) ::= <<
+_ret.clear();
+<exprList; separator=";\n">
+>>
+return(expr) ::= "_ret.add(<expr>)"
+
+array_type(type) ::= "<type>[]"
+int_type() ::= "int"
+float_type() ::= "float"
+boolean_type() ::= "boolean"
+char_type() ::= "char"
+data_type(id) ::= "<id>"
+null() ::= "null"
+
+print(expr) ::= "System.out.print(<expr>)"
+read(expr) ::= "<expr> = scanner.nextInt()"
+
+iterate(expr, stmt, count) ::= <<
+_aux[<count>] = <expr>;
+for(_i[<count>]=0; _i[<count>] \< _aux[<count>]; _i[<count>]++ ) {
+    <stmt_list(stmt)>;
+}
+>>
+plus() ::= "+"
+if(expr, thn, els) ::= <<
+if(<expr>) {
+    <thn>;
+} <if(els)>else {
+    <els>;
+}
+<endif>
+>>
+
+stmt_list(stmt) ::= <<
+    <stmt;  separator=";\n">
+>>
+
+
+attr(var, expr) ::= "<var> = <expr>"
+lvalue_id(name) ::= "<name>"
+lvalue_dot(name,attribute) ::= "<name>.<attribute>"
+lvalue(name, array) ::= "<name><array>"
+array_access(expr) ::= "[<expr>]"
+lvalue_array(name,expr) ::= "<name>[<expr>]"
+new(type, expr) ::= "new <data_type(type)><if(expr)>[<expr>]<else>()<endif>"
+
+boolean_expr(value) ::= "<value>"
+float_expr(value) ::= "<value>f"
+int_expr(value) ::= "<value>"
+char_expr(value) ::= "'<value>'"
+
+new_array(var, type, expr) ::= "<var> = new <type>[<expr>];"
+
+call(name, args, receives) ::= <<
+<name>(<args; separator=", ">)<if(receives)>;<endif>
+<if(receives)><receives; separator=";\n"><endif>
+>>
+
+call_receive(id, index, type) ::= "<id> = (<type>) _ret.get(<index>)"
+
+PexpFunc(name, args, index) ::= <<
+<name>(<args; separator=", ">);
+_ret.get(<index>)
+>>
+
+mul_expr(left_expr, right_expr) ::= "(<left_expr> * <right_expr>)"
+div_expr(left_expr, right_expr) ::= "(<left_expr> / <right_expr>)"
+mod_expr(left_expr, right_expr) ::= "(<left_expr> % <right_expr>)"
+add_expr(left_expr, right_expr) ::= "(<left_expr> + <right_expr>)"
+sub_expr(left_expr, right_expr) ::= "(<left_expr> - <right_expr>)"
+
+
+lt_expr(left_expr, right_expr) ::= "(<left_expr> \< <right_expr>)"
+equals_expr(left_expr, right_expr) ::= "(<left_expr> == <right_expr>)"
+notequals_expr(left_expr, right_expr) ::= "(<left_expr> != <right_expr>)"
+and_expr(left_expr, right_expr) ::= "(<left_expr> && <right_expr>)"
+not_expr(expr) ::= "!<expr>"
+minus_expr(expr) ::= "(-<expr>)"

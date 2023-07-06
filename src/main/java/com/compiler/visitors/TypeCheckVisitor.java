@@ -110,6 +110,10 @@ public class TypeCheckVisitor implements Visitor {
       return errors;
    }
 
+   public HashMap<String, STyData> getDatas() {
+      return datas;
+   }
+
    public void addErrorMessage(Node node, String message) {
       CustomRuntimeException error = new CustomRuntimeException(message, node);
       this.errors.add(error.getMessage());

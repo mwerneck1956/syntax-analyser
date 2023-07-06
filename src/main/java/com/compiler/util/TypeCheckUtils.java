@@ -5,9 +5,6 @@
 
 package com.compiler.util;
 
-import com.compiler.typeCheckUtils.STyBool;
-import com.compiler.typeCheckUtils.STyChar;
-import com.compiler.typeCheckUtils.STyErr;
 import com.compiler.typeCheckUtils.STyFloat;
 import com.compiler.typeCheckUtils.STyInt;
 import com.compiler.typeCheckUtils.SType;
