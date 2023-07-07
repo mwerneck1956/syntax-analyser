@@ -1,37 +1,34 @@
 group java;
 
-program(name, funcs, data, itr_count) ::= <<
+program(name, functions, data) ::= <<
 import java.util.ArrayList;
 import java.util.Scanner;
 
 <data; separator=";\n">
 
 public class <name> {
+    static ArrayList<Object> returnsList = new ArrayList<Object>();
     static Scanner scanner = new Scanner(System.in);
-    static ArrayList\<Object> _ret = new ArrayList\<Object>();
-    <funcs; separator="\n\n">
-  
-    public static void main(String args[]) {
-    }
+    <functions; separator="\n\n">
 }
 >>
 
-func(returns, name, params, decl, stmt) ::= <<
-public static void <name>(<params; separator=", ">) {
-    <if(decl)><decl; separator=";\n">;<endif>
-    <if(stmt)><stmt; separator=";\n">;<endif>
+function(returns, name, params, declarations, statements, returnType) ::= <<
+public static <returnType> <name>(<params; separator=", ">) {
+    <if(declarations)><declarations; separator=";\n">;<endif>
+    <if(statements)><statements; separator=";\n">;<endif>
 }
 >>
 
 data(id,decl) ::= <<
-public class <id> {
+class <id> {
     <decl; separator=";\n">;
 }
 >>
 
 
 class_attribute(name, type) ::= <<
-   public <type> <name> 
+ <type> <name> 
 >>
 
 public_decl(decl) ::= <<
@@ -40,18 +37,26 @@ public_decl(decl) ::= <<
 
 param(type, name) ::= "<type> <name>"
 
+
+
+
+simple_return(expr) ::= "return  <expr>"
+
 returnList (exprList) ::= <<
-_ret.clear();
+returnsList.clear();
 <exprList; separator=";\n">
 >>
-return(expr) ::= "_ret.add(<expr>)"
+return_array_add(value) ::= "returnsList.add(<value>) "
 
-array_type(type) ::= "<type>[]"
-int_type() ::= "int"
-float_type() ::= "float"
-boolean_type() ::= "boolean"
-char_type() ::= "char"
-data_type(id) ::= "<id>"
+
+
+
+type_array(type) ::= "<type>[]"
+type_int() ::= "int"
+type_float() ::= "float"
+type_bool() ::= "boolean"
+type_char() ::= "char"
+type_data(id) ::= "<id>"
 null() ::= "null"
 
 print(expr) ::= "System.out.print(<expr>)"
@@ -78,22 +83,31 @@ stmt_list(stmt) ::= <<
 >>
 
 
-attr(var, expr) ::= "<var> = <expr>"
+
+var(var) ::= "<var>"
+
+attribution(var, expr) ::= "<var> = <expr>"
+
+
 lvalue_id(name) ::= "<name>"
 lvalue_dot(name,attribute) ::= "<name>.<attribute>"
 lvalue(name, array) ::= "<name><array>"
 array_access(expr) ::= "[<expr>]"
 lvalue_array(name,expr) ::= "<name>[<expr>]"
-new(type, expr) ::= "new <data_type(type)><if(expr)>[<expr>]<else>()<endif>"
+new(type, expr) ::= "new <type_data(type)><if(expr)>[<expr>]<else>()<endif>"
 
 boolean_expr(value) ::= "<value>"
 float_expr(value) ::= "<value>f"
 int_expr(value) ::= "<value>"
 char_expr(value) ::= "'<value>'"
 
+void() ::= "void"
+
+
+
 new_array(var, type, expr) ::= "<var> = new <type>[<expr>];"
 
-call(name, args, receives) ::= <<
+function_call(name, args, receives) ::= <<
 <name>(<args; separator=", ">)<if(receives)>;<endif>
 <if(receives)><receives; separator=";\n"><endif>
 >>
@@ -105,11 +119,11 @@ PexpFunc(name, args, index) ::= <<
 _ret.get(<index>)
 >>
 
-mul_expr(left_expr, right_expr) ::= "(<left_expr> * <right_expr>)"
-div_expr(left_expr, right_expr) ::= "(<left_expr> / <right_expr>)"
-mod_expr(left_expr, right_expr) ::= "(<left_expr> % <right_expr>)"
-addExpression(left_expr, right_expr) ::= "(<left_expr> + <right_expr>)"
-sub_expr(left_expr, right_expr) ::= "(<left_expr> - <right_expr>)"
+mul_expression(left_expr, right_expr) ::= "(<left_expr> * <right_expr>)"
+div_expression(left_expr, right_expr) ::= "(<left_expr> / <right_expr>)"
+mod_expression(left_expr, right_expr) ::= "(<left_expr> % <right_expr>)"
+add_expression(left_expr, right_expr) ::= "<left_expr> + <right_expr>"
+sub_expression(left_expr, right_expr) ::= "(<left_expr> - <right_expr>)"
 
 
 lt_expr(left_expr, right_expr) ::= "(<left_expr> \< <right_expr>)"

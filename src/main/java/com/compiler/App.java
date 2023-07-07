@@ -51,7 +51,9 @@ public class App {
                     ast.accept(typeCheckVisitor);
 
                     if (typeCheckVisitor.getErrors().size() == 0) {
-                        JavaVisitor javaVisitor = new JavaVisitor("teste", typeCheckVisitor.getDatas());
+                        JavaVisitor javaVisitor = new JavaVisitor("teste", typeCheckVisitor.getDatas(),
+                                typeCheckVisitor.getFunctions(), typeCheckVisitor.getEnv(),
+                                typeCheckVisitor.getTypesEnvByFunction());
 
                         ast.accept(javaVisitor);
 

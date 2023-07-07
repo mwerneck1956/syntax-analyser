@@ -9,6 +9,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Stack;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -27,27 +28,36 @@ import com.compiler.typeCheckUtils.SType;
 
 public class JavaVisitor implements Visitor {
 
-   private static final Logger logger = LogManager.getLogger(JavaVisitor.class);
-
    private String fileName;
-   private STGroup groupTemplate;
-   private ST type, statement, expr;
-   private ArrayList<ST> functionsArray, params, datasTemplate;
-   private HashMap<String, STyData> datas;
+   private String currentFunctionName;
 
-   private Stack<HashMap<String, Object>> env;
+   private ArrayList<ST> datasTemplate;
+   private HashMap<String, STyData> datas;
+   private HashMap<String, Function> functions;
+   HashMap<String, HashMap<String, SType>> typesEnvByFunction;
+
+   private STGroup groupTemplate;
+   private ST currentTypeTemplate;
+   private ST currentCommandTemplate;
+   private ST currentExprTemplate;
+   private ST currentFunctionTemplate;
+
+   private ArrayList<ST> functionsTemplate;
+
+   private Stack<HashMap<String, SType>> env;
    private Stack<Object> operands;
    private Boolean returnMode;
 
-   public JavaVisitor(String fileName, HashMap<String, STyData> datas) {
+   public JavaVisitor(String fileName, HashMap<String, STyData> datas, HashMap<String, Function> functions,
+         Stack<HashMap<String, SType>> env, HashMap<String, HashMap<String, SType>> typesEnvByFunction) {
 
       this.groupTemplate = new STGroupFile("template/java.stg");
       this.fileName = fileName;
-      this.datas = datas;
 
+      this.typesEnvByFunction = typesEnvByFunction;
+      this.datas = datas;
       this.operands = new Stack<Object>();
-      this.env = new Stack<HashMap<String, Object>>();
-      env.push(new HashMap<String, Object>());
+      this.env = env;
       this.returnMode = false;
 
    }
@@ -58,13 +68,8 @@ public class JavaVisitor implements Visitor {
 
       template.add("name", fileName);
 
-      this.datasTemplate = new ArrayList<ST>();
-
-      for (Data data : prog.getDataList()) {
-         data.accept(this);
-      }
-
-      template.add("data", this.datasTemplate);
+      handleDataInstantion(prog, template);
+      handleFunctionInstantiation(prog, template);
 
       try {
          FileWriter writer = new FileWriter(this.fileName + ".java");
@@ -75,6 +80,27 @@ public class JavaVisitor implements Visitor {
          exception.printStackTrace();
       }
 
+   }
+
+   public void handleDataInstantion(Prog prog, ST progTemplate) {
+      this.datasTemplate = new ArrayList<ST>();
+
+      for (Data data : prog.getDataList()) {
+         data.accept(this);
+      }
+
+      progTemplate.add("data", this.datasTemplate);
+   }
+
+   public void handleFunctionInstantiation(Prog prog, ST progTemplate) {
+      this.functionsTemplate = new ArrayList<ST>();
+
+      for (Function function : prog.getFunctions()) {
+         this.currentFunctionName = function.getName();
+         function.accept(this);
+      }
+
+      progTemplate.add("functions", functionsTemplate);
    }
 
    public void visit(Data data) {
@@ -100,25 +126,24 @@ public class JavaVisitor implements Visitor {
    }
 
    public ST getTypeTemplate(SType type) {
+      Map<Class<? extends SType>, String> templateMap = new HashMap<>();
+      templateMap.put(STyInt.class, "type_int");
+      templateMap.put(STyBool.class, "type_bool");
+      templateMap.put(STyFloat.class, "type_float");
+      templateMap.put(STyChar.class, "type_char");
 
-      ST template = groupTemplate.getInstanceOf("int_type");
-
-      if (type instanceof STyInt)
-         template = groupTemplate.getInstanceOf("int_type");
-      else if (type instanceof STyBool)
-         template = groupTemplate.getInstanceOf("boolean_type");
-      else if (type instanceof STyFloat)
-         template = groupTemplate.getInstanceOf("float_type");
-      else if (type instanceof STyChar)
-         template = groupTemplate.getInstanceOf("char_type");
-      else if (type instanceof STyData) {
-         STyData dataType = ((STyData) type);
-         template = groupTemplate.getInstanceOf("data_type");
+      ST template;
+      if (type instanceof STyData) {
+         STyData dataType = (STyData) type;
+         template = groupTemplate.getInstanceOf("type_data");
          template.add("id", dataType.getId());
       } else if (type instanceof STyArray) {
-         STyArray arrayType = ((STyArray) type);
-         template = groupTemplate.getInstanceOf("data_type");
+         STyArray arrayType = (STyArray) type;
+         template = groupTemplate.getInstanceOf("type_array");
          template.add("id", arrayType.getType().toString());
+      } else {
+         String templateName = templateMap.get(type.getClass());
+         template = groupTemplate.getInstanceOf(templateName != null ? templateName : "type_int");
       }
 
       return template;
@@ -134,15 +159,39 @@ public class JavaVisitor implements Visitor {
    }
 
    public void visit(Add add) {
+      ST addTemplate = groupTemplate.getInstanceOf("add_expression");
 
+      add.getLeft().accept(this);
+      addTemplate.add("left_expr", currentExprTemplate);
+
+      add.getRight().accept(this);
+      addTemplate.add("right_expr", currentExprTemplate);
+
+      currentExprTemplate = addTemplate;
    }
 
    public void visit(Sub sub) {
+      ST subTemplate = groupTemplate.getInstanceOf("sub_expression");
 
+      sub.getLeft().accept(this);
+      subTemplate.add("left_expr", currentExprTemplate);
+
+      sub.getRight().accept(this);
+      subTemplate.add("right_expr", currentExprTemplate);
+
+      currentExprTemplate = subTemplate;
    }
 
    public void visit(Mod mod) {
+      ST modTemplate = groupTemplate.getInstanceOf("mod_expression");
 
+      mod.getLeft().accept(this);
+      modTemplate.add("left_expr", currentExprTemplate);
+
+      mod.getRight().accept(this);
+      modTemplate.add("right_expr", currentExprTemplate);
+
+      currentExprTemplate = modTemplate;
    }
 
    public void visit(Mult mult) {
@@ -163,6 +212,18 @@ public class JavaVisitor implements Visitor {
 
    public void visit(Attribution attr) {
 
+      attr.getID().accept(this);
+
+      ST varDeclTemplate = groupTemplate.getInstanceOf("param");
+
+      varDeclTemplate.add("type", currentTypeTemplate);
+      varDeclTemplate.add("name", attr.getID().getId());
+
+      currentCommandTemplate = groupTemplate.getInstanceOf("attribution");
+      currentCommandTemplate.add("var", varDeclTemplate);
+
+      attr.getExp().accept(this);
+      currentCommandTemplate.add("expr", currentExprTemplate);
    }
 
    public void visit(BasicType bType) {
@@ -181,24 +242,85 @@ public class JavaVisitor implements Visitor {
             break;
 
          c.accept(this);
+         this.currentFunctionTemplate.add("statements", currentCommandTemplate);
       }
    }
 
    @Override
    public void visit(Function function) {
+      // Pegar os parametros da função
 
+      currentFunctionTemplate = groupTemplate.getInstanceOf("function");
+
+      currentFunctionTemplate.add("name", function.getName());
+      currentFunctionTemplate.add("returnType", "void");
+
+      for (Param param : function.getParamlist()) {
+         param.getType().accept(this);
+
+         ST paramTemplate = groupTemplate.getInstanceOf("param");
+         paramTemplate.add("name", param.getId().getName());
+         paramTemplate.add("type", currentTypeTemplate);
+
+         currentFunctionTemplate.add("params", paramTemplate);
+      }
+
+      if (function.getName().equals("main")) {
+         currentFunctionTemplate.add("params", "String[] args");
+      }
+
+      function.getBody().accept(this);
+
+      this.functionsTemplate.add(currentFunctionTemplate);
+
+   }
+
+   public ST getFunctionReturnType(Function function) {
+      ST template;
+
+      System.out.println("Vem" + function.getReturns().size());
+
+      if (function.getReturns().size() == 0)
+         template = groupTemplate.getInstanceOf("void");
+      else {
+         function.getReturns().get(0).accept(this);
+         template = currentTypeTemplate;
+      }
+
+      return template;
    }
 
    public void visit(FunctionCall functionCall) {
+      ST functionCallTemplate = groupTemplate.getInstanceOf("function_call");
+
+      functionCallTemplate.add("name", functionCall.getFunctionName());
+
+      for (Expr expr : functionCall.getParams()) {
+         expr.accept(this);
+
+         System.out.println("Current expr " + currentExprTemplate);
+
+         functionCallTemplate.add("args", currentExprTemplate);
+      }
+
+      currentCommandTemplate = functionCallTemplate;
 
    }
 
-   @Override
    public void visit(ID id) {
+      SType idType;
 
+      if (currentFunctionName.equals("main")) {
+         idType = this.env.peek().get(id.getName());
+      } else
+         idType = this.typesEnvByFunction.get(currentFunctionName).get(id.getName());
+
+      currentTypeTemplate = getTypeTemplate(idType);
+      currentExprTemplate = groupTemplate.getInstanceOf("var");
+
+      currentExprTemplate.add("var", id.getName());
    }
 
-   @Override
    public void visit(If ifExpr) {
 
    }
@@ -210,20 +332,24 @@ public class JavaVisitor implements Visitor {
 
    @Override
    public void visit(LiteralChar literal) {
-      this.operands.push(literal.getValue());
+      currentExprTemplate = groupTemplate.getInstanceOf("boolean_expr");
+      currentExprTemplate.add("value", literal.getValue());
 
    }
 
    public void visit(LiteralFalse literal) {
-      this.operands.push(new Boolean(false));
+      currentExprTemplate = groupTemplate.getInstanceOf("boolean_expr");
+      currentExprTemplate.add("value", literal.getValue());
    }
 
    public void visit(LiteralFloat literal) {
-      this.operands.push(new Float(literal.getValue()));
+      currentExprTemplate = groupTemplate.getInstanceOf("float_expr");
+      currentExprTemplate.add("value", literal.getValue());
    }
 
    public void visit(LiteralInt literal) {
-      this.operands.push(new Integer(literal.getValue()));
+      currentExprTemplate = groupTemplate.getInstanceOf("int_expr");
+      currentExprTemplate.add("value", literal.getValue());
 
    }
 
@@ -262,6 +388,18 @@ public class JavaVisitor implements Visitor {
 
    public void visit(Return ret) {
 
+      ST returnList = groupTemplate.getInstanceOf("returnList");
+
+      for (Expr expr : ret.getReturnedExprs()) {
+         ST returnTemplate = groupTemplate.getInstanceOf("return_array_add");
+         expr.accept(this);
+         returnTemplate.add("value", currentExprTemplate);
+
+         returnList.add("exprList", returnTemplate);
+      }
+
+      currentCommandTemplate = returnList;
+
    }
 
    public void visit(ParenthesisExpression parenthesisExpression) {
@@ -285,19 +423,19 @@ public class JavaVisitor implements Visitor {
    }
 
    public void visit(TypeInt typeInt) {
-
+      currentTypeTemplate = groupTemplate.getInstanceOf("type_int");
    }
 
    public void visit(TypeFloat typeFloat) {
-
+      currentTypeTemplate = groupTemplate.getInstanceOf("type_float");
    }
 
    public void visit(TypeBool typeBool) {
-
+      currentTypeTemplate = groupTemplate.getInstanceOf("type_bool");
    }
 
    public void visit(TypeChar typeChar) {
-
+      currentTypeTemplate = groupTemplate.getInstanceOf("type_char");
    }
 
    public void visit(TypeCustom customType) {

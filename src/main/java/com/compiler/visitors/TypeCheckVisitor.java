@@ -84,6 +84,10 @@ public class TypeCheckVisitor implements Visitor {
 
    private ArrayList<String> errors;
    private Stack<HashMap<String, SType>> env;
+
+   private String currentFunctionName;
+   private HashMap<String, HashMap<String, SType>> typesEnvByFunction;
+
    private HashMap<String, Function> functions;
 
    private Stack<SType> typeStack;
@@ -103,6 +107,8 @@ public class TypeCheckVisitor implements Visitor {
       this.typeStack = new Stack<SType>();
       this.paramStack = new Stack<SType>();
 
+      this.typesEnvByFunction = new HashMap<String, HashMap<String, SType>>();
+
       env.push(new HashMap<String, SType>());
    }
 
@@ -112,6 +118,18 @@ public class TypeCheckVisitor implements Visitor {
 
    public HashMap<String, STyData> getDatas() {
       return datas;
+   }
+
+   public HashMap<String, Function> getFunctions() {
+      return functions;
+   }
+
+   public Stack<HashMap<String, SType>> getEnv() {
+      return env;
+   }
+
+   public HashMap<String, HashMap<String, SType>> getTypesEnvByFunction() {
+      return typesEnvByFunction;
    }
 
    public void addErrorMessage(Node node, String message) {
@@ -140,6 +158,7 @@ public class TypeCheckVisitor implements Visitor {
          } else {
             addErrorMessage(f, "Redlecaration of function " + f.getName() + " Not permited");
          }
+
       }
 
       for (Data data : prog.getDataList()) {
@@ -375,6 +394,8 @@ public class TypeCheckVisitor implements Visitor {
    public void visit(Function function) {
       boolean isMainFunction = function.getName().equals("main");
 
+      this.currentFunctionName = function.getName();
+
       if (isMainFunction) {
 
          if (function.getParamlist().size() > 0) {
@@ -384,6 +405,7 @@ public class TypeCheckVisitor implements Visitor {
 
          function.getBody().accept(this);
       } else {
+
          HashMap<String, SType> localEnv = new HashMap<String, SType>();
          this.env.push(localEnv);
 
@@ -410,6 +432,11 @@ public class TypeCheckVisitor implements Visitor {
          }
 
          function.getBody().accept(this);
+
+         // Faz uma copia da tipagem do corpo da função para reutilizar na geração de
+         // código
+         this.typesEnvByFunction.put(function.getName(), this.env.peek());
+
          this.env.pop();
       }
 
