@@ -1,16 +1,19 @@
-data Ponto { 
-  a :: Int;
-  b :: Float;
+
+mult(x :: Int, y :: Int) : Int{
+  res = x + y;
+  return res;
 }
 
-sum(x :: Int, y :: Int) : Int, Int{
-  a = 5 + 3;
-  b = 10;
 
-  return a,b;
+sum(a :: Int, b :: Int) : Int{
+  sumRes = a + b;
+  return sumRes;
 }
 
 main(){
   a = 10;
-  sum(10,20);
+  mult(10,20)<a>;
+  sum(50,30)<c>;
+
+  print c;
 }

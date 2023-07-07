@@ -50,7 +50,6 @@ return_array_add(value) ::= "returnsList.add(<value>) "
 
 
 
-
 type_array(type) ::= "<type>[]"
 type_int() ::= "int"
 type_float() ::= "float"
@@ -112,14 +111,20 @@ function_call(name, args, receives) ::= <<
 <if(receives)><receives; separator=";\n"><endif>
 >>
 
-call_receive(id, index, type) ::= "<id> = (<type>) _ret.get(<index>)"
+call_variable_assign(id, index, type) ::= <<
+<type> <id> = (<type>) returnsList.get(<index>)
+>>
 
-PexpFunc(name, args, index) ::= <<
+call_variable_assign_list(call_variable_assign) ::= <<  
+ <call_variable_assign; separator=";\n"> 
+>>
+
+function_call_assign(name, args, index) ::= <<
 <name>(<args; separator=", ">);
 _ret.get(<index>)
 >>
 
-mul_expression(left_expr, right_expr) ::= "(<left_expr> * <right_expr>)"
+mult_expression(left_expr, right_expr) ::= "(<left_expr> * <right_expr>)"
 div_expression(left_expr, right_expr) ::= "(<left_expr> / <right_expr>)"
 mod_expression(left_expr, right_expr) ::= "(<left_expr> % <right_expr>)"
 add_expression(left_expr, right_expr) ::= "<left_expr> + <right_expr>"
@@ -128,7 +133,7 @@ sub_expression(left_expr, right_expr) ::= "(<left_expr> - <right_expr>)"
 
 lt_expr(left_expr, right_expr) ::= "(<left_expr> \< <right_expr>)"
 equals_expr(left_expr, right_expr) ::= "(<left_expr> == <right_expr>)"
-notequals_expr(left_expr, right_expr) ::= "(<left_expr> != <right_expr>)"
+diff_expr(left_expr, right_expr) ::= "(<left_expr> != <right_expr>)"
 and_expr(left_expr, right_expr) ::= "(<left_expr> && <right_expr>)"
 not_expr(expr) ::= "!<expr>"
 minus_expr(expr) ::= "(-<expr>)"

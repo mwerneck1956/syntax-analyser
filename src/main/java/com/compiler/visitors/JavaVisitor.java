@@ -33,8 +33,8 @@ public class JavaVisitor implements Visitor {
 
    private ArrayList<ST> datasTemplate;
    private HashMap<String, STyData> datas;
-   private HashMap<String, Function> functions;
    HashMap<String, HashMap<String, SType>> typesEnvByFunction;
+   HashMap<String, HashMap<String, Boolean>> alreadyDeclaredVariablesByFunction;
 
    private STGroup groupTemplate;
    private ST currentTypeTemplate;
@@ -195,19 +195,51 @@ public class JavaVisitor implements Visitor {
    }
 
    public void visit(Mult mult) {
+      ST multTemplate = groupTemplate.getInstanceOf("mult_expression");
 
+      mult.getLeft().accept(this);
+      multTemplate.add("left_expr", currentExprTemplate);
+
+      mult.getRight().accept(this);
+      multTemplate.add("right_expr", currentExprTemplate);
+
+      currentExprTemplate = multTemplate;
    }
 
    public void visit(Div div) {
+      ST divTemplate = groupTemplate.getInstanceOf("div_expression");
 
+      div.getLeft().accept(this);
+      divTemplate.add("left_expr", currentExprTemplate);
+
+      div.getRight().accept(this);
+      divTemplate.add("right_expr", currentExprTemplate);
+
+      currentExprTemplate = divTemplate;
    }
 
    public void visit(Equal equal) {
+      ST equalTemplate = groupTemplate.getInstanceOf("equals_expr");
 
+      equal.getLeft().accept(this);
+      equalTemplate.add("left_expr", currentExprTemplate);
+
+      equal.getRight().accept(this);
+      equalTemplate.add("right_expr", currentExprTemplate);
+
+      currentExprTemplate = equalTemplate;
    }
 
    public void visit(Diff diff) {
+      ST diffTemplate = groupTemplate.getInstanceOf("diff_expr");
 
+      diff.getLeft().accept(this);
+      diffTemplate.add("left_expr", currentExprTemplate);
+
+      diff.getRight().accept(this);
+      diffTemplate.add("right_expr", currentExprTemplate);
+
+      currentExprTemplate = diffTemplate;
    }
 
    public void visit(Attribution attr) {
@@ -250,6 +282,9 @@ public class JavaVisitor implements Visitor {
    public void visit(Function function) {
       // Pegar os parametros da função
 
+      // System.out.println("Variaveis da função " +
+      // this.typesEnvByFunction.get(function.getName()));
+
       currentFunctionTemplate = groupTemplate.getInstanceOf("function");
 
       currentFunctionTemplate.add("name", function.getName());
@@ -278,8 +313,6 @@ public class JavaVisitor implements Visitor {
    public ST getFunctionReturnType(Function function) {
       ST template;
 
-      System.out.println("Vem" + function.getReturns().size());
-
       if (function.getReturns().size() == 0)
          template = groupTemplate.getInstanceOf("void");
       else {
@@ -297,11 +330,28 @@ public class JavaVisitor implements Visitor {
 
       for (Expr expr : functionCall.getParams()) {
          expr.accept(this);
-
-         System.out.println("Current expr " + currentExprTemplate);
-
          functionCallTemplate.add("args", currentExprTemplate);
       }
+
+      int index = 0;
+
+      ST functionCallAssignsTemplate = groupTemplate.getInstanceOf("call_variable_assign_list");
+
+      for (LValue returnId : functionCall.getReturnsId()) {
+         returnId.accept(this);
+
+         ST callVariableAssignTemplate = groupTemplate.getInstanceOf("call_variable_assign");
+
+         callVariableAssignTemplate.add("id", currentExprTemplate);
+         callVariableAssignTemplate.add("type", currentTypeTemplate);
+         callVariableAssignTemplate.add("index", index);
+
+         functionCallAssignsTemplate.add("call_variable_assign", callVariableAssignTemplate);
+
+         index++;
+      }
+
+      functionCallTemplate.add("receives", functionCallAssignsTemplate);
 
       currentCommandTemplate = functionCallTemplate;
 
@@ -363,11 +413,21 @@ public class JavaVisitor implements Visitor {
    }
 
    public void visit(Print print) {
+      ST printTemplate = groupTemplate.getInstanceOf("print");
+      print.getExpr().accept(this);
 
+      printTemplate.add("expr", currentExprTemplate);
+
+      currentCommandTemplate = printTemplate;
    }
 
    public void visit(Read read) {
+      ST readTemplate = groupTemplate.getInstanceOf("read");
+      read.getLvalue().accept(this);
 
+      readTemplate.add("expr", currentExprTemplate);
+
+      currentCommandTemplate = readTemplate;
    }
 
    public void visit(LessThan lessThan) {

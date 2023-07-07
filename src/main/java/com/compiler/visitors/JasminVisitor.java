@@ -688,4 +688,8 @@ public class JasminVisitor implements Visitor {
       }
 
    }
+
+   public void visit(Declaration declaration) {
+
+   }
 }
