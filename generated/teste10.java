@@ -16,17 +16,18 @@ public class teste10 {
                 returnsList.add(n);
                 return;
             } ;
+            fibonacci(n - 1);
+            fibonacci(n - 2);
             returnsList.clear();
-            returnsList.add(fibonacci(n - 1);
-             = (int) returnsList.get(0) + fibonacci(n - 2);
-             = (int) returnsList.get(0));
+            returnsList.add((int) returnsList.get(0) + (int) returnsList.get(0));
             return;
     }
 
     public static void main(String[] args) {
         int v;
-             fibonacci(5);
-             v = (int) returnsList.get(0);
+            fibonacci(5);
+
+            v = (int) returnsList.get(0) ;
             System.out.print(v);
     }
 }

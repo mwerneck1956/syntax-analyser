@@ -13,8 +13,9 @@ public class teste1eMeio {
             n = 13 ;
 
             q = 5 ;
-             divMod(n, q);
-             w = (int) returnsList.get(1);
+            divMod(n, q);
+
+            w = (int) returnsList.get(1) ;
 
             z = 2 * w + 1 ;
             System.out.print('Z');

@@ -40,7 +40,7 @@ public class JavaVisitor implements Visitor {
    private ST currentCommandTemplate;
    private ST currentExprTemplate;
    private ST currentFunctionTemplate;
-   private ST statement_list;
+   private ST currentStatementList;
 
    private ArrayList<ST> functionsTemplate;
 
@@ -59,6 +59,7 @@ public class JavaVisitor implements Visitor {
       this.typesEnvByFunction = typesEnvByFunction;
       this.datas = datas;
       this.operands = new Stack<Object>();
+
       this.env = env;
 
    }
@@ -272,7 +273,8 @@ public class JavaVisitor implements Visitor {
 
    public void visit(CmdList cmdList) {
 
-      statement_list = groupTemplate.getInstanceOf("stmt_list");
+      ST statement_list = groupTemplate.getInstanceOf("stmt_list");
+      currentStatementList = statement_list;
 
       for (Cmd c : cmdList.getBody()) {
 
@@ -651,7 +653,7 @@ public class JavaVisitor implements Visitor {
          functionCallTemplate.add("args", currentExprTemplate);
       }
 
-      statement_list.add("stmt", functionCallTemplate);
+      currentStatementList.add("stmt", functionCallTemplate);
 
       functionCallTemplate = groupTemplate.getInstanceOf("function_call_array");
 
