@@ -133,6 +133,12 @@ function_call_assign(name, args, index) ::= <<
 _ret.get(<index>)
 >>
 
+function_call_array(functionName, args, id, type, index) ::= <<
+ <functionName>(<args; separator=", ">);
+ <id> = (<type>) returnsList.get(<index>)
+>>
+
+
 mult_expression(left_expr, right_expr) ::= "<left_expr> * <right_expr>"
 div_expression(left_expr, right_expr) ::= "<left_expr> / <right_expr>"
 mod_expression(left_expr, right_expr) ::= "<left_expr> % <right_expr>"

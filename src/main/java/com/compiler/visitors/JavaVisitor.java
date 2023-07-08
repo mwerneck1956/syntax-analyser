@@ -248,13 +248,25 @@ public class JavaVisitor implements Visitor {
 
    public void visit(Attribution attr) {
 
-      attr.getID().accept(this);
+      if (attr.getExp() instanceof FunctionCallArray) {
 
-      currentCommandTemplate = groupTemplate.getInstanceOf("attribution");
-      currentCommandTemplate.add("var", currentExprTemplate);
+         attr.getID().accept(this);
+         ST idTemplate = currentExprTemplate;
 
-      attr.getExp().accept(this);
-      currentCommandTemplate.add("expr", currentExprTemplate);
+         attr.getExp().accept(this);
+         currentExprTemplate.add("id", idTemplate);
+         currentCommandTemplate = currentExprTemplate;
+      } else {
+
+         attr.getID().accept(this);
+
+         currentCommandTemplate = groupTemplate.getInstanceOf("attribution");
+         currentCommandTemplate.add("var", currentExprTemplate);
+
+         attr.getExp().accept(this);
+         currentCommandTemplate.add("expr", currentExprTemplate);
+      }
+
    }
 
    public void visit(BasicType bType) {
@@ -392,7 +404,6 @@ public class JavaVisitor implements Visitor {
       }
 
       functionCallTemplate.add("receives", functionCallAssignsTemplate);
-
       currentCommandTemplate = functionCallTemplate;
 
    }
@@ -641,7 +652,23 @@ public class JavaVisitor implements Visitor {
    }
 
    public void visit(FunctionCallArray functionCall) {
+      ST functionCallTemplate = groupTemplate.getInstanceOf("function_call_array");
 
+      functionCallTemplate.add("functionName", functionCall.getFunctionName());
+
+      for (Expr expr : functionCall.getParams()) {
+         expr.accept(this);
+         functionCallTemplate.add("args", currentExprTemplate);
+      }
+
+      functionCall.getReturnExpr().accept(this);
+
+      functionCallTemplate.add("type", currentTypeTemplate);
+
+      functionCall.getReturnExpr().accept(this);
+      functionCallTemplate.add("index", currentExprTemplate);
+
+      currentExprTemplate = functionCallTemplate;
    }
 
    public void visit(NewArray newArray) {

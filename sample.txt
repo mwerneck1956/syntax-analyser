@@ -20,8 +20,12 @@ data Coordenada{
     b :: Ponto;
 }
 
+sum(x :: Int, y :: Int) : Int{
+  return x + y;
+}
+
 main(){
    x = new Coordenada;
    y = new Coordenada[10];
-   y[0].a.a = 10;
+   a = sum(10,30)[0];
 }
