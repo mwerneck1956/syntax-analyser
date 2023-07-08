@@ -7,7 +7,7 @@ import java.util.Scanner;
 <data; separator=";\n">
 
 public class <name> {
-    static ArrayList<Object> returnsList = new ArrayList<Object>();
+    static ArrayList\<Object> returnsList = new ArrayList\<Object>();
     static Scanner scanner = new Scanner(System.in);
     <functions; separator="\n\n">
 }
@@ -19,6 +19,8 @@ public static <returnType> <name>(<params; separator=", ">) {
     <if(statements)><statements; separator=";\n">;<endif>
 }
 >>
+
+
 
 data(id,decl) ::= <<
 class <id> {
@@ -101,6 +103,7 @@ int_expr(value) ::= "<value>"
 char_expr(value) ::= "'<value>'"
 
 void() ::= "void"
+parenthesis_expr(value) ::= << (<value>) >>
 
 
 
@@ -112,7 +115,7 @@ function_call(name, args, receives) ::= <<
 >>
 
 call_variable_assign(id, index, type) ::= <<
-<type> <id> = (<type>) returnsList.get(<index>)
+<id> = (<type>) returnsList.get(<index>)
 >>
 
 call_variable_assign_list(call_variable_assign) ::= <<  

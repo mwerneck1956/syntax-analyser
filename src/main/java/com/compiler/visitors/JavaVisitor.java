@@ -150,11 +150,6 @@ public class JavaVisitor implements Visitor {
    }
 
    public void visit(Declaration declaration) {
-      // System.out.println("Visitando decl " + declaration);
-
-      // ST declarationTemplate = groupTemplate.getInstanceOf("param");
-
-      // declaration.add()
 
    }
 
@@ -248,7 +243,7 @@ public class JavaVisitor implements Visitor {
 
       ST varDeclTemplate = groupTemplate.getInstanceOf("param");
 
-      varDeclTemplate.add("type", currentTypeTemplate);
+      // varDeclTemplate.add("type", currentTypeTemplate);
       varDeclTemplate.add("name", attr.getID().getId());
 
       currentCommandTemplate = groupTemplate.getInstanceOf("attribution");
@@ -282,13 +277,12 @@ public class JavaVisitor implements Visitor {
    public void visit(Function function) {
       // Pegar os parametros da função
 
-      // System.out.println("Variaveis da função " +
-      // this.typesEnvByFunction.get(function.getName()));
-
       currentFunctionTemplate = groupTemplate.getInstanceOf("function");
 
       currentFunctionTemplate.add("name", function.getName());
       currentFunctionTemplate.add("returnType", "void");
+
+      HashMap<String, SType> varsInFunction = typesEnvByFunction.get(function.getName());
 
       for (Param param : function.getParamlist()) {
          param.getType().accept(this);
@@ -301,7 +295,32 @@ public class JavaVisitor implements Visitor {
       }
 
       if (function.getName().equals("main")) {
+         varsInFunction = this.env.peek();
          currentFunctionTemplate.add("params", "String[] args");
+      }
+
+      for (String var : varsInFunction.keySet()) {
+         SType varType = varsInFunction.get(var);
+
+         Boolean hasToDeclareVariable = true;
+
+         for (Param p : function.getParamlist()) {
+            if (p.getId().getName() == var) {
+               hasToDeclareVariable = false;
+               break;
+            }
+         }
+
+         if (hasToDeclareVariable) {
+            currentTypeTemplate = getTypeTemplate(varType);
+
+            ST varDeclTemplate = groupTemplate.getInstanceOf("param");
+
+            varDeclTemplate.add("type", currentTypeTemplate);
+            varDeclTemplate.add("name", var);
+            currentFunctionTemplate.add("statements", varDeclTemplate);
+         }
+
       }
 
       function.getBody().accept(this);
@@ -463,6 +482,13 @@ public class JavaVisitor implements Visitor {
    }
 
    public void visit(ParenthesisExpression parenthesisExpression) {
+      ST pexpTemplate = groupTemplate.getInstanceOf("parenthesis_expr");
+
+      parenthesisExpression.getExpr().accept(this);
+
+      pexpTemplate.add("value", currentExprTemplate);
+
+      currentExprTemplate = pexpTemplate;
 
    }
 
@@ -475,7 +501,19 @@ public class JavaVisitor implements Visitor {
    }
 
    public void visit(NewData data) {
+      ST dataTemplate = groupTemplate.getInstanceOf("new");
 
+      data.getType().accept(this);
+
+      dataTemplate.add("type", currentTypeTemplate);
+
+      if (data.getExpr() != null) {
+         data.getExpr().accept(this);
+
+         dataTemplate.add("expr", currentExprTemplate);
+      }
+
+      currentExprTemplate = dataTemplate;
    }
 
    public void visit(ArrayPositionAccess arrayPositionAccess) {

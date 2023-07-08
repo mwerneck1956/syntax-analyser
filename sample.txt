@@ -1,7 +1,13 @@
 
-mult(x :: Int, y :: Int) : Int{
-  res = x + y;
-  return res;
+data Ponto{
+  x :: Int;
+  y :: Int;
+}
+
+mult(x :: Int, y :: Int) : Int , Ponto{
+  a = new Ponto;
+  res = (x + y) + 10;
+  return res, a;
 }
 
 
