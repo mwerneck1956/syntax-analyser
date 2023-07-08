@@ -1,12 +1,25 @@
-fibonacci(n :: Int) : Int {
-  if (n < 1)
-    return n;
-  if (n == 1)
-    return n;
-  return fibonacci(n-1)[0] + fibonacci(n-2)[0];
+-- Saída esperada
+--Z:7
+---- The marvelous env Debugger ------ 
+--q  :  5
+--w  :  3
+---z  :  7
+--n  :  13
+
+
+main(){
+    n = 13;
+    q = 5;
+    w = divMod(n,q)[1];
+    z = 2*w +1;
+    
+    
+    print 'Z';
+    print ':';
+    print z;
+    print '\n';
 }
 
-main() {
-  v = fibonacci(5)[0];
-  print v;
+divMod(n :: Int, q :: Int ) : Int, Int{
+    return n / q, n % q;
 }

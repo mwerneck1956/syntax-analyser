@@ -132,6 +132,10 @@ public class JavaVisitor implements Visitor {
    }
 
    public ST getTypeTemplate(SType type) {
+
+      if (type == null)
+         return groupTemplate.getInstanceOf("type_int");
+
       Map<Class<? extends SType>, String> templateMap = new HashMap<>();
       templateMap.put(STyInt.class, "type_int");
       templateMap.put(STyBool.class, "type_bool");
@@ -148,7 +152,9 @@ public class JavaVisitor implements Visitor {
          template = groupTemplate.getInstanceOf("type_array");
          template.add("type", arrayType.getType().toString());
       } else {
+
          String templateName = templateMap.get(type.getClass());
+
          template = groupTemplate.getInstanceOf(templateName != null ? templateName : "type_int");
       }
 
@@ -531,7 +537,14 @@ public class JavaVisitor implements Visitor {
    }
 
    public void visit(And and) {
+      ST andTemplate = groupTemplate.getInstanceOf("and_expr");
+      and.getLeft().accept(this);
+      andTemplate.add("left_expr", currentExprTemplate);
 
+      and.getRight().accept(this);
+      andTemplate.add("right_expr", currentExprTemplate);
+
+      currentExprTemplate = andTemplate;
    }
 
    public void visit(GreatherThan greatherThan) {
