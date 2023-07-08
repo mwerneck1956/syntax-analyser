@@ -9,33 +9,48 @@ class Ponto {
 public class teste {
     static ArrayList<Object> returnsList = new ArrayList<Object>();
     static Scanner scanner = new Scanner(System.in);
+
     public static void mult(int x, int y) {
-        Ponto a;
         int res;
-         a = new Ponto();
-         res = (x + y)  + 10;
+        int c;
+
+        res = (x * y) / 10;
+        if (res < 5) {
+            c = 10;
+            returnsList.clear();
+            returnsList.add(10);
+            returnsList.add(15);
+            return;
+        } else {
+            c = 20;
+        }
+        ;
         returnsList.clear();
-        returnsList.add(res) ;
-        returnsList.add(a) ;
+        returnsList.add(res);
+        returnsList.add(17);
+        return;
     }
 
     public static void sum(int a, int b) {
         int sumRes;
-         sumRes = a + b;
+
+        sumRes = a + b;
         returnsList.clear();
-        returnsList.add(sumRes) ;
+        returnsList.add(sumRes);
+        return;
     }
 
     public static void main(String[] args) {
         int a;
         int c;
-         a = 10;
+
+        a = 10;
         mult(10, 20);
 
-         a = (int) returnsList.get(0) ;
+        a = (int) returnsList.get(0);
         sum(50, 30);
 
-         c = (int) returnsList.get(0) ;
+        c = (int) returnsList.get(0);
         System.out.print(c);
     }
 }

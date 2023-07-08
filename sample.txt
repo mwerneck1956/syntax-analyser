@@ -4,10 +4,20 @@ data Ponto{
   y :: Int;
 }
 
-mult(x :: Int, y :: Int) : Int , Ponto{
-  a = new Ponto;
-  res = (x + y) + 10;
-  return res, a;
+mult(x :: Int, y :: Int) : Int , Int{
+  res = (x * y) / 10;
+
+
+  if(res < 5){
+    c = 10;
+
+    return 10,15;
+  }else{
+    c = 20;
+  }
+    
+
+  return res, 17;
 }
 
 

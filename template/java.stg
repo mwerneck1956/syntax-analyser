@@ -20,14 +20,11 @@ public static <returnType> <name>(<params; separator=", ">) {
 }
 >>
 
-
-
 data(id,decl) ::= <<
 class <id> {
     <decl; separator=";\n">;
 }
 >>
-
 
 class_attribute(name, type) ::= <<
  <type> <name> 
@@ -39,16 +36,19 @@ public_decl(decl) ::= <<
 
 param(type, name) ::= "<type> <name>"
 
+return_expr(exprList) ::= <<
+<exprList>;
+return
+>>
 
-
-
-simple_return(expr) ::= "return  <expr>"
-
-returnList (exprList) ::= <<
+returnList (exprList,return ) ::= <<
 returnsList.clear();
 <exprList; separator=";\n">
 >>
-return_array_add(value) ::= "returnsList.add(<value>) "
+
+
+
+return_array_add(value) ::= "returnsList.add(<value>)"
 
 
 
@@ -69,25 +69,28 @@ for(_i[<count>]=0; _i[<count>] \< _aux[<count>]; _i[<count>]++ ) {
     <stmt_list(stmt)>;
 }
 >>
-plus() ::= "+"
-if(expr, thn, els) ::= <<
+
+
+if(expr, thenExpr, elseExpr) ::= <<
 if(<expr>) {
-    <thn>;
-} <if(els)>else {
-    <els>;
+    <thenExpr>;
+} <if(elseExpr)> else {
+    <elseExpr>;
 }
 <endif>
 >>
+
+
 
 stmt_list(stmt) ::= <<
     <stmt;  separator=";\n">
 >>
 
-
-
 var(var) ::= "<var>"
 
-attribution(var, expr) ::= "<var> = <expr>"
+attribution(var, expr) ::= << 
+<var> = <expr> 
+>>
 
 
 lvalue_id(name) ::= "<name>"
@@ -98,7 +101,7 @@ lvalue_array(name,expr) ::= "<name>[<expr>]"
 new(type, expr) ::= "new <type_data(type)><if(expr)>[<expr>]<else>()<endif>"
 
 boolean_expr(value) ::= "<value>"
-float_expr(value) ::= "<value>f"
+float_expr(value) ::= "<value>"
 int_expr(value) ::= "<value>"
 char_expr(value) ::= "'<value>'"
 
@@ -119,7 +122,7 @@ call_variable_assign(id, index, type) ::= <<
 >>
 
 call_variable_assign_list(call_variable_assign) ::= <<  
- <call_variable_assign; separator=";\n"> 
+<call_variable_assign; separator=";\n"> 
 >>
 
 function_call_assign(name, args, index) ::= <<
@@ -127,16 +130,16 @@ function_call_assign(name, args, index) ::= <<
 _ret.get(<index>)
 >>
 
-mult_expression(left_expr, right_expr) ::= "(<left_expr> * <right_expr>)"
-div_expression(left_expr, right_expr) ::= "(<left_expr> / <right_expr>)"
-mod_expression(left_expr, right_expr) ::= "(<left_expr> % <right_expr>)"
+mult_expression(left_expr, right_expr) ::= "<left_expr> * <right_expr>"
+div_expression(left_expr, right_expr) ::= "<left_expr> / <right_expr>"
+mod_expression(left_expr, right_expr) ::= "<left_expr> % <right_expr>"
 add_expression(left_expr, right_expr) ::= "<left_expr> + <right_expr>"
-sub_expression(left_expr, right_expr) ::= "(<left_expr> - <right_expr>)"
+sub_expression(left_expr, right_expr) ::= "<left_expr> - <right_expr>"
 
 
-lt_expr(left_expr, right_expr) ::= "(<left_expr> \< <right_expr>)"
-equals_expr(left_expr, right_expr) ::= "(<left_expr> == <right_expr>)"
-diff_expr(left_expr, right_expr) ::= "(<left_expr> != <right_expr>)"
-and_expr(left_expr, right_expr) ::= "(<left_expr> && <right_expr>)"
+less_than_expr(left_expr, right_expr) ::= "<left_expr> \< <right_expr>"
+equals_expr(left_expr, right_expr) ::= "<left_expr> == <right_expr>"
+diff_expr(left_expr, right_expr) ::= "<left_expr> != <right_expr>"
+and_expr(left_expr, right_expr) ::= "<left_expr> && <right_expr>"
 not_expr(expr) ::= "!<expr>"
 minus_expr(expr) ::= "(-<expr>)"

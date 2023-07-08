@@ -46,7 +46,6 @@ public class JavaVisitor implements Visitor {
 
    private Stack<HashMap<String, SType>> env;
    private Stack<Object> operands;
-   private Boolean returnMode;
 
    public JavaVisitor(String fileName, HashMap<String, STyData> datas, HashMap<String, Function> functions,
          Stack<HashMap<String, SType>> env, HashMap<String, HashMap<String, SType>> typesEnvByFunction) {
@@ -58,7 +57,6 @@ public class JavaVisitor implements Visitor {
       this.datas = datas;
       this.operands = new Stack<Object>();
       this.env = env;
-      this.returnMode = false;
 
    }
 
@@ -241,13 +239,8 @@ public class JavaVisitor implements Visitor {
 
       attr.getID().accept(this);
 
-      ST varDeclTemplate = groupTemplate.getInstanceOf("param");
-
-      // varDeclTemplate.add("type", currentTypeTemplate);
-      varDeclTemplate.add("name", attr.getID().getId());
-
       currentCommandTemplate = groupTemplate.getInstanceOf("attribution");
-      currentCommandTemplate.add("var", varDeclTemplate);
+      currentCommandTemplate.add("var", attr.getID().getId().trim());
 
       attr.getExp().accept(this);
       currentCommandTemplate.add("expr", currentExprTemplate);
@@ -261,19 +254,43 @@ public class JavaVisitor implements Visitor {
 
    }
 
-   @Override
+   // public void visit(CmdList cmdList) {
+
+   // for (Cmd c : cmdList.getBody()) {
+
+   // c.accept(this);
+   // this.currentFunctionTemplate.add("statements", currentCommandTemplate);
+   // }
+   // }
+
    public void visit(CmdList cmdList) {
 
+      ST statement_list = groupTemplate.getInstanceOf("stmt_list");
+
       for (Cmd c : cmdList.getBody()) {
-         if (returnMode)
-            break;
 
          c.accept(this);
-         this.currentFunctionTemplate.add("statements", currentCommandTemplate);
+
+         statement_list.add("stmt", currentCommandTemplate);
       }
+
+      currentCommandTemplate = statement_list;
    }
 
-   @Override
+   public void onCmdList(CmdList cmdList) {
+
+      ST statement_list = groupTemplate.getInstanceOf("stmt_list");
+
+      for (Cmd c : cmdList.getBody()) {
+
+         c.accept(this);
+
+         statement_list.add("stmt", currentCommandTemplate);
+      }
+
+      currentCommandTemplate = statement_list;
+   }
+
    public void visit(Function function) {
       // Pegar os parametros da função
 
@@ -324,6 +341,8 @@ public class JavaVisitor implements Visitor {
       }
 
       function.getBody().accept(this);
+
+      this.currentFunctionTemplate.add("statements", currentCommandTemplate);
 
       this.functionsTemplate.add(currentFunctionTemplate);
 
@@ -391,6 +410,24 @@ public class JavaVisitor implements Visitor {
    }
 
    public void visit(If ifExpr) {
+      ST ifTemplate = groupTemplate.getInstanceOf("if");
+
+      ifExpr.getCondition().accept(this);
+
+      ifTemplate.add("expr", currentExprTemplate);
+
+      CmdList cmdList = (CmdList) ifExpr.getThen();
+
+      ifExpr.getThen().accept(this);
+
+      ifTemplate.add("thenExpr", currentCommandTemplate);
+
+      if (ifExpr.getOnElse() != null) {
+         ifExpr.getOnElse().accept(this);
+         ifTemplate.add("elseExpr", currentCommandTemplate);
+      }
+
+      currentCommandTemplate = ifTemplate;
 
    }
 
@@ -450,7 +487,15 @@ public class JavaVisitor implements Visitor {
    }
 
    public void visit(LessThan lessThan) {
+      ST lessThanTemplate = groupTemplate.getInstanceOf("less_than_expr");
 
+      lessThan.getLeft().accept(this);
+      lessThanTemplate.add("left_expr", currentExprTemplate);
+
+      lessThan.getRight().accept(this);
+      lessThanTemplate.add("right_expr", currentExprTemplate);
+
+      currentExprTemplate = lessThanTemplate;
    }
 
    public void visit(And and) {
@@ -475,9 +520,14 @@ public class JavaVisitor implements Visitor {
          returnTemplate.add("value", currentExprTemplate);
 
          returnList.add("exprList", returnTemplate);
+         returnList.add("return", "return;");
       }
 
-      currentCommandTemplate = returnList;
+      ST returnTemplate = groupTemplate.getInstanceOf("return_expr");
+
+      returnTemplate.add("exprList", returnList);
+
+      currentCommandTemplate = returnTemplate;
 
    }
 
