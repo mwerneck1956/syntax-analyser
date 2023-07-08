@@ -1,31 +1,24 @@
---Saída esperada:
+--Saída esperada
 
---*****
---****
---***
---**
---*
 ---- The marvelous env Debugger ------ 
---nlines  :  5
---i  :  0
+--p  :  {x=10, y=10}
 
 
 data Ponto{
-    a :: Int;
-    b :: Float;
-}
-
-data Coordenada{
-    a :: Ponto;
-    b :: Ponto;
-}
-
-sum(x :: Int, y :: Int) : Int{
-  return x + y;
+   x :: Float;
+   y :: Float;
 }
 
 main(){
-   x = new Coordenada;
-   y = new Coordenada[10];
-   a = sum(10,30)[0];
+   p = new Ponto ;
+   p.x = 10.0;
+   p.y = 10.0;
+   print '(';
+   print p.x;
+   print ',';
+   print ' ';
+   print p.y;
+   print ')';
+   print '\n';
 }
+

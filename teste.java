@@ -2,19 +2,10 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 class Ponto {
-    int a;
-    float b;
+    float x;
+    float y;
 
-    Ponto() {
-
-    }
-};
-
-class Coordenada {
-    Ponto a;
-    Ponto b;
-
-    Coordenada() {
+    Ponto () {
 
     }
 }
@@ -22,22 +13,22 @@ class Coordenada {
 public class teste {
     static ArrayList<Object> returnsList = new ArrayList<Object>();
     static Scanner scanner = new Scanner(System.in);
-
-    public static void sum(int x, int y) {
-        returnsList.clear();
-        returnsList.add(x + y);
-        return;
-    }
-
     public static void main(String[] args) {
-        int a;
-        Coordenada x;
-        Coordenada[] y;
+        Ponto p;
+        float x;
+        float y;
 
-        x = new Coordenada();
+            p = new Ponto() ;
 
-        y = new Coordenada[10];
-        sum(10, 30);
-        a = (int) returnsList.get(0);
+            p.x = 10.0 ;
+
+            p.y = 10.0 ;
+            System.out.print('(');
+            System.out.print(p.x);
+            System.out.print(',');
+            System.out.print(' ');
+            System.out.print(p.y);
+            System.out.print(')');
+            System.out.print('\n');
     }
 }
