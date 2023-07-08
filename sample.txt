@@ -9,12 +9,13 @@
 --nlines  :  5
 --i  :  0
 
+
+data Ponto{
+    a :: Int;
+    b :: Float;
+}
+
 main(){
-   nlines = 5;
-   i = nlines;
-   iterate(nlines){
-     iterate(i){ print '*';}
-     i = i - 1;
-     print '\n';
-   }
+   x = new Ponto;
+   x.a = 10;
 }

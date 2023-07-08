@@ -251,7 +251,7 @@ public class JavaVisitor implements Visitor {
       attr.getID().accept(this);
 
       currentCommandTemplate = groupTemplate.getInstanceOf("attribution");
-      currentCommandTemplate.add("var", attr.getID().getId().trim());
+      currentCommandTemplate.add("var", currentExprTemplate);
 
       attr.getExp().accept(this);
       currentCommandTemplate.add("expr", currentExprTemplate);
@@ -406,8 +406,8 @@ public class JavaVisitor implements Visitor {
          idType = this.typesEnvByFunction.get(currentFunctionName).get(id.getName());
 
       currentTypeTemplate = getTypeTemplate(idType);
-      currentExprTemplate = groupTemplate.getInstanceOf("var");
 
+      currentExprTemplate = groupTemplate.getInstanceOf("var");
       currentExprTemplate.add("var", id.getName());
    }
 
@@ -435,14 +435,10 @@ public class JavaVisitor implements Visitor {
    public void visit(Iterate iterate) {
       ST iterateTemplate = groupTemplate.getInstanceOf("iterate");
 
+      String iterateVarName = this.getIterateNextAvaliableVariable();
+      iterateTemplate.add("iterateVarName", iterateVarName);
+
       iterate.getCondition().accept(this);
-
-      if (iterate.getCondition() instanceof ID || iterate.getCondition() instanceof LiteralInt) {
-         String iterateVarName = this.getIterateNextAvaliableVariable();
-
-         iterateTemplate.add("iterateVarName", iterateVarName);
-      }
-
       iterateTemplate.add("count", currentExprTemplate);
 
       iterate.getBody().accept(this);
@@ -575,7 +571,15 @@ public class JavaVisitor implements Visitor {
    }
 
    public void visit(AttributeAccess attributeAccess) {
+      ST currentTemplate = groupTemplate.getInstanceOf("data_access");
 
+      attributeAccess.getLeftValue().accept(this);
+      currentTemplate.add("name", currentExprTemplate);
+
+      attributeAccess.getAcessId().accept(this);
+      currentTemplate.add("attribute", currentExprTemplate);
+
+      currentExprTemplate = currentTemplate;
    }
 
    public void visit(NewData data) {
