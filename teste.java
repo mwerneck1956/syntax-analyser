@@ -20,9 +20,9 @@ public class teste {
 
             p = new Ponto() ;
 
-            p.x = 10.0 ;
+            p.x = 10.0f ;
 
-            p.y = 10.0 ;
+            p.y = 10.0f ;
             System.out.print('(');
             System.out.print(p.x);
             System.out.print(',');

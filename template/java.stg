@@ -104,7 +104,7 @@ array_access(expr) ::= "[<expr>]"
 new(type, expr) ::= "new <type_data(type)><if(expr)>[<expr>]<else>()<endif>"
 
 boolean_expr(value) ::= "<value>"
-float_expr(value) ::= "<value>"
+float_expr(value) ::= "<value>f"
 int_expr(value) ::= "<value>"
 char_expr(value) ::= "'<value>'"
 
