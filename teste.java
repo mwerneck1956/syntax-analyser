@@ -22,13 +22,14 @@ public class teste {
     static ArrayList<Object> returnsList = new ArrayList<Object>();
     static Scanner scanner = new Scanner(System.in);
     public static void main(String[] args) {
+        int a;
         Coordenada x;
-        Int[] y;
+        Coordenada[] y;
 
             x = new Coordenada() ;
 
-            y = new int[10] ;
+            y = new Coordenada[10] ;
 
-            y[0] = 10 ;
+            y[0].a.a = 10 ;
     }
 }

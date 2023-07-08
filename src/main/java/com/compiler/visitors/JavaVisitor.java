@@ -627,11 +627,17 @@ public class JavaVisitor implements Visitor {
    }
 
    public void visit(TypeCustom customType) {
-
+      currentTypeTemplate = groupTemplate.getInstanceOf("type_data");
+      currentTypeTemplate.add("id", customType.getTypeName());
    }
 
    public void visit(TypeArray typeArray) {
+      ST template = groupTemplate.getInstanceOf("type_array");
 
+      typeArray.getType().accept(this);
+      template.add("id", currentTypeTemplate);
+
+      currentTypeTemplate = template;
    }
 
    public void visit(FunctionCallArray functionCall) {

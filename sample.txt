@@ -22,6 +22,6 @@ data Coordenada{
 
 main(){
    x = new Coordenada;
-   y = new Int[10];
-   y[0] = 10;
+   y = new Coordenada[10];
+   y[0].a.a = 10;
 }
