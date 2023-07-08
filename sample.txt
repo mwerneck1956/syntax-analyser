@@ -15,7 +15,13 @@ data Ponto{
     b :: Float;
 }
 
+data Coordenada{
+    a :: Ponto;
+    b :: Ponto;
+}
+
 main(){
-   x = new Ponto;
-   x.a = 10;
+   x = new Coordenada;
+   y = new Int[10];
+   y[0] = 10;
 }

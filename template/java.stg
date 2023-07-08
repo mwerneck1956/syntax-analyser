@@ -23,6 +23,10 @@ public static <returnType> <name>(<params; separator=", ">) {
 data(id,decl) ::= <<
 class <id> {
     <decl; separator=";\n">;
+
+    <id> () {
+
+    }
 }
 >>
 
@@ -97,7 +101,6 @@ lvalue_id(name) ::= "<name>"
 data_access(name,attribute) ::= "<name>.<attribute>"
 lvalue(name, array) ::= "<name><array>"
 array_access(expr) ::= "[<expr>]"
-lvalue_array(name,expr) ::= "<name>[<expr>]"
 new(type, expr) ::= "new <type_data(type)><if(expr)>[<expr>]<else>()<endif>"
 
 boolean_expr(value) ::= "<value>"
@@ -109,8 +112,8 @@ void() ::= "void"
 parenthesis_expr(value) ::= << (<value>) >>
 
 
-
-new_array(var, type, expr) ::= "<var> = new <type>[<expr>];"
+array_pos_access(name,expr) ::= "<name>[<expr>]"
+new_array(type, expr) ::= "new <type>[<expr>]"
 
 function_call(name, args, receives) ::= <<
 <name>(<args; separator=", ">)<if(receives)>;<endif>

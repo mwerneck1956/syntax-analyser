@@ -149,7 +149,7 @@ public class JavaVisitor implements Visitor {
       } else if (type instanceof STyArray) {
          STyArray arrayType = (STyArray) type;
          template = groupTemplate.getInstanceOf("type_array");
-         template.add("id", arrayType.getType().toString());
+         template.add("type", arrayType.getType().toString());
       } else {
          String templateName = templateMap.get(type.getClass());
          template = groupTemplate.getInstanceOf(templateName != null ? templateName : "type_int");
@@ -599,7 +599,15 @@ public class JavaVisitor implements Visitor {
    }
 
    public void visit(ArrayPositionAccess arrayPositionAccess) {
+      ST template = groupTemplate.getInstanceOf("array_pos_access");
 
+      arrayPositionAccess.getLeftValue().accept(this);
+      template.add("name", currentExprTemplate);
+
+      arrayPositionAccess.getPositionExpr().accept(this);
+      template.add("expr", currentExprTemplate);
+
+      currentExprTemplate = template;
    }
 
    public void visit(TypeInt typeInt) {
@@ -631,6 +639,14 @@ public class JavaVisitor implements Visitor {
    }
 
    public void visit(NewArray newArray) {
+      ST template = groupTemplate.getInstanceOf("new_array");
 
+      newArray.getType().accept(this);
+      template.add("type", currentTypeTemplate);
+
+      newArray.getExpr().accept(this);
+      template.add("expr", currentExprTemplate);
+
+      currentExprTemplate = template;
    }
 }
