@@ -5,28 +5,31 @@ public class teste {
     static ArrayList<Object> returnsList = new ArrayList<Object>();
     static Scanner scanner = new Scanner(System.in);
 
-    public static void main(String[] args) {
-        int q;
-        int w;
-        int n;
-
-        n = 13;
-
-        q = 5;
-        divMod(n, q);
-        w = (int) returnsList.get(1);
-
-        z = 2 * w + 1;
-        System.out.print('Z');
-        System.out.print(':');
-        System.out.print(z);
-        System.out.print('\n');
+    public static void fibonacci(int n) {
+        if (n < 1) {
+            returnsList.clear();
+            returnsList.add(n);
+            return;
+        }
+        ;
+        if (n == 1) {
+            returnsList.clear();
+            returnsList.add(n);
+            return;
+        }
+        ;
+        fibonacci(n - 1);
+        fibonacci(n - 2);
+        returnsList.clear();
+        returnsList.add((int) returnsList.get(0) + (int) returnsList.get(0));
+        return;
     }
 
-    public static void divMod(int n, int q) {
-        returnsList.clear();
-        returnsList.add(n / q);
-        returnsList.add(n % q);
-        return;
+    public static void main(String[] args) {
+        int v;
+        fibonacci(5);
+
+        v = (int) returnsList.get(0);
+        System.out.print(v);
     }
 }

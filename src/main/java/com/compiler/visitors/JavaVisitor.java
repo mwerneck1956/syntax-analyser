@@ -40,6 +40,7 @@ public class JavaVisitor implements Visitor {
    private ST currentCommandTemplate;
    private ST currentExprTemplate;
    private ST currentFunctionTemplate;
+   private ST statement_list;
 
    private ArrayList<ST> functionsTemplate;
 
@@ -251,24 +252,13 @@ public class JavaVisitor implements Visitor {
 
    public void visit(Attribution attr) {
 
-      if (attr.getExp() instanceof FunctionCallArray) {
+      attr.getID().accept(this);
 
-         attr.getID().accept(this);
-         ST idTemplate = currentExprTemplate;
+      currentCommandTemplate = groupTemplate.getInstanceOf("attribution");
+      currentCommandTemplate.add("var", currentExprTemplate);
 
-         attr.getExp().accept(this);
-         currentExprTemplate.add("id", idTemplate);
-         currentCommandTemplate = currentExprTemplate;
-      } else {
-
-         attr.getID().accept(this);
-
-         currentCommandTemplate = groupTemplate.getInstanceOf("attribution");
-         currentCommandTemplate.add("var", currentExprTemplate);
-
-         attr.getExp().accept(this);
-         currentCommandTemplate.add("expr", currentExprTemplate);
-      }
+      attr.getExp().accept(this);
+      currentCommandTemplate.add("expr", currentExprTemplate);
 
    }
 
@@ -282,21 +272,7 @@ public class JavaVisitor implements Visitor {
 
    public void visit(CmdList cmdList) {
 
-      ST statement_list = groupTemplate.getInstanceOf("stmt_list");
-
-      for (Cmd c : cmdList.getBody()) {
-
-         c.accept(this);
-
-         statement_list.add("stmt", currentCommandTemplate);
-      }
-
-      currentCommandTemplate = statement_list;
-   }
-
-   public void onCmdList(CmdList cmdList) {
-
-      ST statement_list = groupTemplate.getInstanceOf("stmt_list");
+      statement_list = groupTemplate.getInstanceOf("stmt_list");
 
       for (Cmd c : cmdList.getBody()) {
 
@@ -588,7 +564,12 @@ public class JavaVisitor implements Visitor {
    }
 
    public void visit(Not not) {
+      ST notTemplate = groupTemplate.getInstanceOf("not_expr");
 
+      not.getExpression().accept(this);
+      notTemplate.add("expr", currentExprTemplate);
+
+      currentExprTemplate = notTemplate;
    }
 
    public void visit(AttributeAccess attributeAccess) {
@@ -662,8 +643,7 @@ public class JavaVisitor implements Visitor {
    }
 
    public void visit(FunctionCallArray functionCall) {
-      ST functionCallTemplate = groupTemplate.getInstanceOf("function_call_array");
-
+      ST functionCallTemplate = groupTemplate.getInstanceOf("simple_function_call");
       functionCallTemplate.add("functionName", functionCall.getFunctionName());
 
       for (Expr expr : functionCall.getParams()) {
@@ -671,7 +651,9 @@ public class JavaVisitor implements Visitor {
          functionCallTemplate.add("args", currentExprTemplate);
       }
 
-      functionCall.getReturnExpr().accept(this);
+      statement_list.add("stmt", functionCallTemplate);
+
+      functionCallTemplate = groupTemplate.getInstanceOf("function_call_array");
 
       functionCallTemplate.add("type", currentTypeTemplate);
 

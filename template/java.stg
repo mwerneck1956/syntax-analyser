@@ -128,14 +128,17 @@ call_variable_assign_list(call_variable_assign) ::= <<
 <call_variable_assign; separator=";\n"> 
 >>
 
+simple_function_call(functionName, args) ::= <<
+<functionName>(<args; separator=", ">)
+>>
+
 function_call_assign(name, args, index) ::= <<
 <name>(<args; separator=", ">);
 _ret.get(<index>)
 >>
 
 function_call_array(functionName, args, id, type, index) ::= <<
- <functionName>(<args; separator=", ">);
- <id> = (<type>) returnsList.get(<index>)
+ (<type>) returnsList.get(<index>)
 >>
 
 
