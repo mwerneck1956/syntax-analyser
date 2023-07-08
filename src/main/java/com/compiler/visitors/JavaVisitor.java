@@ -12,10 +12,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
 
-import javax.print.DocFlavor.STRING;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.stringtemplate.v4.ST;
 import org.stringtemplate.v4.STGroup;
 import org.stringtemplate.v4.STGroupFile;
@@ -56,6 +52,7 @@ public class JavaVisitor implements Visitor {
          Stack<HashMap<String, SType>> env, HashMap<String, HashMap<String, SType>> typesEnvByFunction) {
 
       this.groupTemplate = new STGroupFile("template/java.stg");
+
       this.fileName = fileName;
 
       this.typesEnvByFunction = typesEnvByFunction;
@@ -75,7 +72,7 @@ public class JavaVisitor implements Visitor {
       handleFunctionInstantiation(prog, template);
 
       try {
-         FileWriter writer = new FileWriter(this.fileName + ".java");
+         FileWriter writer = new FileWriter("generated/" + fileName + ".java");
          writer.write(template.render());
          writer.close();
 

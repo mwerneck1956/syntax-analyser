@@ -9,6 +9,7 @@ import com.compiler.grammar.*;
 import com.compiler.parser.SemanticalParser;
 import com.compiler.parser.SyntaxParser;
 import com.compiler.parser.TestParser;
+import com.compiler.parser.JavaCodeGenParser;
 import com.compiler.visitors.InterpretVisitor;
 import com.compiler.visitors.JavaVisitor;
 import com.compiler.visitors.TypeCheckVisitor;
@@ -23,6 +24,7 @@ public class App {
 
         SyntaxParser syntaxParser = new SyntaxParser();
         SemanticalParser semanticalParser = new SemanticalParser();
+        JavaCodeGenParser javaCodeGenParser = new JavaCodeGenParser();
 
         if (args[0].equals("-bs")) {
             System.out.println("Executando bateria de testes sintáticos:");
@@ -34,7 +36,14 @@ public class App {
             System.out.println("Executando bateria de testes semânticos:");
             new TestParser(semanticalParser, "semantica/certo");
             return;
-        } else {
+        }
+
+        if (args[0].equals("-s")) {
+            System.out.println("Gerando código para java");
+            new TestParser(javaCodeGenParser, "semantica/certo");
+        }
+
+        else {
             try {
                 CharStream stream = CharStreams.fromFileName(args[0]);
 
