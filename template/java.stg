@@ -63,9 +63,9 @@ null() ::= "null"
 print(expr) ::= "System.out.print(<expr>)"
 read(expr) ::= "<expr> = scanner.nextInt()"
 
-iterate(expr, stmt, count) ::= <<
-_aux[<count>] = <expr>;
-for(_i[<count>]=0; _i[<count>] \< _aux[<count>]; _i[<count>]++ ) {
+iterate(expr, stmt, count, iterateVarName) ::= <<
+
+for(int <iterateVarName> = 0; <iterateVarName> \< <count> ; <iterateVarName> ++ ) {
     <stmt_list(stmt)>;
 }
 >>

@@ -11,6 +11,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
+
+import javax.print.DocFlavor.STRING;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.stringtemplate.v4.ST;
@@ -46,6 +49,8 @@ public class JavaVisitor implements Visitor {
 
    private Stack<HashMap<String, SType>> env;
    private Stack<Object> operands;
+
+   private int currentIterateVarIndex = 0;
 
    public JavaVisitor(String fileName, HashMap<String, STyData> datas, HashMap<String, Function> functions,
          Stack<HashMap<String, SType>> env, HashMap<String, HashMap<String, SType>> typesEnvByFunction) {
@@ -99,6 +104,12 @@ public class JavaVisitor implements Visitor {
       }
 
       progTemplate.add("functions", functionsTemplate);
+   }
+
+   public String getIterateNextAvaliableVariable() {
+      this.currentIterateVarIndex++;
+
+      return new String("_a" + this.currentIterateVarIndex);
    }
 
    public void visit(Data data) {
@@ -254,15 +265,6 @@ public class JavaVisitor implements Visitor {
 
    }
 
-   // public void visit(CmdList cmdList) {
-
-   // for (Cmd c : cmdList.getBody()) {
-
-   // c.accept(this);
-   // this.currentFunctionTemplate.add("statements", currentCommandTemplate);
-   // }
-   // }
-
    public void visit(CmdList cmdList) {
 
       ST statement_list = groupTemplate.getInstanceOf("stmt_list");
@@ -416,8 +418,6 @@ public class JavaVisitor implements Visitor {
 
       ifTemplate.add("expr", currentExprTemplate);
 
-      CmdList cmdList = (CmdList) ifExpr.getThen();
-
       ifExpr.getThen().accept(this);
 
       ifTemplate.add("thenExpr", currentCommandTemplate);
@@ -433,13 +433,41 @@ public class JavaVisitor implements Visitor {
 
    @Override
    public void visit(Iterate iterate) {
+      ST iterateTemplate = groupTemplate.getInstanceOf("iterate");
 
+      iterate.getCondition().accept(this);
+
+      if (iterate.getCondition() instanceof ID || iterate.getCondition() instanceof LiteralInt) {
+         String iterateVarName = this.getIterateNextAvaliableVariable();
+
+         iterateTemplate.add("iterateVarName", iterateVarName);
+      }
+
+      iterateTemplate.add("count", currentExprTemplate);
+
+      iterate.getBody().accept(this);
+      iterateTemplate.add("stmt", currentCommandTemplate);
+
+      currentCommandTemplate = iterateTemplate;
    }
 
    @Override
    public void visit(LiteralChar literal) {
-      currentExprTemplate = groupTemplate.getInstanceOf("boolean_expr");
-      currentExprTemplate.add("value", literal.getValue());
+      currentExprTemplate = groupTemplate.getInstanceOf("char_expr");
+
+      String literalValue;
+
+      switch (literal.getValue()) {
+         case '\n':
+            literalValue = "\\n";
+            break;
+         case '\t':
+            literalValue = "\\t";
+         default:
+            literalValue = "" + literal.getValue();
+      }
+
+      currentExprTemplate.add("value", literalValue);
 
    }
 
