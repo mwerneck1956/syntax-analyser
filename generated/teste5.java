@@ -26,12 +26,15 @@ public class teste5 {
         i = 0;
 
         for (int _a1 = 0; _a1 < k; _a1++) {
+
             p[i] = new Ponto();
+
             p[i].x = 12 + i;
+
             p[i].y = 12 - i;
+
             i = i + 1;
         }
-        ;
         System.out.print('\n');
     }
 }

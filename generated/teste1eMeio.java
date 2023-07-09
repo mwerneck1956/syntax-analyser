@@ -10,14 +10,14 @@ public class teste1eMeio {
         int w;
         int n;
 
-            n = 13 ;
+            n = 13;
 
-            q = 5 ;
+            q = 5;
             divMod(n, q);
 
-            w = (int) returnsList.get(1) ;
+            w = (int) returnsList.get(1);
 
-            z = 2 * w + 1 ;
+            z = 2 * w + 1;
             System.out.print('Z');
             System.out.print(':');
             System.out.print(z);

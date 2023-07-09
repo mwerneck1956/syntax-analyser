@@ -15,8 +15,8 @@ public class <name> {
 
 function(returns, name, params, declarations, statements, returnType) ::= <<
 public static <returnType> <name>(<params; separator=", ">) {
-    <if(declarations)><declarations; separator=";\n">;<endif>
-    <if(statements)><statements; separator=";\n">;<endif>
+    <if(declarations)><declarations; separator="\n"><endif>
+    <if(statements)><statements; separator="\n"><endif>
 }
 >>
 
@@ -40,19 +40,22 @@ public_decl(decl) ::= <<
 
 param(type, name) ::= "<type> <name>"
 
+varDeclaration(type, name) ::= "<type> <name>;"
+
+
 return_expr(exprList) ::= <<
-<exprList>;
-return
+<exprList>
+return;
 >>
 
 returnList (exprList,return ) ::= <<
 returnsList.clear();
-<exprList; separator=";\n">
+<exprList; separator="\n">
 >>
 
 
 
-return_array_add(value) ::= "returnsList.add(<value>)"
+return_array_add(value) ::= "returnsList.add(<value>);"
 
 
 
@@ -64,22 +67,22 @@ type_char() ::= "char"
 type_data(id) ::= "<id>"
 null() ::= "null"
 
-print(expr) ::= "System.out.print(<expr>)"
-read(expr) ::= "<expr> = scanner.nextInt()"
+print(expr) ::= "System.out.print(<expr>);"
+read(expr) ::= "<expr> = scanner.nextInt();"
 
 iterate(expr, stmt, count, iterateVarName) ::= <<
 
 for(int <iterateVarName> = 0; <iterateVarName> \< <count> ; <iterateVarName> ++ ) {
-    <stmt_list(stmt)>;
+    <stmt_list(stmt)>
 }
 >>
 
 
 if(expr, thenExpr, elseExpr) ::= <<
 if(<expr>) {
-    <thenExpr>;
+    <thenExpr>
 } <if(elseExpr)> else {
-    <elseExpr>;
+    <elseExpr>
 }
 <endif>
 >>
@@ -87,13 +90,13 @@ if(<expr>) {
 
 
 stmt_list(stmt) ::= <<
-    <stmt;  separator=";\n">
+    <stmt;  separator="\n">
 >>
 
 var(var) ::= "<var>"
 
 attribution(var, expr) ::= << 
-<var> = <expr> 
+<var> = <expr>;
 >>
 
 
@@ -117,24 +120,19 @@ new_array(type, expr) ::= "new <type>[<expr>]"
 
 function_call(name, args, receives) ::= <<
 <name>(<args; separator=", ">)<if(receives)>;<endif>
-<if(receives)><receives; separator=";\n"><endif>
+<if(receives)><receives; separator="\n"><endif>
 >>
 
 call_variable_assign(id, index, type) ::= <<
-<id> = (<type>) returnsList.get(<index>)
+<id> = (<type>) returnsList.get(<index>);
 >>
 
 call_variable_assign_list(call_variable_assign) ::= <<  
-<call_variable_assign; separator=";\n"> 
+<call_variable_assign; separator="\n"> 
 >>
 
 simple_function_call(functionName, args) ::= <<
-<functionName>(<args; separator=", ">)
->>
-
-function_call_assign(name, args, index) ::= <<
-<name>(<args; separator=", ">);
-_ret.get(<index>)
+<functionName>(<args; separator=", ">);
 >>
 
 function_call_array(functionName, args, id, type, index) ::= <<

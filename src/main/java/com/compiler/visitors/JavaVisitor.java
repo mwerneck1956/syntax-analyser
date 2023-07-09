@@ -326,7 +326,7 @@ public class JavaVisitor implements Visitor {
          if (hasToDeclareVariable) {
             currentTypeTemplate = getTypeTemplate(varType);
 
-            ST varDeclTemplate = groupTemplate.getInstanceOf("param");
+            ST varDeclTemplate = groupTemplate.getInstanceOf("varDeclaration");
 
             varDeclTemplate.add("type", currentTypeTemplate);
             varDeclTemplate.add("name", var);

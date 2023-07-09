@@ -8,7 +8,7 @@ public class teste2 {
     public static void main(String[] args) {
         int x;
 
-            x = 0 ;
+            x = 0;
             System.out.print('>');
             x = scanner.nextInt();
             System.out.print(x);

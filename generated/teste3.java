@@ -10,32 +10,32 @@ public class teste3 {
         int i;
         int k;
 
-            k = 4 ;
+            k = 4;
 
-            x = new int[k] ;
+            x = new int[k];
 
-            x[0] = 0 ;
+            x[0] = 0;
 
-            x[3] = 15 ;
+            x[3] = 15;
             System.out.print(x[3]);
             System.out.print('\n');
 
-            i = 0 ;
+            i = 0;
 
             for(int _a1 = 0; _a1 < k ; _a1 ++ ) {
                         if(i % 2 == 0) {
 
-                                x[i] = 2 * i ;
+                                x[i] = 2 * i;
                         }  else {
 
-                                x[i] = 2 * i + 1 ;
+                                x[i] = 2 * i + 1;
                         }
-                        ;
 
-                        i = i + 1 ;
-            };
 
-            i = 0 ;
+                        i = i + 1;
+            }
+
+            i = 0;
             System.out.print('{');
             if(0 < k) {
                     System.out.print(x[0]);
@@ -44,9 +44,9 @@ public class teste3 {
                                 System.out.print(',');
                                 System.out.print(x[i + 1]);
 
-                                i = i + 1 ;
-                    };
-            } ;
+                                i = i + 1;
+                    }
+            } 
             System.out.print('}');
             System.out.print('\n');
     }

@@ -18,11 +18,9 @@ public class teste11 {
             for (int _a2 = 0; _a2 < i; _a2++) {
                 System.out.print('*');
             }
-            ;
 
             nlines = nlines - 1;
             System.out.print('\n');
         }
-        ;
     }
 }

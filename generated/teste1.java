@@ -11,13 +11,13 @@ public class teste1 {
         int quo;
         int n;
 
-            n = 13 ;
+            n = 13;
 
-            q = 5 ;
+            q = 5;
             divMod(n, q);
 
             quo = (int) returnsList.get(0);
-            res = (int) returnsList.get(1) ;
+            res = (int) returnsList.get(1); 
             System.out.print('Q');
             System.out.print(':');
             System.out.print(quo);

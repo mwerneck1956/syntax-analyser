@@ -16,7 +16,7 @@ public class teste12 {
                 returnsList.add((int) returnsList.get(0));
                 return;
             }
-        ;
+
     }
 
     public static void odd(int n) {
@@ -30,14 +30,14 @@ public class teste12 {
                 returnsList.add((int) returnsList.get(0));
                 return;
             }
-        ;
+
     }
 
     public static void main(String[] args) {
         boolean r;
             even(3);
 
-            r = (boolean) returnsList.get(0) ;
+            r = (boolean) returnsList.get(0);
             if(r) {
                     System.out.print('P');
                     System.out.print('A');
@@ -49,6 +49,6 @@ public class teste12 {
                     System.out.print('A');
                     System.out.print('R');
             }
-        ;
+
     }
 }
