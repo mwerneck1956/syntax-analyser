@@ -5,260 +5,282 @@
 
 package com.compiler.visitors;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Stack;
-import java.util.Scanner;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.stringtemplate.v4.ST;
+import org.stringtemplate.v4.STGroup;
+import org.stringtemplate.v4.STGroupFile;
 
 import com.compiler.ast.*;
-import com.compiler.util.Util;
+import com.compiler.typeCheckUtils.STyArray;
+import com.compiler.typeCheckUtils.STyBool;
+import com.compiler.typeCheckUtils.STyChar;
+import com.compiler.typeCheckUtils.STyData;
+import com.compiler.typeCheckUtils.STyFloat;
+import com.compiler.typeCheckUtils.STyInt;
+import com.compiler.typeCheckUtils.SType;
 
 public class JasminVisitor implements Visitor {
 
-   private static final Logger logger = LogManager.getLogger(InterpretVisitor.class);
-   private Stack<HashMap<String, Object>> env;
-   private HashMap<String, Function> functions;
-   private HashMap<String, Data> datas;
-   private Stack<Object> operands;
-   private Boolean returnMode;
+   private String fileName;
+   private String currentFunctionName;
 
-   public JasminVisitor() {
-      this.functions = new HashMap<String, Function>();
+   private ArrayList<ST> datasTemplate;
+   private HashMap<String, STyData> datas;
+   HashMap<String, HashMap<String, SType>> typesEnvByFunction;
+   HashMap<String, HashMap<String, Integer>> varsInJasminSyntax;
+
+   private STGroup groupTemplate;
+   private ST currentTypeTemplate;
+   private ST currentCommandTemplate;
+   private ST currentExprTemplate;
+   private ST currentFunctionTemplate;
+   private ST currentStatementList;
+
+   private ArrayList<ST> functionsTemplate;
+
+   private Stack<HashMap<String, SType>> env;
+   private Stack<Object> operands;
+
+   private int currentIterateVarIndex = 0;
+
+   public JasminVisitor(String fileName, HashMap<String, STyData> datas, HashMap<String, Function> functions,
+         Stack<HashMap<String, SType>> env, HashMap<String, HashMap<String, SType>> typesEnvByFunction) {
+
+      this.groupTemplate = new STGroupFile("template/jasmin.stg");
+
+      this.fileName = fileName;
+
+      this.typesEnvByFunction = typesEnvByFunction;
+      this.datas = datas;
       this.operands = new Stack<Object>();
-      this.env = new Stack<HashMap<String, Object>>();
-      env.push(new HashMap<String, Object>());
-      this.datas = new HashMap<String, Data>();
-      this.returnMode = false;
+
+      this.env = env;
 
    }
 
    public void visit(Prog prog) {
-      Node main = null;
 
-      for (Function f : prog.getFunctions()) {
+      ST template = groupTemplate.getInstanceOf("program");
 
-         if (f.getName().equals("main"))
-            main = f;
+      template.add("name", fileName);
 
-         this.functions.put(f.getName(), f);
+      this.varsInJasminSyntax = this.convertVariablesToJasminSyntax();
 
+      handleDataInstantion(prog, template);
+      // handleFunctionInstantiation(prog, template);
+
+      try {
+         FileWriter writer = new FileWriter(fileName + ".j");
+         writer.write(template.render());
+         writer.close();
+
+      } catch (IOException exception) {
+         exception.printStackTrace();
       }
+
+   }
+
+   public HashMap<String, HashMap<String, Integer>> convertVariablesToJasminSyntax() {
+      int currentIndex = 0;
+
+      HashMap<String, HashMap<String, Integer>> varInJasminSyntaxByFunction = new HashMap<String, HashMap<String, Integer>>();
+
+      for (String function : this.typesEnvByFunction.keySet()) {
+         HashMap<String, SType> functionEnv = typesEnvByFunction.get(function);
+         HashMap<String, Integer> functionVars = new HashMap<String, Integer>();
+
+         for (String var : functionEnv.keySet()) {
+            functionVars.put(var, currentIndex);
+         }
+
+         varInJasminSyntaxByFunction.put(function, functionVars);
+      }
+
+      return varInJasminSyntaxByFunction;
+   }
+
+   public void handleDataInstantion(Prog prog, ST progTemplate) {
+      this.datasTemplate = new ArrayList<ST>();
 
       for (Data data : prog.getDataList()) {
-         this.datas.put(data.getIdName(), data);
+         data.accept(this);
       }
 
-      main.accept(this);
+      progTemplate.add("data", this.datasTemplate);
    }
 
-   public void visit(Add add) {
+   public void handleFunctionInstantiation(Prog prog, ST progTemplate) {
+      this.functionsTemplate = new ArrayList<ST>();
 
-      logger.info("Visiting add with " + add.toString());
-
-      add.getLeft().accept(this);
-      add.getRight().accept(this);
-
-      Number left, right, res;
-
-      right = (Number) operands.pop();
-      left = (Number) operands.pop();
-
-      if (left instanceof Float || right instanceof Float)
-         res = left.floatValue() + right.floatValue();
-      else
-         res = left.intValue() + right.intValue();
-
-      operands.push(res);
-      logger.info("Add finished storing " + res + " to the operands");
-
-   }
-
-   public void visit(Sub sub) {
-      try {
-         sub.getLeft().accept(this);
-         sub.getRight().accept(this);
-
-         Number left, right, res;
-
-         right = (Number) operands.pop();
-         left = (Number) operands.pop();
-
-         if (left instanceof Float || right instanceof Float)
-            res = left.floatValue() - right.floatValue();
-         else
-            res = left.intValue() - right.intValue();
-
-         operands.push(res);
-      } catch (Exception err) {
-         throw new RuntimeException(err.getMessage());
+      for (Function function : prog.getFunctions()) {
+         this.currentFunctionName = function.getName();
+         function.accept(this);
       }
 
+      progTemplate.add("functions", functionsTemplate);
    }
 
-   public void visit(Mod mod) {
-      try {
-         mod.getLeft().accept(this);
-         mod.getRight().accept(this);
+   public String getIterateNextAvaliableVariable() {
+      this.currentIterateVarIndex++;
 
-         Number left, right, res;
-
-         right = (Number) operands.pop();
-         left = (Number) operands.pop();
-
-         res = left.intValue() % right.intValue();
-
-         operands.push(res);
-      } catch (Exception err) {
-         throw new RuntimeException(err.getMessage());
-      }
-
-   }
-
-   public void visit(Mult mult) {
-      try {
-         logger.info("Visiting mult");
-
-         mult.getLeft().accept(this);
-         mult.getRight().accept(this);
-
-         Number left, right, res;
-
-         left = (Number) operands.pop();
-         right = (Number) operands.pop();
-
-         if (left instanceof Float || right instanceof Float)
-            res = left.floatValue() * right.floatValue();
-         else
-            res = left.intValue() * right.intValue();
-
-         operands.push(res);
-      } catch (Exception err) {
-         throw new RuntimeException(err.getMessage());
-      }
-
-   }
-
-   public void visit(Div div) {
-      try {
-         div.getLeft().accept(this);
-         div.getRight().accept(this);
-
-         Number left, right, res;
-
-         left = (Number) operands.pop();
-         right = (Number) operands.pop();
-
-         if (left instanceof Float || right instanceof Float)
-            res = left.floatValue() / right.floatValue();
-         else
-            res = left.intValue() / right.intValue();
-
-         operands.push(res);
-      } catch (Exception err) {
-         throw new RuntimeException(err.getMessage());
-      }
-
-   }
-
-   public void visit(Equal equal) {
-      try {
-
-         equal.getLeft().accept(this);
-         equal.getRight().accept(this);
-
-         Object left, right;
-
-         right = operands.pop();
-         left = operands.pop();
-
-         operands.push(left.equals(right));
-
-         logger.info("Testing if " + right.toString() + " == " + left.toString());
-
-      } catch (Exception err) {
-         throw new RuntimeException(err.getMessage());
-      }
-
-   }
-
-   public void visit(Diff diff) {
-      try {
-
-         diff.getLeft().accept(this);
-         diff.getRight().accept(this);
-
-         Object left, right;
-
-         right = operands.pop();
-         left = operands.pop();
-
-         operands.push(!left.equals(right));
-
-      } catch (Exception err) {
-         throw new RuntimeException(err.getMessage());
-      }
-
+      return new String("_a" + this.currentIterateVarIndex);
    }
 
    public void visit(Data data) {
+      ST dataTemplate = groupTemplate.getInstanceOf("data");
+      dataTemplate.add("name", data.getIdName());
+
+      STyData dataTypes = datas.get(data.getIdName());
+
+      for (Declaration declaration : data.getDeclarations()) {
+         declaration.accept(this);
+
+         ST classDeclarationTemplate = groupTemplate.getInstanceOf("param");
+         classDeclarationTemplate.add("name", declaration.getIdName());
+
+         SType type = dataTypes.getVars().get(declaration.getIdName());
+         ST typeTemplate = getTypeTemplate(type);
+
+         classDeclarationTemplate.add("type", typeTemplate);
+         dataTemplate.add("decl", classDeclarationTemplate);
+      }
+
+      this.datasTemplate.add(dataTemplate);
+   }
+
+   public ST getTypeTemplate(SType type) {
+
+      if (type == null)
+         return groupTemplate.getInstanceOf("type_int");
+
+      Map<Class<? extends SType>, String> templateMap = new HashMap<>();
+      templateMap.put(STyInt.class, "type_int");
+      templateMap.put(STyBool.class, "type_bool");
+      templateMap.put(STyFloat.class, "type_float");
+      templateMap.put(STyChar.class, "type_char");
+
+      ST template;
+      if (type instanceof STyData) {
+         STyData dataType = (STyData) type;
+         template = groupTemplate.getInstanceOf("type_data");
+         template.add("id", dataType.getId());
+      } else if (type instanceof STyArray) {
+         STyArray arrayType = (STyArray) type;
+         template = groupTemplate.getInstanceOf("type_array");
+         template.add("type", arrayType.getType().toString());
+      } else {
+
+         String templateName = templateMap.get(type.getClass());
+
+         template = groupTemplate.getInstanceOf(templateName != null ? templateName : "type_int");
+      }
+
+      return template;
+   }
+
+   public void visit(Declaration declaration) {
 
    }
 
+   public void visit(Add add) {
+      ST addTemplate = groupTemplate.getInstanceOf("add_expression");
+
+      add.getLeft().accept(this);
+      addTemplate.add("left_expr", currentExprTemplate);
+
+      add.getRight().accept(this);
+      addTemplate.add("right_expr", currentExprTemplate);
+
+      currentExprTemplate = addTemplate;
+   }
+
+   public void visit(Sub sub) {
+      ST subTemplate = groupTemplate.getInstanceOf("sub_expression");
+
+      sub.getLeft().accept(this);
+      subTemplate.add("left_expr", currentExprTemplate);
+
+      sub.getRight().accept(this);
+      subTemplate.add("right_expr", currentExprTemplate);
+
+      currentExprTemplate = subTemplate;
+   }
+
+   public void visit(Mod mod) {
+      ST modTemplate = groupTemplate.getInstanceOf("mod_expression");
+
+      mod.getLeft().accept(this);
+      modTemplate.add("left_expr", currentExprTemplate);
+
+      mod.getRight().accept(this);
+      modTemplate.add("right_expr", currentExprTemplate);
+
+      currentExprTemplate = modTemplate;
+   }
+
+   public void visit(Mult mult) {
+      ST multTemplate = groupTemplate.getInstanceOf("mult_expression");
+
+      mult.getLeft().accept(this);
+      multTemplate.add("left_expr", currentExprTemplate);
+
+      mult.getRight().accept(this);
+      multTemplate.add("right_expr", currentExprTemplate);
+
+      currentExprTemplate = multTemplate;
+   }
+
+   public void visit(Div div) {
+      ST divTemplate = groupTemplate.getInstanceOf("div_expression");
+
+      div.getLeft().accept(this);
+      divTemplate.add("left_expr", currentExprTemplate);
+
+      div.getRight().accept(this);
+      divTemplate.add("right_expr", currentExprTemplate);
+
+      currentExprTemplate = divTemplate;
+   }
+
+   public void visit(Equal equal) {
+      ST equalTemplate = groupTemplate.getInstanceOf("equals_expr");
+
+      equal.getLeft().accept(this);
+      equalTemplate.add("left_expr", currentExprTemplate);
+
+      equal.getRight().accept(this);
+      equalTemplate.add("right_expr", currentExprTemplate);
+
+      currentExprTemplate = equalTemplate;
+   }
+
+   public void visit(Diff diff) {
+      ST diffTemplate = groupTemplate.getInstanceOf("diff_expr");
+
+      diff.getLeft().accept(this);
+      diffTemplate.add("left_expr", currentExprTemplate);
+
+      diff.getRight().accept(this);
+      diffTemplate.add("right_expr", currentExprTemplate);
+
+      currentExprTemplate = diffTemplate;
+   }
+
    public void visit(Attribution attr) {
-      LValue id = attr.getID();
 
-      if (id instanceof ArrayPositionAccess) {
+      attr.getID().accept(this);
 
-         ArrayPositionAccess newArray = (ArrayPositionAccess) id;
+      currentCommandTemplate = groupTemplate.getInstanceOf("attribution");
+      currentCommandTemplate.add("var", currentExprTemplate);
 
-         newArray.getPositionExpr().accept(this);
-         Number index = (Number) operands.pop();
-
-         attr.getExp().accept(this);
-
-         Object value = this.operands.pop();
-
-         Object[] array = (Object[]) this.env.peek().get(id.getId());
-
-         array[index.intValue()] = value;
-
-         this.env.peek().put(id.getId(), array);
-      }
-
-      else if (id instanceof AttributeAccess) {
-
-         AttributeAccess access = (AttributeAccess) id;
-         LValue leftSideId = access.getLeftValue();
-
-         HashMap<String, Object> var;
-
-         if (leftSideId instanceof ArrayPositionAccess) {
-            leftSideId.accept(this);
-
-            var = (HashMap<String, Object>) this.operands.pop();
-
-         } else
-            var = (HashMap<String, Object>) this.env.peek().get(leftSideId.getId());
-
-         attr.getExp().accept(this);
-         Object val = operands.pop();
-
-         var.put(access.getAcessId().getName(), val);
-
-         env.peek().put(id.getId(), var);
-
-      } else {
-
-         attr.getExp().accept(this);
-         Object val = operands.pop();
-
-         env.peek().put(id.getId(), val);
-
-         logger.info("New attribution " + id.getId() + " = " + val);
-      }
+      attr.getExp().accept(this);
+      currentCommandTemplate.add("expr", currentExprTemplate);
 
    }
 
@@ -270,166 +292,207 @@ public class JasminVisitor implements Visitor {
 
    }
 
-   @Override
    public void visit(CmdList cmdList) {
 
+      ST statement_list = groupTemplate.getInstanceOf("stmt_list");
+      currentStatementList = statement_list;
+
       for (Cmd c : cmdList.getBody()) {
-         if (returnMode)
-            break;
 
          c.accept(this);
+
+         statement_list.add("stmt", currentCommandTemplate);
       }
+
+      currentCommandTemplate = statement_list;
    }
 
-   @Override
    public void visit(Function function) {
-      boolean isMainFunction = function.getName().equals("main");
+      // Pegar os parametros da função
 
-      if (isMainFunction) {
-         logger.info("Executing main function");
-         function.getBody().accept(this);
-      } else {
-         logger.info("Executing " + function.getName() + " function");
+      currentFunctionTemplate = groupTemplate.getInstanceOf("function");
 
-         HashMap<String, Object> localEnv = new HashMap<String, Object>();
-         this.env.push(localEnv);
+      currentFunctionTemplate.add("name", function.getName());
+      currentFunctionTemplate.add("returnType", "void");
 
-         ArrayList<Param> functionParams = function.getParamlist();
+      HashMap<String, SType> varsInFunction = typesEnvByFunction.get(function.getName());
 
-         if (functionParams.size() > 0) {
+      for (Param param : function.getParamlist()) {
+         param.getType().accept(this);
 
-            for (int i = functionParams.size() - 1; i >= 0; i--) {
-               Param p = functionParams.get(i);
+         ST paramTemplate = groupTemplate.getInstanceOf("param");
+         paramTemplate.add("name", param.getId().getName());
+         paramTemplate.add("type", currentTypeTemplate);
 
-               p.accept(this);
-            }
-
-            logger.info("Params in the stack : " + this.env.peek().toString());
-         }
-
-         function.getBody().accept(this);
-         this.env.pop();
+         currentFunctionTemplate.add("params", paramTemplate);
       }
 
+      if (function.getName().equals("main")) {
+         varsInFunction = this.env.peek();
+         currentFunctionTemplate.add("params", "String[] args");
+      }
+
+      for (String var : varsInFunction.keySet()) {
+         SType varType = varsInFunction.get(var);
+
+         Boolean hasToDeclareVariable = true;
+
+         for (Param p : function.getParamlist()) {
+            if (p.getId().getName() == var) {
+               hasToDeclareVariable = false;
+               break;
+            }
+         }
+
+         if (hasToDeclareVariable) {
+            currentTypeTemplate = getTypeTemplate(varType);
+
+            ST varDeclTemplate = groupTemplate.getInstanceOf("param");
+
+            varDeclTemplate.add("type", currentTypeTemplate);
+            varDeclTemplate.add("name", var);
+            currentFunctionTemplate.add("statements", varDeclTemplate);
+         }
+
+      }
+
+      function.getBody().accept(this);
+
+      this.currentFunctionTemplate.add("statements", currentCommandTemplate);
+
+      this.functionsTemplate.add(currentFunctionTemplate);
+
+   }
+
+   public ST getFunctionReturnType(Function function) {
+      ST template;
+
+      if (function.getReturns().size() == 0)
+         template = groupTemplate.getInstanceOf("void");
+      else {
+         function.getReturns().get(0).accept(this);
+         template = currentTypeTemplate;
+      }
+
+      return template;
    }
 
    public void visit(FunctionCall functionCall) {
+      ST functionCallTemplate = groupTemplate.getInstanceOf("function_call");
 
-      logger.info("Calling function:  " + functionCall.getFunctionName());
+      functionCallTemplate.add("name", functionCall.getFunctionName());
 
-      Function func = functions.get(functionCall.getFunctionName());
-
-      int receivedParams = functionCall.getParams().size();
-
-      if (func.isQuantityOfParamsValid(receivedParams)) {
-         for (Expr expr : functionCall.getParams())
-            expr.accept(this);
-
-         func.accept(this);
-
-         if (functionCall.getReturnsId().size() > 0 && returnMode) {
-
-            for (LValue returnId : functionCall.getReturnsId()) {
-               String returnVariableName = returnId.getId();
-
-               Object value = operands.pop();
-               this.env.peek().put(returnVariableName, value);
-
-               logger.info("Putting return variable " + returnVariableName + " with value : " + value);
-            }
-
-            returnMode = false;
-         }
+      for (Expr expr : functionCall.getParams()) {
+         expr.accept(this);
+         functionCallTemplate.add("args", currentExprTemplate);
       }
+
+      int index = 0;
+
+      ST functionCallAssignsTemplate = groupTemplate.getInstanceOf("call_variable_assign_list");
+
+      for (LValue returnId : functionCall.getReturnsId()) {
+         returnId.accept(this);
+
+         ST callVariableAssignTemplate = groupTemplate.getInstanceOf("call_variable_assign");
+
+         callVariableAssignTemplate.add("id", currentExprTemplate);
+         callVariableAssignTemplate.add("type", currentTypeTemplate);
+         callVariableAssignTemplate.add("index", index);
+
+         functionCallAssignsTemplate.add("call_variable_assign", callVariableAssignTemplate);
+
+         index++;
+      }
+
+      functionCallTemplate.add("receives", functionCallAssignsTemplate);
+      currentCommandTemplate = functionCallTemplate;
 
    }
 
-   @Override
    public void visit(ID id) {
-      try {
-         logger.info("Visiting id : \"" + id.getName() + "\"");
+      SType idType;
 
-         if (env.peek().containsKey(id.getName())) {
-            Object idValue = env.peek().get(id.getName());
-            operands.push(idValue);
+      if (currentFunctionName.equals("main")) {
+         idType = this.env.peek().get(id.getName());
+      } else
+         idType = this.typesEnvByFunction.get(currentFunctionName).get(id.getName());
 
-            logger.info("Adding value " + idValue + " to the operands");
-         } else
-            throw new RuntimeException("Variable " + id.getName() + " Not declared");
+      currentTypeTemplate = getTypeTemplate(idType);
 
-      } catch (Exception e) {
-         throw new RuntimeException(e.getMessage());
-      }
-
+      currentExprTemplate = groupTemplate.getInstanceOf("var");
+      currentExprTemplate.add("var", id.getName());
    }
 
-   @Override
    public void visit(If ifExpr) {
-      logger.info("Visiting if");
+      ST ifTemplate = groupTemplate.getInstanceOf("if");
 
       ifExpr.getCondition().accept(this);
 
-      if ((Boolean) operands.pop()) {
-         ifExpr.getThen().accept(this);
+      ifTemplate.add("expr", currentExprTemplate);
 
-      } else if (ifExpr.getOnElse() != null) {
+      ifExpr.getThen().accept(this);
+
+      ifTemplate.add("thenExpr", currentCommandTemplate);
+
+      if (ifExpr.getOnElse() != null) {
          ifExpr.getOnElse().accept(this);
-
+         ifTemplate.add("elseExpr", currentCommandTemplate);
       }
+
+      currentCommandTemplate = ifTemplate;
+
    }
 
    @Override
    public void visit(Iterate iterate) {
+      ST iterateTemplate = groupTemplate.getInstanceOf("iterate");
+
+      String iterateVarName = this.getIterateNextAvaliableVariable();
+      iterateTemplate.add("iterateVarName", iterateVarName);
 
       iterate.getCondition().accept(this);
+      iterateTemplate.add("count", currentExprTemplate);
 
-      Object conditionValue = operands.pop();
+      iterate.getBody().accept(this);
+      iterateTemplate.add("stmt", currentCommandTemplate);
 
-      if (conditionValue instanceof Boolean) {
-         while ((Boolean) conditionValue) {
-            iterate.getBody().accept(this);
-            iterate.getCondition().accept(this);
-            conditionValue = operands.pop();
-         }
-      } else if (conditionValue instanceof Integer) {
-         Integer iterations = (Integer) conditionValue;
-         int i = 0;
-
-         while (i < iterations) {
-            iterate.getBody().accept(this);
-            i++;
-         }
-
-      }
-
-   }
-
-   public boolean checkWhileCondition() {
-      Object value = operands.pop();
-
-      if (value instanceof Boolean)
-         return (Boolean) value;
-      else {
-         return ((Number) value).intValue() > 0;
-      }
+      currentCommandTemplate = iterateTemplate;
    }
 
    @Override
    public void visit(LiteralChar literal) {
-      this.operands.push(literal.getValue());
+      currentExprTemplate = groupTemplate.getInstanceOf("char_expr");
+
+      String literalValue;
+
+      switch (literal.getValue()) {
+         case '\n':
+            literalValue = "\\n";
+            break;
+         case '\t':
+            literalValue = "\\t";
+         default:
+            literalValue = "" + literal.getValue();
+      }
+
+      currentExprTemplate.add("value", literalValue);
 
    }
 
    public void visit(LiteralFalse literal) {
-      this.operands.push(new Boolean(false));
+      currentExprTemplate = groupTemplate.getInstanceOf("boolean_expr");
+      currentExprTemplate.add("value", literal.getValue());
    }
 
    public void visit(LiteralFloat literal) {
-      this.operands.push(new Float(literal.getValue()));
+      currentExprTemplate = groupTemplate.getInstanceOf("float_expr");
+      currentExprTemplate.add("value", literal.getValue());
    }
 
    public void visit(LiteralInt literal) {
-      this.operands.push(new Integer(literal.getValue()));
+      currentExprTemplate = groupTemplate.getInstanceOf("int_expr");
+      currentExprTemplate.add("value", literal.getValue());
 
    }
 
@@ -443,253 +506,195 @@ public class JasminVisitor implements Visitor {
    }
 
    public void visit(Print print) {
+      ST printTemplate = groupTemplate.getInstanceOf("print");
       print.getExpr().accept(this);
 
-      logger.info("Visiting print");
+      printTemplate.add("expr", currentExprTemplate);
 
-      System.out.print(operands.pop());
+      currentCommandTemplate = printTemplate;
    }
 
    public void visit(Read read) {
-      Scanner scanner = new Scanner(System.in);
+      ST readTemplate = groupTemplate.getInstanceOf("read");
+      read.getLvalue().accept(this);
 
-      String value = scanner.nextLine();
-      scanner.close();
+      readTemplate.add("expr", currentExprTemplate);
 
-      if (Util.isInteger(value)) {
-         this.env.peek().put(read.getLvalue().getId(), Integer.parseInt(value));
-      } else {
-         throw new CustomRuntimeException("Read value must be int", read);
-      }
-
+      currentCommandTemplate = readTemplate;
    }
 
    public void visit(LessThan lessThan) {
+      ST lessThanTemplate = groupTemplate.getInstanceOf("less_than_expr");
 
       lessThan.getLeft().accept(this);
+      lessThanTemplate.add("left_expr", currentExprTemplate);
+
       lessThan.getRight().accept(this);
+      lessThanTemplate.add("right_expr", currentExprTemplate);
 
-      Number left, right;
-
-      right = (Number) operands.pop();
-      left = (Number) operands.pop();
-
-      Boolean res = new Boolean((Integer) left < (Integer) right);
-
-      operands.push(res);
-
-      logger.info("Less than added " + res + " To te stack");
-
+      currentExprTemplate = lessThanTemplate;
    }
 
    public void visit(And and) {
-
+      ST andTemplate = groupTemplate.getInstanceOf("and_expr");
       and.getLeft().accept(this);
+      andTemplate.add("left_expr", currentExprTemplate);
+
       and.getRight().accept(this);
+      andTemplate.add("right_expr", currentExprTemplate);
 
-      Object left, right;
-
-      right = operands.pop();
-      left = operands.pop();
-
-      if (right instanceof Number) {
-         right = new Integer(right.toString()) != 0;
-      }
-
-      if (left instanceof Number) {
-         left = new Integer(left.toString()) != 0;
-      }
-
-      operands.push(new Boolean((Boolean) left && (Boolean) right));
-
+      currentExprTemplate = andTemplate;
    }
 
    public void visit(GreatherThan greatherThan) {
 
-      greatherThan.getLeft().accept(this);
-      greatherThan.getRight().accept(this);
-
-      Number left, right;
-
-      right = (Number) operands.pop();
-      left = (Number) operands.pop();
-
-      Boolean res = new Boolean((Integer) left > (Integer) right);
-
-      operands.push(res);
-
-      logger.info("Bigger than added " + res + " To te stack");
    }
 
    public void visit(Param param) {
-      Object paramValue = operands.pop();
 
-      env.peek().put(param.getId().getId(), paramValue);
    }
 
    public void visit(Return ret) {
-      logger.info("Visiting a return");
 
-      returnMode = true;
+      ST returnList = groupTemplate.getInstanceOf("returnList");
 
-      for (int i = ret.getReturnedExprs().size() - 1; i >= 0; i--) {
-         Expr e = ret.getReturnedExprs().get(i);
+      for (Expr expr : ret.getReturnedExprs()) {
+         ST returnTemplate = groupTemplate.getInstanceOf("return_array_add");
+         expr.accept(this);
+         returnTemplate.add("value", currentExprTemplate);
 
-         e.accept(this);
+         returnList.add("exprList", returnTemplate);
+         returnList.add("return", "return;");
       }
+
+      ST returnTemplate = groupTemplate.getInstanceOf("return_expr");
+
+      returnTemplate.add("exprList", returnList);
+
+      currentCommandTemplate = returnTemplate;
+
    }
 
    public void visit(ParenthesisExpression parenthesisExpression) {
-      logger.info("Visiting expr " + parenthesisExpression.toString());
+      ST pexpTemplate = groupTemplate.getInstanceOf("parenthesis_expr");
 
       parenthesisExpression.getExpr().accept(this);
+
+      pexpTemplate.add("value", currentExprTemplate);
+
+      currentExprTemplate = pexpTemplate;
+
    }
 
    public void visit(Not not) {
+      ST notTemplate = groupTemplate.getInstanceOf("not_expr");
+
       not.getExpression().accept(this);
+      notTemplate.add("expr", currentExprTemplate);
 
-      Object expr = operands.pop();
-
-      if (expr instanceof Number) {
-         expr = new Integer(expr.toString()) != 0;
-      }
-
-      operands.push(new Boolean(!(Boolean) expr));
+      currentExprTemplate = notTemplate;
    }
 
    public void visit(AttributeAccess attributeAccess) {
-      try {
-         LValue leftSideId = attributeAccess.getLeftValue();
+      ST currentTemplate = groupTemplate.getInstanceOf("data_access");
 
-         HashMap<String, Object> var;
+      attributeAccess.getLeftValue().accept(this);
+      currentTemplate.add("name", currentExprTemplate);
 
-         if (leftSideId instanceof ArrayPositionAccess) {
-            leftSideId.accept(this);
+      attributeAccess.getAcessId().accept(this);
+      currentTemplate.add("attribute", currentExprTemplate);
 
-            var = (HashMap<String, Object>) operands.pop();
-
-         } else
-            var = (HashMap<String, Object>) this.env.peek().get(leftSideId.getId());
-
-         Object idValue = var.get(attributeAccess.getAcessId().getId());
-         operands.push(idValue);
-
-      } catch (Exception err) {
-         throw new CustomRuntimeException(err.getMessage(), attributeAccess);
-      }
+      currentExprTemplate = currentTemplate;
    }
 
    public void visit(NewData data) {
-      Data dataObj = datas.get(data.getTypeName());
+      ST dataTemplate = groupTemplate.getInstanceOf("new");
 
-      HashMap<String, Object> localEnv = new HashMap<String, Object>();
+      data.getType().accept(this);
 
-      for (Declaration decl : dataObj.getDeclarations())
-         localEnv.put(decl.getIdName(), null);
+      dataTemplate.add("type", currentTypeTemplate);
 
-      operands.push(localEnv);
+      if (data.getExpr() != null) {
+         data.getExpr().accept(this);
+
+         dataTemplate.add("expr", currentExprTemplate);
+      }
+
+      currentExprTemplate = dataTemplate;
    }
 
    public void visit(ArrayPositionAccess arrayPositionAccess) {
+      ST template = groupTemplate.getInstanceOf("array_pos_access");
+
+      arrayPositionAccess.getLeftValue().accept(this);
+      template.add("name", currentExprTemplate);
+
       arrayPositionAccess.getPositionExpr().accept(this);
-      Number index = (Number) this.operands.pop();
+      template.add("expr", currentExprTemplate);
 
-      Object[] value = (Object[]) this.env.peek().get(arrayPositionAccess.getId());
-
-      if (index.intValue() > value.length) {
-         throw new CustomRuntimeException("Index out of bonds for var : " + arrayPositionAccess.getLeftValue().getId(),
-               arrayPositionAccess);
-      } else {
-         this.operands.push(value[index.intValue()]);
-      }
-
+      currentExprTemplate = template;
    }
 
    public void visit(TypeInt typeInt) {
-
+      currentTypeTemplate = groupTemplate.getInstanceOf("type_int");
    }
 
    public void visit(TypeFloat typeFloat) {
-
+      currentTypeTemplate = groupTemplate.getInstanceOf("type_float");
    }
 
    public void visit(TypeBool typeBool) {
-
+      currentTypeTemplate = groupTemplate.getInstanceOf("type_bool");
    }
 
    public void visit(TypeChar typeChar) {
-
+      currentTypeTemplate = groupTemplate.getInstanceOf("type_char");
    }
 
    public void visit(TypeCustom customType) {
-
+      currentTypeTemplate = groupTemplate.getInstanceOf("type_data");
+      currentTypeTemplate.add("id", customType.getTypeName());
    }
 
    public void visit(TypeArray typeArray) {
+      ST template = groupTemplate.getInstanceOf("type_array");
 
+      typeArray.getType().accept(this);
+      template.add("id", currentTypeTemplate);
+
+      currentTypeTemplate = template;
    }
 
    public void visit(FunctionCallArray functionCall) {
-      Function func = functions.get(functionCall.getFunctionName());
+      ST functionCallTemplate = groupTemplate.getInstanceOf("simple_function_call");
+      functionCallTemplate.add("functionName", functionCall.getFunctionName());
 
-      int receivedParams = functionCall.getParams().size();
-
-      if (func.isQuantityOfParamsValid(receivedParams)) {
-         for (Expr expr : functionCall.getParams())
-            expr.accept(this);
-
-         func.accept(this);
-
-         if (returnMode) {
-
-            functionCall.getReturnExpr().accept(this);
-
-            Number returnedIndex = (Number) operands.pop();
-
-            if (returnedIndex.intValue() > func.getReturns().size())
-               throw new CustomRuntimeException(
-                     "Index : " + returnedIndex.intValue() + " out of bonds for function return : "
-                           + functionCall.getFunctionName(),
-                     functionCall);
-
-            Object value = null;
-
-            for (int i = 0; i < func.getReturns().size(); i++) {
-               if (i == returnedIndex.intValue())
-                  value = operands.pop();
-               else
-                  operands.pop();
-            }
-
-            operands.push(value);
-            returnMode = false;
-         }
+      for (Expr expr : functionCall.getParams()) {
+         expr.accept(this);
+         functionCallTemplate.add("args", currentExprTemplate);
       }
+
+      currentStatementList.add("stmt", functionCallTemplate);
+
+      functionCallTemplate = groupTemplate.getInstanceOf("function_call_array");
+
+      functionCallTemplate.add("type", currentTypeTemplate);
+
+      functionCall.getReturnExpr().accept(this);
+      functionCallTemplate.add("index", currentExprTemplate);
+
+      currentExprTemplate = functionCallTemplate;
    }
 
    public void visit(NewArray newArray) {
+      ST template = groupTemplate.getInstanceOf("new_array");
+
+      newArray.getType().accept(this);
+      template.add("type", currentTypeTemplate);
 
       newArray.getExpr().accept(this);
+      template.add("expr", currentExprTemplate);
 
-      Number arraySize = (Number) operands.pop();
-
-      if (newArray.getType() instanceof TypeCustom) {
-         HashMap<String, Object>[] objArray = new HashMap[arraySize.intValue()];
-
-         for (int i = 0; i < arraySize.intValue(); i++) {
-            objArray[i] = new HashMap<String, Object>();
-         }
-
-         operands.push(objArray);
-      } else {
-
-         Object[] array = new Object[arraySize.intValue()];
-         operands.push(array);
-      }
-
-   }
-
-   public void visit(Declaration declaration) {
-
+      currentExprTemplate = template;
    }
 }

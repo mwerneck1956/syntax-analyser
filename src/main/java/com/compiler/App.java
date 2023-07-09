@@ -10,7 +10,7 @@ import com.compiler.parser.SemanticalParser;
 import com.compiler.parser.SyntaxParser;
 import com.compiler.parser.TestParser;
 import com.compiler.parser.JavaCodeGenParser;
-import com.compiler.visitors.InterpretVisitor;
+import com.compiler.visitors.JasminVisitor;
 import com.compiler.visitors.JavaVisitor;
 import com.compiler.visitors.TypeCheckVisitor;
 import com.compiler.util.Util;
@@ -64,7 +64,11 @@ public class App {
                                 typeCheckVisitor.getFunctions(), typeCheckVisitor.getEnv(),
                                 typeCheckVisitor.getTypesEnvByFunction());
 
-                        ast.accept(javaVisitor);
+                        JasminVisitor jasminVisitor = new JasminVisitor("teste", typeCheckVisitor.getDatas(),
+                                typeCheckVisitor.getFunctions(), typeCheckVisitor.getEnv(),
+                                typeCheckVisitor.getTypesEnvByFunction());
+
+                        ast.accept(jasminVisitor);
 
                         // InterpretVisitor visitor = new InterpretVisitor();
                         // ast.accept(visitor);

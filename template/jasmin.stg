@@ -1,6 +1,9 @@
 group jasmin;
 
-program(name, funcs) ::= <<
+program(name, data, funcs) ::= <<
+<data; separator=";\n">
+
+
 .source <name>
 .class public <name>
 .super java/lang/Object
@@ -21,6 +24,24 @@ func(return, name, params, decls, stack, stmt) ::= <<
     <stmt>
 .end method
 >>
+
+
+data(name,decl) ::= <<
+.class <name>
+.super java/lang/Object
+<decl; separator="\n">
+
+.method public \<init>()V
+    aload_0
+    invokespecial java/lang/Object/init()V
+    return
+    .end method
+>>
+
+
+param(type, name) ::= <<
+.field public <name>:<type>
+>> 
 
 array_type(type) ::= "[<type>"
 int_type() ::= "I"
@@ -169,3 +190,12 @@ boolean_true() ::= "iconst_1"
 boolean_false() ::= "iconst_0"
 float_expr(value) ::= "ldc <value>"
 int_expr(value) ::= "sipush <value>"
+
+
+type_array(type) ::= "<type>[]"
+type_int() ::= "I"
+type_float() ::= "F"
+type_bool() ::= "boolean"
+type_char() ::= "C"
+type_data(id) ::= "<id>"
+null() ::= "null"
