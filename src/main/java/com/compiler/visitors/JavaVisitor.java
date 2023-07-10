@@ -24,6 +24,7 @@ import com.compiler.typeCheckUtils.STyData;
 import com.compiler.typeCheckUtils.STyFloat;
 import com.compiler.typeCheckUtils.STyInt;
 import com.compiler.typeCheckUtils.SType;
+import com.compiler.util.Util;
 
 public class JavaVisitor implements Visitor {
 
@@ -152,7 +153,14 @@ public class JavaVisitor implements Visitor {
       } else if (type instanceof STyArray) {
          STyArray arrayType = (STyArray) type;
          template = groupTemplate.getInstanceOf("type_array");
-         template.add("type", arrayType.getType().toString());
+
+         String typeString = arrayType.getType().toString();
+
+         if (typeString == "Char" || typeString == "Bool" || typeString == "Int" || typeString == "Float") {
+            typeString = Util.firstCharToLowercase(typeString);
+         }
+
+         template.add("type", typeString);
       } else {
 
          String templateName = templateMap.get(type.getClass());
