@@ -1,35 +1,40 @@
 import java.util.ArrayList;
 import java.util.Scanner;
 
-
 public class teste9 {
     static ArrayList<Object> returnsList = new ArrayList<Object>();
     static Scanner scanner = new Scanner(System.in);
-    public static void f(int x) {
+
+    public static ArrayList<Object> f(int x) {
+
+        ArrayList<Object> _returnList = new ArrayList<Object>();
+
         int y;
 
-            y = 2 * x + 1;
-            if(y < 10) {
-                returnsList.clear();
-                returnsList.add(y);
-                returnsList.add(1.5f);
-                return;
-            }  else {
-                returnsList.clear();
-                returnsList.add(y);
-                returnsList.add(1.5f);
-                return;
-            }
+        y = 2 * x + 1;
+        if (y < 10) {
+            _returnList.add(y);
+            _returnList.add(1.5f);
+            return _returnList;
+        } else {
+            _returnList.add(y);
+            _returnList.add(1.5f);
+            return _returnList;
+        }
 
     }
 
     public static void main(String[] args) {
+
+        ArrayList<Object> _returnList = new ArrayList<Object>();
+
         float z;
-            f(10);
+        ArrayList<Object> _r1 = f(10);
 
-            z = (float) returnsList.get(1);
-            f(10);
+        z = (float) _r1.get(1);
+        ArrayList<Object> _r2 = f(10);
 
-            h = 2 * (int) returnsList.get(0);
+        h = 2 * (int) _r2.get(0);
+
     }
 }
