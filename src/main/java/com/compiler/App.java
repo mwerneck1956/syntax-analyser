@@ -68,7 +68,7 @@ public class App {
                                 typeCheckVisitor.getFunctions(), typeCheckVisitor.getEnv(),
                                 typeCheckVisitor.getTypesEnvByFunction());
 
-                        ast.accept(jasminVisitor);
+                        ast.accept(javaVisitor);
 
                         // InterpretVisitor visitor = new InterpretVisitor();
                         // ast.accept(visitor);

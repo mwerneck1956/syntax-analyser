@@ -15,8 +15,12 @@ public class <name> {
 
 function(returns, name, params, declarations, statements, returnType) ::= <<
 public static <returnType> <name>(<params; separator=", ">) {
+
+    ArrayList\<Object> _returnList = new ArrayList\<Object>();
+
     <if(declarations)><declarations; separator="\n"><endif>
     <if(statements)><statements; separator="\n"><endif>
+
 }
 >>
 
@@ -45,17 +49,16 @@ varDeclaration(type, name) ::= "<type> <name>;"
 
 return_expr(exprList) ::= <<
 <exprList>
-return;
+return _returnList;
 >>
 
 returnList (exprList,return ) ::= <<
-returnsList.clear();
 <exprList; separator="\n">
 >>
 
 
 
-return_array_add(value) ::= "returnsList.add(<value>);"
+return_array_add(value) ::= "_returnList.add(<value>);"
 
 
 
@@ -118,25 +121,25 @@ parenthesis_expr(value) ::= << (<value>) >>
 array_pos_access(name,expr) ::= "<name>[<expr>]"
 new_array(type, expr) ::= "new <type>[<expr>]"
 
-function_call(name, args, receives) ::= <<
-<name>(<args; separator=", ">)<if(receives)>;<endif>
+function_call(name, args, receives, returnVarName) ::= <<
+ArrayList\<Object> <returnVarName> =  <name>(<args; separator=", ">)<if(receives)>;<endif>
 <if(receives)><receives; separator="\n"><endif>
 >>
 
-call_variable_assign(id, index, type) ::= <<
-<id> = (<type>) returnsList.get(<index>);
+call_variable_assign(id, index, type, returnVarName) ::= <<
+<id> = (<type>) <returnVarName>.get(<index>);
 >>
 
 call_variable_assign_list(call_variable_assign) ::= <<  
 <call_variable_assign; separator="\n"> 
 >>
 
-simple_function_call(functionName, args) ::= <<
-<functionName>(<args; separator=", ">);
+simple_function_call(functionName, args, returnVarName) ::= <<
+ArrayList\<Object> <returnVarName> =  <functionName>(<args; separator=", ">);
 >>
 
-function_call_array(functionName, args, id, type, index) ::= <<
- (<type>) returnsList.get(<index>)
+function_call_array(functionName, args, id, type, index,returnVarName) ::= <<
+ (<type>) <returnVarName>.get(<index>)
 >>
 
 

@@ -49,6 +49,7 @@ public class JavaVisitor implements Visitor {
    private Stack<Object> operands;
 
    private int currentIterateVarIndex = 0;
+   private int currentFunctionReturnVarIndex = 0;
 
    public JavaVisitor(String fileName, HashMap<String, STyData> datas, HashMap<String, Function> functions,
          Stack<HashMap<String, SType>> env, HashMap<String, HashMap<String, SType>> typesEnvByFunction) {
@@ -110,6 +111,12 @@ public class JavaVisitor implements Visitor {
       this.currentIterateVarIndex++;
 
       return new String("_a" + this.currentIterateVarIndex);
+   }
+
+   public String getFunctionReturnNextAvaliableVariable() {
+      this.currentIterateVarIndex++;
+
+      return new String("_r" + this.currentIterateVarIndex);
    }
 
    public void visit(Data data) {
@@ -298,9 +305,7 @@ public class JavaVisitor implements Visitor {
       // Pegar os parametros da função
 
       currentFunctionTemplate = groupTemplate.getInstanceOf("function");
-
       currentFunctionTemplate.add("name", function.getName());
-      currentFunctionTemplate.add("returnType", "void");
 
       HashMap<String, SType> varsInFunction = typesEnvByFunction.get(function.getName());
 
@@ -317,30 +322,35 @@ public class JavaVisitor implements Visitor {
       if (function.getName().equals("main")) {
          varsInFunction = this.env.peek();
          currentFunctionTemplate.add("params", "String[] args");
+         currentFunctionTemplate.add("returnType", "void");
+      } else {
+         currentFunctionTemplate.add("returnType", "ArrayList<Object>");
       }
 
-      for (String var : varsInFunction.keySet()) {
-         SType varType = varsInFunction.get(var);
+      if (varsInFunction != null) {
+         for (String var : varsInFunction.keySet()) {
+            SType varType = varsInFunction.get(var);
 
-         Boolean hasToDeclareVariable = true;
+            Boolean hasToDeclareVariable = true;
 
-         for (Param p : function.getParamlist()) {
-            if (p.getId().getName() == var) {
-               hasToDeclareVariable = false;
-               break;
+            for (Param p : function.getParamlist()) {
+               if (p.getId().getName() == var) {
+                  hasToDeclareVariable = false;
+                  break;
+               }
             }
+
+            if (hasToDeclareVariable) {
+               currentTypeTemplate = getTypeTemplate(varType);
+
+               ST varDeclTemplate = groupTemplate.getInstanceOf("varDeclaration");
+
+               varDeclTemplate.add("type", currentTypeTemplate);
+               varDeclTemplate.add("name", var);
+               currentFunctionTemplate.add("statements", varDeclTemplate);
+            }
+
          }
-
-         if (hasToDeclareVariable) {
-            currentTypeTemplate = getTypeTemplate(varType);
-
-            ST varDeclTemplate = groupTemplate.getInstanceOf("varDeclaration");
-
-            varDeclTemplate.add("type", currentTypeTemplate);
-            varDeclTemplate.add("name", var);
-            currentFunctionTemplate.add("statements", varDeclTemplate);
-         }
-
       }
 
       function.getBody().accept(this);
@@ -367,6 +377,9 @@ public class JavaVisitor implements Visitor {
    public void visit(FunctionCall functionCall) {
       ST functionCallTemplate = groupTemplate.getInstanceOf("function_call");
 
+      String functionReturnVar = getFunctionReturnNextAvaliableVariable();
+
+      functionCallTemplate.add("returnVarName", functionReturnVar);
       functionCallTemplate.add("name", functionCall.getFunctionName());
 
       for (Expr expr : functionCall.getParams()) {
@@ -386,6 +399,7 @@ public class JavaVisitor implements Visitor {
          callVariableAssignTemplate.add("id", currentExprTemplate);
          callVariableAssignTemplate.add("type", currentTypeTemplate);
          callVariableAssignTemplate.add("index", index);
+         callVariableAssignTemplate.add("returnVarName", functionReturnVar);
 
          functionCallAssignsTemplate.add("call_variable_assign", callVariableAssignTemplate);
 
@@ -647,14 +661,18 @@ public class JavaVisitor implements Visitor {
       ST template = groupTemplate.getInstanceOf("type_array");
 
       typeArray.getType().accept(this);
-      template.add("id", currentTypeTemplate);
+      template.add("type", currentTypeTemplate);
 
       currentTypeTemplate = template;
    }
 
    public void visit(FunctionCallArray functionCall) {
+
+      String returnVarName = getFunctionReturnNextAvaliableVariable();
+
       ST functionCallTemplate = groupTemplate.getInstanceOf("simple_function_call");
       functionCallTemplate.add("functionName", functionCall.getFunctionName());
+      functionCallTemplate.add("returnVarName", returnVarName);
 
       for (Expr expr : functionCall.getParams()) {
          expr.accept(this);
@@ -666,6 +684,7 @@ public class JavaVisitor implements Visitor {
       functionCallTemplate = groupTemplate.getInstanceOf("function_call_array");
 
       functionCallTemplate.add("type", currentTypeTemplate);
+      functionCallTemplate.add("returnVarName", returnVarName);
 
       functionCall.getReturnExpr().accept(this);
       functionCallTemplate.add("index", currentExprTemplate);
