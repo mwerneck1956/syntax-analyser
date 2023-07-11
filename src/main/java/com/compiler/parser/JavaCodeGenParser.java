@@ -31,13 +31,16 @@ public class JavaCodeGenParser implements ParseAdaptor {
             if (typeCheckVisitor.getErrors().size() == 0) {
 
                int lastDotIndex = path.lastIndexOf(".");
-               String fileName = path.substring(path.lastIndexOf("\\") + 1, lastDotIndex);
+               String fileName = path.substring(path.lastIndexOf("/") + 1, lastDotIndex);
+
 
                JavaVisitor javaVisitor = new JavaVisitor(fileName, typeCheckVisitor.getDatas(),
-                     typeCheckVisitor.getFunctions(), typeCheckVisitor.getEnv(),
-                     typeCheckVisitor.getTypesEnvByFunction());
+                    typeCheckVisitor.getFunctions(), typeCheckVisitor.getEnv(),
+                    typeCheckVisitor.getTypesEnvByFunction());
 
                ast.accept(javaVisitor);
+
+            
 
                return ast;
             }
