@@ -13,13 +13,15 @@ public class <name> {
 }
 >>
 
-function(returns, name, params, declarations, statements, returnType) ::= <<
+function(returns, name, params, declarations, statements, returnType,hasReturn) ::= <<
 public static <returnType> <name>(<params; separator=", ">) {
 
-    ArrayList\<Object> _returnList = new ArrayList\<Object>();
+    <if(hasReturn)> ArrayList\<Object> _returnList = new ArrayList\<Object>(); <endif>
 
     <if(declarations)><declarations; separator="\n"><endif>
     <if(statements)><statements; separator="\n"><endif>
+
+    <if(hasReturn)> return _returnList;<endif>
 
 }
 >>
@@ -49,7 +51,6 @@ varDeclaration(type, name) ::= "<type> <name>;"
 
 return_expr(exprList) ::= <<
 <exprList>
-return _returnList;
 >>
 
 returnList (exprList,return ) ::= <<

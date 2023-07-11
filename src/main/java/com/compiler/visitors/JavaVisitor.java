@@ -324,6 +324,7 @@ public class JavaVisitor implements Visitor {
          currentFunctionTemplate.add("params", "String[] args");
          currentFunctionTemplate.add("returnType", "void");
       } else {
+         currentFunctionTemplate.add("hasReturn", "true");
          currentFunctionTemplate.add("returnType", "ArrayList<Object>");
       }
 

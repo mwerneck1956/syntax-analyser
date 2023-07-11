@@ -7,7 +7,6 @@ public class teste1 {
     static Scanner scanner = new Scanner(System.in);
     public static void main(String[] args) {
 
-        ArrayList<Object> _returnList = new ArrayList<Object>();
 
         int q;
         int res;
@@ -30,15 +29,17 @@ public class teste1 {
             System.out.print(res);
             System.out.print('\n');
 
+
     }
 
     public static ArrayList<Object> divMod(int n, int q) {
 
-        ArrayList<Object> _returnList = new ArrayList<Object>();
+         ArrayList<Object> _returnList = new ArrayList<Object>(); 
 
             _returnList.add(n / q);
             _returnList.add(n % q);
-            return _returnList;
+
+         return _returnList;
 
     }
 }

@@ -15,7 +15,6 @@ public class teste4 {
     static Scanner scanner = new Scanner(System.in);
     public static void main(String[] args) {
 
-        ArrayList<Object> _returnList = new ArrayList<Object>();
 
         Ponto p;
         float x;
@@ -33,6 +32,7 @@ public class teste4 {
             System.out.print(p.y);
             System.out.print(')');
             System.out.print('\n');
+
 
     }
 }

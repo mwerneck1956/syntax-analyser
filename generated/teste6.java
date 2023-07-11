@@ -24,6 +24,8 @@ public class teste6 {
         System.out.print(p.y);
         System.out.print(')');
 
+        return _returnList;
+
     }
 
     public static ArrayList<Object> printV(Ponto[] v, int n) {
@@ -45,6 +47,8 @@ public class teste6 {
             }
         }
         System.out.print('}');
+
+        return _returnList;
 
     }
 
@@ -78,11 +82,11 @@ public class teste6 {
             i = i + 1;
         }
 
+        return _returnList;
+
     }
 
     public static void main(String[] args) {
-
-        ArrayList<Object> _returnList = new ArrayList<Object>();
 
         Ponto[] p;
         int i;

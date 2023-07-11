@@ -7,7 +7,6 @@ public class teste3 {
     static Scanner scanner = new Scanner(System.in);
     public static void main(String[] args) {
 
-        ArrayList<Object> _returnList = new ArrayList<Object>();
 
         int[] x;
         int i;
@@ -52,6 +51,7 @@ public class teste3 {
             } 
             System.out.print('}');
             System.out.print('\n');
+
 
     }
 }
