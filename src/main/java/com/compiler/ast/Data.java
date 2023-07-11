@@ -6,9 +6,11 @@
 package com.compiler.ast;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
-public class Data {
+import com.compiler.visitors.Visitable;
+import com.compiler.visitors.Visitor;
+
+public class Data implements Visitable {
 
    ID id;
    ArrayList<Declaration> declarations;
@@ -37,4 +39,9 @@ public class Data {
    public String toString() {
       return this.declarations.toString();
    }
+
+   public void accept(Visitor visitor) {
+      visitor.visit(this);
+   }
+
 }

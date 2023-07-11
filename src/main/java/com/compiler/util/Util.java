@@ -37,4 +37,15 @@ public class Util {
       return type == "Int" || type == "Float" || type == "Bool";
    }
 
+   public static String firstCharToLowercase(String str) {
+      if (str == null || str.isEmpty()) {
+         return str;
+      }
+
+      char firstChar = str.charAt(0);
+      char lowerFirstChar = Character.toLowerCase(firstChar);
+
+      return lowerFirstChar + str.substring(1);
+   }
+
 }

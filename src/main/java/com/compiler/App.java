@@ -9,7 +9,9 @@ import com.compiler.grammar.*;
 import com.compiler.parser.SemanticalParser;
 import com.compiler.parser.SyntaxParser;
 import com.compiler.parser.TestParser;
-import com.compiler.visitors.InterpretVisitor;
+import com.compiler.parser.JavaCodeGenParser;
+import com.compiler.visitors.JasminVisitor;
+import com.compiler.visitors.JavaVisitor;
 import com.compiler.visitors.TypeCheckVisitor;
 import com.compiler.util.Util;
 import com.compiler.ast.*;
@@ -22,6 +24,7 @@ public class App {
 
         SyntaxParser syntaxParser = new SyntaxParser();
         SemanticalParser semanticalParser = new SemanticalParser();
+        JavaCodeGenParser javaCodeGenParser = new JavaCodeGenParser();
 
         if (args[0].equals("-bs")) {
             System.out.println("Executando bateria de testes sintáticos:");
@@ -33,7 +36,14 @@ public class App {
             System.out.println("Executando bateria de testes semânticos:");
             new TestParser(semanticalParser, "semantica/certo");
             return;
-        } else {
+        }
+
+        if (args[0].equals("-s")) {
+            System.out.println("Gerando código para java");
+            new TestParser(javaCodeGenParser, "semantica/certo");
+        }
+
+        else {
             try {
                 CharStream stream = CharStreams.fromFileName(args[0]);
 
@@ -50,8 +60,18 @@ public class App {
                     ast.accept(typeCheckVisitor);
 
                     if (typeCheckVisitor.getErrors().size() == 0) {
-                        InterpretVisitor visitor = new InterpretVisitor();
-                        ast.accept(visitor);
+                        JavaVisitor javaVisitor = new JavaVisitor("teste", typeCheckVisitor.getDatas(),
+                                typeCheckVisitor.getFunctions(), typeCheckVisitor.getEnv(),
+                                typeCheckVisitor.getTypesEnvByFunction());
+
+                        JasminVisitor jasminVisitor = new JasminVisitor("teste", typeCheckVisitor.getDatas(),
+                                typeCheckVisitor.getFunctions(), typeCheckVisitor.getEnv(),
+                                typeCheckVisitor.getTypesEnvByFunction());
+
+                        ast.accept(javaVisitor);
+
+                        // InterpretVisitor visitor = new InterpretVisitor();
+                        // ast.accept(visitor);
                     } else {
                         System.err.println("Aborting due semantical errors");
                         typeCheckVisitor.printErrors();

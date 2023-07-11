@@ -14,8 +14,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.compiler.ast.*;
-import com.compiler.typeCheckUtils.STyData;
-import com.compiler.typeCheckUtils.SType;
 import com.compiler.util.Util;
 
 public class InterpretVisitor implements Visitor {
@@ -688,6 +686,10 @@ public class InterpretVisitor implements Visitor {
          Object[] array = new Object[arraySize.intValue()];
          operands.push(array);
       }
+
+   }
+
+   public void visit(Declaration declaration) {
 
    }
 }

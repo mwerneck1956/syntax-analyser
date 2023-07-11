@@ -12,65 +12,8 @@ import java.util.Stack;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.compiler.ast.Add;
-import com.compiler.ast.And;
-import com.compiler.ast.ArrayPositionAccess;
-import com.compiler.ast.AttributeAccess;
-import com.compiler.ast.Attribution;
-import com.compiler.ast.BasicType;
-import com.compiler.ast.BinOP;
-import com.compiler.ast.Cmd;
-import com.compiler.ast.CmdList;
-import com.compiler.ast.CustomRuntimeException;
-import com.compiler.ast.Data;
-import com.compiler.ast.Declaration;
-import com.compiler.ast.Diff;
-import com.compiler.ast.Div;
-import com.compiler.ast.Equal;
-import com.compiler.ast.Expr;
-import com.compiler.ast.Function;
-import com.compiler.ast.FunctionCall;
-import com.compiler.ast.FunctionCallArray;
-import com.compiler.ast.GreatherThan;
-import com.compiler.ast.ID;
-import com.compiler.ast.If;
-import com.compiler.ast.Iterate;
-import com.compiler.ast.LValue;
-import com.compiler.ast.LessThan;
-import com.compiler.ast.LiteralChar;
-import com.compiler.ast.LiteralFalse;
-import com.compiler.ast.LiteralFloat;
-import com.compiler.ast.LiteralInt;
-import com.compiler.ast.LiteralNull;
-import com.compiler.ast.LiteralTrue;
-import com.compiler.ast.Mod;
-import com.compiler.ast.Mult;
-import com.compiler.ast.NewArray;
-import com.compiler.ast.NewData;
-import com.compiler.ast.Node;
-import com.compiler.ast.Not;
-import com.compiler.ast.Param;
-import com.compiler.ast.ParenthesisExpression;
-import com.compiler.ast.Print;
-import com.compiler.ast.Prog;
-import com.compiler.ast.Read;
-import com.compiler.ast.Return;
-import com.compiler.ast.Sub;
-import com.compiler.ast.Type;
-import com.compiler.ast.TypeArray;
-import com.compiler.ast.TypeBool;
-import com.compiler.ast.TypeChar;
-import com.compiler.ast.TypeCustom;
-import com.compiler.ast.TypeFloat;
-import com.compiler.ast.TypeInt;
-import com.compiler.typeCheckUtils.STyArray;
-import com.compiler.typeCheckUtils.STyBool;
-import com.compiler.typeCheckUtils.STyChar;
-import com.compiler.typeCheckUtils.STyData;
-import com.compiler.typeCheckUtils.STyErr;
-import com.compiler.typeCheckUtils.STyFloat;
-import com.compiler.typeCheckUtils.STyInt;
-import com.compiler.typeCheckUtils.SType;
+import com.compiler.ast.*;
+import com.compiler.typeCheckUtils.*;
 import com.compiler.util.TypeCheckUtils;
 
 public class TypeCheckVisitor implements Visitor {
@@ -84,6 +27,9 @@ public class TypeCheckVisitor implements Visitor {
 
    private ArrayList<String> errors;
    private Stack<HashMap<String, SType>> env;
+
+   private HashMap<String, HashMap<String, SType>> typesEnvByFunction;
+
    private HashMap<String, Function> functions;
 
    private Stack<SType> typeStack;
@@ -103,11 +49,29 @@ public class TypeCheckVisitor implements Visitor {
       this.typeStack = new Stack<SType>();
       this.paramStack = new Stack<SType>();
 
+      this.typesEnvByFunction = new HashMap<String, HashMap<String, SType>>();
+
       env.push(new HashMap<String, SType>());
    }
 
    public ArrayList<String> getErrors() {
       return errors;
+   }
+
+   public HashMap<String, STyData> getDatas() {
+      return datas;
+   }
+
+   public HashMap<String, Function> getFunctions() {
+      return functions;
+   }
+
+   public Stack<HashMap<String, SType>> getEnv() {
+      return env;
+   }
+
+   public HashMap<String, HashMap<String, SType>> getTypesEnvByFunction() {
+      return typesEnvByFunction;
    }
 
    public void addErrorMessage(Node node, String message) {
@@ -136,6 +100,7 @@ public class TypeCheckVisitor implements Visitor {
          } else {
             addErrorMessage(f, "Redlecaration of function " + f.getName() + " Not permited");
          }
+
       }
 
       for (Data data : prog.getDataList()) {
@@ -380,6 +345,7 @@ public class TypeCheckVisitor implements Visitor {
 
          function.getBody().accept(this);
       } else {
+
          HashMap<String, SType> localEnv = new HashMap<String, SType>();
          this.env.push(localEnv);
 
@@ -406,6 +372,11 @@ public class TypeCheckVisitor implements Visitor {
          }
 
          function.getBody().accept(this);
+
+         // Faz uma copia da tipagem do corpo da função para reutilizar na geração de
+         // código
+         this.typesEnvByFunction.put(function.getName(), this.env.peek());
+
          this.env.pop();
       }
 
@@ -889,6 +860,10 @@ public class TypeCheckVisitor implements Visitor {
          addErrorMessage(newArray, TypeCheckUtils.createInvalidArrayIndexTypeMessage(returnedType));
          typeStack.push(typeErr);
       }
+
+   }
+
+   public void visit(Declaration declaration) {
 
    }
 
