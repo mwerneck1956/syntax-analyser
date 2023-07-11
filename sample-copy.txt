@@ -1,6 +1,0 @@
-var_teste_teste = 3;
-b = 4.25444;
-c = a + b;
-c;
-teste :: Int;
-
